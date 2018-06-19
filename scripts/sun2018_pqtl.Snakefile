@@ -14,7 +14,7 @@ rule extract_cis_data:
     ''' Extracts cis-regulatory data from Sun pQTL data
     '''
     input:
-        lambda wildcards: GSRemoteProvider.remote(
+        lambda wildcards: GS.remote(
             '{bucket}/{gs_dir}/{soma_id}/{soma_id}_chrom_{chrom}_meta_final_v1.tsv.gz'.format(
                 bucket=config['gs_bucket'],
                 gs_dir=config['sun2018_raw_gs_dir'],
@@ -23,7 +23,7 @@ rule extract_cis_data:
                                           'SOMAMER_ID'),
                 chrom=wildcards.chrom))
     output:
-        GSRemoteProvider.remote('{bucket}/{gs_dir}/qtl/pqtl/sun2018/{{cell_type}}/{{ensembl_id}}/{{chrom}}.pval{pval}.cis_reg.tsv.gz'.format(
+        GS.remote('{bucket}/{gs_dir}/qtl/pqtl/sun2018/{{cell_type}}/{{ensembl_id}}/{{chrom}}.pval{pval}.cis_reg.tsv.gz'.format(
                 bucket=config['gs_bucket'],
                 gs_dir=config['gs_dir'],
                 pval=config['sun2018_cis_pval']))
@@ -45,13 +45,13 @@ rule extract_trans_data:
     ''' Extracts trans-regulatory data from Sun pQTL data
     '''
     input:
-        lambda wildcards: [GSRemoteProvider.remote('{bucket}/{gs_dir}/{soma_id}/{soma_id}_chrom_{chrom}_meta_final_v1.tsv.gz'.format(
+        lambda wildcards: [GS.remote('{bucket}/{gs_dir}/{soma_id}/{soma_id}_chrom_{chrom}_meta_final_v1.tsv.gz'.format(
                 bucket=config['gs_bucket'],
                 gs_dir=config['sun2018_raw_gs_dir'],
                 soma_id=get_manifest_info(sun2018_manifest, wildcards.ensembl_id, 'SOMAMER_ID'),
                 chrom=str(chrom))) for chrom in range(1, 23)]
     output:
-        GSRemoteProvider.remote('{bucket}/{gs_dir}/qtl/pqtl/sun2018/{{cell_type}}/{{ensembl_id}}/{{chrom}}.pval{pval}.trans_reg.tsv.gz'.format(
+        GS.remote('{bucket}/{gs_dir}/qtl/pqtl/sun2018/{{cell_type}}/{{ensembl_id}}/{{chrom}}.pval{pval}.trans_reg.tsv.gz'.format(
             bucket=config['gs_bucket'],
             gs_dir=config['gs_dir'],
             pval=config['sun2018_trans_pval']))
@@ -73,7 +73,7 @@ rule format_full_data:
     ''' Reformats the raw data file to a standard format
     '''
     input:
-        lambda wildcards: GSRemoteProvider.remote(
+        lambda wildcards: GS.remote(
             '{bucket}/{gs_dir}/{soma_id}/{soma_id}_chrom_{chrom}_meta_final_v1.tsv.gz'.format(
                 bucket=config['gs_bucket'],
                 gs_dir=config['sun2018_raw_gs_dir'],
@@ -82,7 +82,7 @@ rule format_full_data:
                                           'SOMAMER_ID'),
                 chrom=wildcards.chrom))
     output:
-        GSRemoteProvider.remote('{bucket}/{gs_dir}/qtl/pqtl/sun2018/{{cell_type}}/{{ensembl_id}}/{{chrom}}.pval1.all.tsv.gz'.format(
+        GS.remote('{bucket}/{gs_dir}/qtl/pqtl/sun2018/{{cell_type}}/{{ensembl_id}}/{{chrom}}.pval1.all.tsv.gz'.format(
             bucket=config['gs_bucket'],
             gs_dir=config['gs_dir']))
     shell:
