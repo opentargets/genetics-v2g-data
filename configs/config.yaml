@@ -1,0 +1,11 @@
+# Output config
+temp_dir: 'temp'
+gs_bucket: 'genetics-portal-data'
+gs_dir: 'em21_data'
+
+# Sun et al pQTL config
+sun2018_raw_gs_dir: 'pqtl_sun2018/raw_data'
+sun2018_manifest: 'configs/Sun_pQTL_SOMALOGIC_GWAS_protein_info.ensembl.manifest.tsv'
+sun2018_cis_window: 1000000 # Window around gene TSS to be called "cis" data
+sun2018_cis_pval: 2.5e-5    # P-value threshold for cis data
+sun2018_trans_pval: 5e-8    # P-value threshold for cis data
