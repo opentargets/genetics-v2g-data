@@ -29,7 +29,7 @@ rule thurman2012_final_to_gcs:
     input:
         tmpdir + '/interval/dhscor/thurman2012/unspecified/1-23.processed.tsv.gz'
     output:
-        GS.remote(
+        GSRemoteProvider().remote(
             '{bucket}/{gs_dir}/interval/dhscor/thurman2012/unspecified/1-23.processed.tsv.gz'.format(
                 bucket=config['gs_bucket'],
                 gs_dir=config['gs_dir']))
@@ -42,7 +42,7 @@ rule thurman2012_raw_to_gcs:
     input:
         tmpdir + '/interval/dhscor/thurman2012/unspecified/dhs_correlations.bed.gz'
     output:
-        GS.remote(
+        GSRemoteProvider().remote(
             '{bucket}/{gs_dir}/interval/dhscor/thurman2012/unspecified/1-23.raw.bed.gz'.format(
                 bucket=config['gs_bucket'],
                 gs_dir=config['gs_dir']))

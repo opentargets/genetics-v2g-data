@@ -1,6 +1,3 @@
-from snakemake.remote.GS import RemoteProvider as GSRemoteProvider
-GS = GSRemoteProvider()
-
 # Load configuration
 configfile: "configs/config.yaml"
 tmpdir = config['temp_dir']
@@ -13,7 +10,7 @@ rule pqtl2018_download_manifest:
     ''' Sun et at pQTL manifest file from GS
     '''
     input:
-        GS.remote('{bucket}/{pqtl_dir}/SOMALOGIC_GWAS_protein_info.csv'.format(
+        GSRemoteProvider().remote('{bucket}/{pqtl_dir}/SOMALOGIC_GWAS_protein_info.csv'.format(
             bucket=config['gs_bucket'],
             pqtl_dir=config['sun2018_raw_gs_dir']))
     output:

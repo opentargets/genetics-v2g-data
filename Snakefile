@@ -27,8 +27,6 @@ targets = []
 # Make QTL dataset targets -----------------------------------------------------
 #
 
-# {bucket}/{gs_dir}/{data_type}/{exp_type}/{source}/{cell_type}/{ensembl id}/{chrom}.pval{pval}.{proc}.tsv.gz
-
 ### Make targets for Sun et al pQTL dataset
 
 # Load manifest
@@ -38,58 +36,35 @@ valid_chroms = set([str(chrom) for chrom in range(1, 23)])
 sun2018_manifest.chrom = sun2018_manifest.chrom.astype(str)
 sun2018_manifest = sun2018_manifest.loc[sun2018_manifest.chrom.isin(valid_chroms), :]
 # Drop duplicate genes
+print(sun2018_manifest.shape)
 sun2018_manifest = sun2018_manifest.drop_duplicates(subset='gene')
+print(sun2018_manifest.shape)
 
-# Create target file names for each gene
-# for i, row in sun2018_manifest.iterrows():
-for i, row in sun2018_manifest.iloc[0:5, :].iterrows():
+# Create cis-regulatory data target
+target = '{bucket}/{gs_dir}/{data_type}/{exp_type}/{source}/{cell_type}/{chrom}.pval{pval}.{proc}.processed.tsv.gz'.format(
+    bucket=config['gs_bucket'],
+    gs_dir=config['gs_dir'],
+    data_type='qtl',
+    exp_type='pqtl',
+    source='sun2018',
+    cell_type='Blood_plasma',
+    chrom='1-22',
+    proc='cis_reg',
+    pval=config['sun2018_cis_pval'])
+targets.append(GS.remote(target))
 
-    # Create cis-regulatory data targets
-    target = '{bucket}/{gs_dir}/{data_type}/{exp_type}/{source}/{cell_type}/{ensembl_id}/{chrom}.pval{pval}.{proc}.tsv.gz'.format(
-        bucket=config['gs_bucket'],
-        gs_dir=config['gs_dir'],
-        data_type='qtl',
-        exp_type='pqtl',
-        source='sun2018',
-        cell_type='Blood_plasma',
-        ensembl_id=row['ensembl_id'],
-        chrom=row['chrom'],
-        proc='cis_reg',
-        pval=config['sun2018_cis_pval'])
-    targets.append(GS.remote(target))
-
-    # Create trans-regulatory data targets
-    target = '{bucket}/{gs_dir}/{data_type}/{exp_type}/{source}/{cell_type}/{ensembl_id}/{chrom}.pval{pval}.{proc}.tsv.gz'.format(
-        bucket=config['gs_bucket'],
-        gs_dir=config['gs_dir'],
-        data_type='qtl',
-        exp_type='pqtl',
-        source='sun2018',
-        cell_type='Blood_plasma',
-        ensembl_id=row['ensembl_id'],
-        chrom='1-22',
-        proc='trans_reg',
-        pval=config['sun2018_trans_pval'])
-    targets.append(GS.remote(target))
-
-    # Create full targets
-    for chrom in [str(x) for x in range(1, 23)]:
-        target = '{bucket}/{gs_dir}/{data_type}/{exp_type}/{source}/{cell_type}/{ensembl_id}/{chrom}.pval1.{proc}.tsv.gz'.format(
-            bucket=config['gs_bucket'],
-            gs_dir=config['gs_dir'],
-            data_type='qtl',
-            exp_type='pqtl',
-            source='sun2018',
-            cell_type='Blood_plasma',
-            ensembl_id=row['ensembl_id'],
-            chrom=chrom,
-            proc='all')
-        targets.append(GS.remote(target))
-
-from pprint import pprint
-pprint(targets)
-
-
+# Create trans-regulatory data target
+target = '{bucket}/{gs_dir}/{data_type}/{exp_type}/{source}/{cell_type}/{chrom}.pval{pval}.{proc}.processed.tsv.gz'.format(
+    bucket=config['gs_bucket'],
+    gs_dir=config['gs_dir'],
+    data_type='qtl',
+    exp_type='pqtl',
+    source='sun2018',
+    cell_type='Blood_plasma',
+    chrom='1-22',
+    proc='trans_reg',
+    pval=config['sun2018_trans_pval'])
+targets.append(GS.remote(target))
 
 #
 # Make interval dataset targets ------------------------------------------------
@@ -97,7 +72,7 @@ pprint(targets)
 
 ### Make targets for Javierre 2016 PCHiC
 
-Get list of cell line names
+# Get list of cell line names
 cell_types,  = FTP.glob_wildcards('ftp.ebi.ac.uk/pub/contrib/pchic/'
     'CHiCAGO/{samples}.merged_samples_12Apr2015_full.txt.gz')
 
@@ -143,7 +118,7 @@ target = '{bucket}/{gs_dir}/{data_type}/{exp_type}/{source}/{cell_type}/{chrom}.
 targets.append(GS.remote(target))
 
 # Raw
-target = '{bucket}/{gs_dir}/{data_type}/{exp_type}/{source}/{cell_type}/{chrom}.{proc}.bed.gz'.format(
+target = '{bucket}/{gs_dir}/{data_type}/{exp_type}/{source}/{cell_type}/{chrom}.{proc}.bed'.format(
     bucket=config['gs_bucket'],
     gs_dir=config['gs_dir'],
     data_type='interval',
@@ -179,6 +154,9 @@ target = '{bucket}/{gs_dir}/{data_type}/{exp_type}/{source}/{cell_type}/{chrom}.
     proc='raw',
     chrom='1-23')
 targets.append(GS.remote(target))
+
+from pprint import pprint
+pprint(targets)
 
 #
 # Run rules to produce targets -------------------------------------------------

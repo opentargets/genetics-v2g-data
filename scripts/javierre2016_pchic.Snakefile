@@ -53,7 +53,7 @@ rule javierre2016_final_to_gcs:
     input:
         tmpdir + '/interval/pchic/javierre2016/{cell}/1-23.final.tsv.gz'
     output:
-        GS.remote(
+        GSRemoteProvider().remote(
             '{bucket}/{gs_dir}/interval/pchic/javierre2016/{{cell}}/1-23.processed.tsv.gz'.format(
                 bucket=config['gs_bucket'],
                 gs_dir=config['gs_dir']))
@@ -66,7 +66,7 @@ rule javierre2016_raw_to_gcs:
     input:
         tmpdir + '/interval/pchic/javierre2016/{cell}/1-23.raw.gz'
     output:
-        GS.remote(
+        GSRemoteProvider().remote(
             '{bucket}/{gs_dir}/interval/pchic/javierre2016/{{cell}}/1-23.raw.bed.gz'.format(
                 bucket=config['gs_bucket'],
                 gs_dir=config['gs_dir']))

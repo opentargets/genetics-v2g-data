@@ -1,4 +1,4 @@
-rule andersson2014_download:
+GSRemoteProvider().GSRemoteProvider().rule andersson2014_download:
     ''' Retrieves Andersson et al 2014 Fantom5
     '''
     input:
@@ -29,7 +29,7 @@ rule andersson2014_final_to_gcs:
     input:
         tmpdir + '/interval/fantom5/andersson2014/unspecified/1-23.processed.tsv.gz'
     output:
-        GS.remote(
+        GSRemoteProvider().remote(
             '{bucket}/{gs_dir}/interval/fantom5/andersson2014/unspecified/1-23.processed.tsv.gz'.format(
                 bucket=config['gs_bucket'],
                 gs_dir=config['gs_dir']))
@@ -42,8 +42,8 @@ rule andersson2014_raw_to_gcs:
     input:
         tmpdir + '/interval/fantom5/andersson2014/unspecified/enhancer_tss_associations.bed'
     output:
-        GS.remote(
-            '{bucket}/{gs_dir}/interval/fantom5/andersson2014/unspecified/1-23.raw.bed.gz'.format(
+        GSRemoteProvider().remote(
+            '{bucket}/{gs_dir}/interval/fantom5/andersson2014/unspecified/1-23.raw.bed'.format(
                 bucket=config['gs_bucket'],
                 gs_dir=config['gs_dir']))
     shell:

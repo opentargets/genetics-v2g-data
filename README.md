@@ -42,19 +42,20 @@ Interval output columns:
     - What significance threshold should we use?
     - What to do when there is cross-reactivity?
     - Some genes have multiple SOMA IDs (assayed more than once)
+      - 3,195 total SOMA IDs goes to 2,872 unique Ensembl gene IDs (323 lost)
 
 Output file naming convention:
-  `{data_type}/{exp_type}/{source}/{cell_type}/{ensembl_id}/{chrom}.pval{pval}.{cis_reg|trans_reg|all}.tsv.gz`
+  `{data_type}/{exp_type}/{source}/{cell_type}/{chrom}.pval{pval}.{cis_reg|trans_reg}.tsv.gz`
 
 Output files:
   - `{chrom}.pval{pval}.cis_reg.tsv.gz`: cis-regulatory associations for `{ensembl_id}` within 1Mb (`config['sun2018_cis_window']`) of gene TSS. Filtered by pval < 2.5e-5 (`config['sun2018_cis_pval']`).
   - `{chrom}.pval{pval}.trans_reg.tsv.gz`: trans-regulatory associations for `{ensembl_id}` outside 1Mb (`config['sun2018_cis_window']`) of gene TSS. Filtered by pval < 5e-8 (`config['sun2018_trans_pval']`).
-  - `{chrom}.pval1.all.tsv.gz`: all associations for `{ensembl_id}` in common format.
 
 QTL output columns:
   - `chrom`, `pos`: genomic coordinates on GRCh37
   - `other_allele`: non-effect allele
   - `effect_allele`: allele on which the effect (`beta`) is measured
+  - `ensembl_id`: Ensembl gene ID
   - `beta`: the effect size and direction
   - `se`: standard error of `beta`
   - `pval`: p-value of association
