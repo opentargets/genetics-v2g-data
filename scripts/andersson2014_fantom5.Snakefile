@@ -1,8 +1,8 @@
-GSRemoteProvider().GSRemoteProvider().rule andersson2014_download:
+rule andersson2014_download:
     ''' Retrieves Andersson et al 2014 Fantom5
     '''
     input:
-        HTTP.remote('http://enhancer.binf.ku.dk/presets/enhancer_tss_associations.bed')
+        HTTPRemoteProvider().remote('http://enhancer.binf.ku.dk/presets/enhancer_tss_associations.bed')
     output:
         tmpdir + '/interval/fantom5/andersson2014/unspecified/enhancer_tss_associations.bed'
     shell:

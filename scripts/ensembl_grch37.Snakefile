@@ -2,7 +2,7 @@ rule ensembl_download_gtf:
     ''' Downloads the Ensembl GRCh37 GTF
     '''
     input:
-        FTP.remote('ftp.ensembl.org/pub/grch37/update/gtf/homo_sapiens/Homo_sapiens.GRCh37.87.gtf.gz')
+        FTPRemoteProvider().remote('ftp.ensembl.org/pub/grch37/update/gtf/homo_sapiens/Homo_sapiens.GRCh37.87.gtf.gz')
     output:
         tmpdir + '/Homo_sapiens.GRCh37.87.gtf.gz'
     shell:

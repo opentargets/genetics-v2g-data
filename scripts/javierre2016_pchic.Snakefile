@@ -2,7 +2,7 @@ rule javierre2016_download:
     ''' Retrieves Javierre 2016 PCHiC file from the ebi FTP
     '''
     input:
-        FTP.remote('ftp.ebi.ac.uk/pub/contrib/pchic/CHiCAGO/{cell}.merged_samples_12Apr2015_full.txt.gz')
+        FTPRemoteProvider().remote('ftp.ebi.ac.uk/pub/contrib/pchic/CHiCAGO/{cell}.merged_samples_12Apr2015_full.txt.gz')
     output:
         tmpdir + '/interval/pchic/javierre2016/{cell}/1-23.raw.gz'
     shell:

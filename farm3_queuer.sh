@@ -7,5 +7,6 @@
 #BSUB -e errorfile.%J
 
 source activate g2v_data
+export GCLOUD_PROJECT=open-targets-genetics
 
 snakemake --cores 7

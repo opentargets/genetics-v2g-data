@@ -2,7 +2,7 @@ rule thurman2012_download:
     ''' Retrieves DHS correlation data from the Ensembl ENCODE FTP
     '''
     input:
-        HTTP.remote('http://ftp.ebi.ac.uk/pub/databases/ensembl/encode/integration_data_jan2011/byDataType/openchrom/jan2011/dhs_gene_connectivity/genomewideCorrs_above0.7_promoterPlusMinus500kb_withGeneNames_32celltypeCategories.bed8.gz')
+        HTTPRemoteProvider().remote('http://ftp.ebi.ac.uk/pub/databases/ensembl/encode/integration_data_jan2011/byDataType/openchrom/jan2011/dhs_gene_connectivity/genomewideCorrs_above0.7_promoterPlusMinus500kb_withGeneNames_32celltypeCategories.bed8.gz')
     output:
         tmpdir + '/interval/dhscor/thurman2012/unspecified/dhs_correlations.bed.gz'
     shell:
