@@ -75,7 +75,6 @@ rule concate_dataset:
     input:
         ['{tmpdir}/qtl/pqtl/sun2018/{{cell_type}}/{ensembl_id}.pval{{pval}}.{{proc}}.tsv.gz'.format(
                 tmpdir=tmpdir,
-                # pval=config['sun2018_cis_pval'],
                 ensembl_id=ensembl_id)
          for ensembl_id in list(sun2018_manifest['ensembl_id'].unique())]
     output:
