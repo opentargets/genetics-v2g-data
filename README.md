@@ -28,7 +28,10 @@ Interval output columns:
 
 ### QTL datasets
 - GTEx v7
-  - TODO
+  - Notes:
+    - `GSRemoteProvider.glob_wildcards()` gives an error, so manifest containing tissue types must be pre-downloaded.
+  - Todo:
+    - Recode X chromosome to 23
 - pQTL from Sun et al 2018
   - TODO
   - [Publication](https://www.nature.com/articles/s41586-018-0175-2)
@@ -64,10 +67,10 @@ QTL output columns:
 
 ```
 # Install dependencies into isolated environment
-conda env create -n get_cisreg_data --file environment.yaml
+conda env create -n g2v_data --file environment.yaml
 
 # Activate environment
-source activate get_cisreg_data
+source activate g2v_data
 
 # Alter configuration file
 nano config.yaml
@@ -75,8 +78,9 @@ nano config.yaml
 # Authenticate google cloud storage
 gcloud auth application-default login
 
-# Download and annotate manifest for Sun pQTL dataset
+# Make manifests for QTL datasets
 snakemake -s scripts/sun2018_pqtl.make_manifest.Snakefile
+snakemake -s scripts/gtex7_eqtl.make_manifest.Snakefile
 
 # Execute workflow (locally)
 snakemake
@@ -84,55 +88,4 @@ snakemake
 
 #### Notes
 
-I am getting the following error when trying to access google storage in parallel:
-
-```
-Traceback (most recent call last):
-  File "/Users/em21/miniconda3/envs/get_cisreg_data/lib/python3.6/site-packages/snakemake/executors.py", line 344, in _callback
-    callback(job)
-  File "/Users/em21/miniconda3/envs/get_cisreg_data/lib/python3.6/site-packages/snakemake/scheduler.py", line 323, in _proceed
-    self.get_executor(job).handle_job_success(job)
-  File "/Users/em21/miniconda3/envs/get_cisreg_data/lib/python3.6/site-packages/snakemake/executors.py", line 357, in handle_job_success
-    super().handle_job_success(job)
-  File "/Users/em21/miniconda3/envs/get_cisreg_data/lib/python3.6/site-packages/snakemake/executors.py", line 151, in handle_job_success
-    assume_shared_fs=self.assume_shared_fs)
-  File "/Users/em21/miniconda3/envs/get_cisreg_data/lib/python3.6/site-packages/snakemake/jobs.py", line 843, in postprocess
-    self.dag.handle_remote(self, upload=upload_remote)
-  File "/Users/em21/miniconda3/envs/get_cisreg_data/lib/python3.6/site-packages/snakemake/dag.py", line 489, in handle_remote
-    f.upload_to_remote()
-  File "/Users/em21/miniconda3/envs/get_cisreg_data/lib/python3.6/site-packages/snakemake/io.py", line 322, in upload_to_remote
-    self.remote_object.upload()
-  File "/Users/em21/miniconda3/envs/get_cisreg_data/lib/python3.6/site-packages/snakemake/remote/GS.py", line 88, in upload
-    if not self.bucket.exists():
-  File "/Users/em21/miniconda3/envs/get_cisreg_data/lib/python3.6/site-packages/google/cloud/storage/bucket.py", line 171, in exists
-    query_params=query_params, _target_object=None)
-  File "/Users/em21/miniconda3/envs/get_cisreg_data/lib/python3.6/site-packages/google/cloud/_http.py", line 299, in api_request
-    headers=headers, target_object=_target_object)
-  File "/Users/em21/miniconda3/envs/get_cisreg_data/lib/python3.6/site-packages/google/cloud/_http.py", line 193, in _make_request
-    return self._do_request(method, url, headers, data, target_object)
-  File "/Users/em21/miniconda3/envs/get_cisreg_data/lib/python3.6/site-packages/google/cloud/_http.py", line 223, in _do_request
-    body=data)
-  File "/Users/em21/miniconda3/envs/get_cisreg_data/lib/python3.6/site-packages/google_auth_httplib2.py", line 198, in request
-    uri, method, body=body, headers=request_headers, **kwargs)
-  File "/Users/em21/miniconda3/envs/get_cisreg_data/lib/python3.6/site-packages/httplib2/__init__.py", line 1509, in request
-    (response, content) = self._request(conn, authority, uri, request_uri, method, body, headers, redirections, cachekey)
-  File "/Users/em21/miniconda3/envs/get_cisreg_data/lib/python3.6/site-packages/httplib2/__init__.py", line 1259, in _request
-    (response, content) = self._conn_request(conn, request_uri, method, body, headers)
-  File "/Users/em21/miniconda3/envs/get_cisreg_data/lib/python3.6/site-packages/httplib2/__init__.py", line 1212, in _conn_request
-    response = conn.getresponse()
-  File "/Users/em21/miniconda3/envs/get_cisreg_data/lib/python3.6/http/client.py", line 1331, in getresponse
-    response.begin()
-  File "/Users/em21/miniconda3/envs/get_cisreg_data/lib/python3.6/http/client.py", line 297, in begin
-    version, status, reason = self._read_status()
-  File "/Users/em21/miniconda3/envs/get_cisreg_data/lib/python3.6/http/client.py", line 258, in _read_status
-    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
-  File "/Users/em21/miniconda3/envs/get_cisreg_data/lib/python3.6/socket.py", line 586, in readinto
-    return self._sock.recv_into(b)
-  File "/Users/em21/miniconda3/envs/get_cisreg_data/lib/python3.6/ssl.py", line 1009, in recv_into
-    return self.read(nbytes, buffer)
-  File "/Users/em21/miniconda3/envs/get_cisreg_data/lib/python3.6/ssl.py", line 871, in read
-    return self._sslobj.read(len, buffer)
-  File "/Users/em21/miniconda3/envs/get_cisreg_data/lib/python3.6/ssl.py", line 631, in read
-    v = self._sslobj.read(len, buffer)
-ssl.SSLError: [SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:2273)
-```
+None

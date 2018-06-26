@@ -11,6 +11,7 @@ from snakemake.remote.FTP import RemoteProvider as FTPRemoteProvider
 from snakemake.remote.GS import RemoteProvider as GSRemoteProvider
 from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
 import pandas as pd
+from pprint import pprint
 
 # Load configuration
 configfile: "configs/config.yaml"
@@ -27,6 +28,25 @@ targets = []
 # Make QTL dataset targets -----------------------------------------------------
 #
 
+### Make targets for GTEX V7 eQTL dataset
+
+# Load tisues from manifest
+gtex7_manifest = pd.read_csv(config['gtex7_manifest'], sep='\t', header=None)
+tissues = gtex7_manifest.iloc[:, 0].tolist()
+
+# Create cis-regulatory data target
+for tissue in tissues:
+    target = '{bucket}/{gs_dir}/{data_type}/{exp_type}/{source}/{cell_type}/{chrom}.{proc}.processed.tsv.gz'.format(
+        bucket=config['gs_bucket'],
+        gs_dir=config['gs_dir'],
+        data_type='qtl',
+        exp_type='eqtl',
+        source='gtex_v7',
+        cell_type=tissue,
+        chrom='1-23',
+        proc='cis_reg')
+    targets.append(GS.remote(target))
+
 ### Make targets for Sun et al pQTL dataset
 
 # Load manifest
@@ -36,9 +56,8 @@ valid_chroms = set([str(chrom) for chrom in range(1, 23)])
 sun2018_manifest.chrom = sun2018_manifest.chrom.astype(str)
 sun2018_manifest = sun2018_manifest.loc[sun2018_manifest.chrom.isin(valid_chroms), :]
 # Drop duplicate genes
-print(sun2018_manifest.shape)
 sun2018_manifest = sun2018_manifest.drop_duplicates(subset='gene')
-print(sun2018_manifest.shape)
+
 
 # Create cis-regulatory data target
 target = '{bucket}/{gs_dir}/{data_type}/{exp_type}/{source}/{cell_type}/{chrom}.pval{pval}.{proc}.processed.tsv.gz'.format(
@@ -155,7 +174,6 @@ target = '{bucket}/{gs_dir}/{data_type}/{exp_type}/{source}/{cell_type}/{chrom}.
     chrom='1-23')
 targets.append(GS.remote(target))
 
-from pprint import pprint
 pprint(targets)
 
 #
@@ -174,3 +192,4 @@ include: 'scripts/ensembl_grch37.Snakefile'
 include: 'scripts/javierre2016_pchic.Snakefile'
 include: 'scripts/sun2018_pqtl.Snakefile'
 include: 'scripts/thurman2012_dhscor.Snakefile'
+include: 'scripts/gtex7_eqtl.Snakefile'

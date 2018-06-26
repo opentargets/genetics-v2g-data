@@ -9,3 +9,7 @@ sun2018_manifest: 'configs/Sun_pQTL_SOMALOGIC_GWAS_protein_info.ensembl.manifest
 sun2018_cis_window: 1000000 # Window around gene TSS to be called "cis" data
 sun2018_cis_pval: 2.5e-5    # P-value threshold for cis data
 sun2018_trans_pval: 5e-8    # P-value threshold for cis data
+
+# GTEx v7 eQTL config
+gtex7_raw_gs_dir: 'gtex-v7-eqtl/egenes'
+gtex7_manifest: 'configs/GTEx_v7_tissues.manifest.tsv'
