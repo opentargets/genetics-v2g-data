@@ -29,9 +29,7 @@ Interval output columns:
 ### QTL datasets
 - GTEx v7
   - Notes:
-    - `GSRemoteProvider.glob_wildcards()` gives an error, so manifest containing tissue types must be pre-downloaded.
-  - Todo:
-    - Recode X chromosome to 23
+    - None
 - pQTL from Sun et al 2018
   - TODO
   - [Publication](https://www.nature.com/articles/s41586-018-0175-2)
@@ -80,7 +78,6 @@ gcloud auth application-default login
 
 # Make manifests for QTL datasets
 snakemake -s scripts/sun2018_pqtl.make_manifest.Snakefile
-snakemake -s scripts/gtex7_eqtl.make_manifest.Snakefile
 
 # Execute workflow (locally)
 snakemake

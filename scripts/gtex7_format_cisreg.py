@@ -32,7 +32,7 @@ def main():
     data['gene_id'] = data['gene_id'].apply(lambda gene: gene.split('.')[0])
 
     # Replace chrom X for 23
-    data = data.replace(to_replace={'chrom':{'X': '23'}})
+    # data = data.replace(to_replace={'chrom':{'X': '23'}})
 
     # Select required columns
     data = data.rename(columns={

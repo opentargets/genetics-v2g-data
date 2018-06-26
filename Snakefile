@@ -19,8 +19,8 @@ tmpdir = config['temp_dir']
 
 # Initiate remote handles
 GS = GSRemoteProvider()
-FTP = FTPRemoteProvider()
-HTTP = HTTPRemoteProvider()
+# FTP = FTPRemoteProvider()
+# HTTP = HTTPRemoteProvider()
 
 targets = []
 
@@ -31,8 +31,7 @@ targets = []
 ### Make targets for GTEX V7 eQTL dataset
 
 # Load tisues from manifest
-gtex7_manifest = pd.read_csv(config['gtex7_manifest'], sep='\t', header=None)
-tissues = gtex7_manifest.iloc[:, 0].tolist()
+tissues, = GS.glob_wildcards(config['gtex7_raw_gs_dir'] + '/{tissues}.v7.signif_variant_gene_pairs.txt.gz')
 
 # Create cis-regulatory data target
 for tissue in tissues:
@@ -45,7 +44,7 @@ for tissue in tissues:
         cell_type=tissue,
         chrom='1-23',
         proc='cis_reg')
-    targets.append(GS.remote(target))
+    # targets.append(GS.remote(target))
 
 ### Make targets for Sun et al pQTL dataset
 
@@ -70,7 +69,7 @@ target = '{bucket}/{gs_dir}/{data_type}/{exp_type}/{source}/{cell_type}/{chrom}.
     chrom='1-22',
     proc='cis_reg',
     pval=config['sun2018_cis_pval'])
-targets.append(GS.remote(target))
+# targets.append(GS.remote(target))
 
 # Create trans-regulatory data target
 target = '{bucket}/{gs_dir}/{data_type}/{exp_type}/{source}/{cell_type}/{chrom}.pval{pval}.{proc}.processed.tsv.gz'.format(
@@ -83,16 +82,16 @@ target = '{bucket}/{gs_dir}/{data_type}/{exp_type}/{source}/{cell_type}/{chrom}.
     chrom='1-22',
     proc='trans_reg',
     pval=config['sun2018_trans_pval'])
-targets.append(GS.remote(target))
+# targets.append(GS.remote(target))
 
 #
 # Make interval dataset targets ------------------------------------------------
 #
 
-### Make targets for Javierre 2016 PCHiC
+## Make targets for Javierre 2016 PCHiC
 
 # Get list of cell line names
-cell_types,  = FTP.glob_wildcards('ftp.ebi.ac.uk/pub/contrib/pchic/'
+cell_types,  = FTPRemoteProvider().glob_wildcards('ftp.ebi.ac.uk/pub/contrib/pchic/'
     'CHiCAGO/{samples}.merged_samples_12Apr2015_full.txt.gz')
 
 # Add target file for each cell line
@@ -108,7 +107,21 @@ for cell_type in list(cell_types):
         cell_type=cell_type,
         proc='processed',
         chrom='1-23')
-    targets.append(GS.remote(target))
+    # targets.append(GS.remote(target))
+
+    # Split files
+    for i in range(config['interval_split']):
+        target = '{bucket}/{gs_dir}/{data_type}/{exp_type}/{source}/{cell_type}/{chrom}.{proc}.split{i:03d}.tsv.gz'.format(
+            bucket=config['gs_bucket'],
+            gs_dir=config['gs_dir'],
+            data_type='interval',
+            exp_type='pchic',
+            source='javierre2016',
+            cell_type=cell_type,
+            proc='processed',
+            chrom='1-23',
+            i=i)
+        targets.append(GS.remote(target))
 
     # Raw
     target = '{bucket}/{gs_dir}/{data_type}/{exp_type}/{source}/{cell_type}/{chrom}.{proc}.bed.gz'.format(
@@ -120,7 +133,7 @@ for cell_type in list(cell_types):
         cell_type=cell_type,
         proc='raw',
         chrom='1-23')
-    targets.append(GS.remote(target))
+    # targets.append(GS.remote(target))
 
 ### Make targets for Andersson 2014 Enhancer-TSS association dataset (Fantom5)
 
@@ -134,7 +147,21 @@ target = '{bucket}/{gs_dir}/{data_type}/{exp_type}/{source}/{cell_type}/{chrom}.
     cell_type='unspecified',
     proc='processed',
     chrom='1-23')
-targets.append(GS.remote(target))
+# targets.append(GS.remote(target))
+
+# Split files
+for i in range(config['interval_split']):
+    target = '{bucket}/{gs_dir}/{data_type}/{exp_type}/{source}/{cell_type}/{chrom}.{proc}.split{i:03d}.tsv.gz'.format(
+        bucket=config['gs_bucket'],
+        gs_dir=config['gs_dir'],
+        data_type='interval',
+        exp_type='fantom5',
+        source='andersson2014',
+        cell_type='unspecified',
+        proc='processed',
+        chrom='1-23',
+        i=i)
+    targets.append(GS.remote(target))
 
 # Raw
 target = '{bucket}/{gs_dir}/{data_type}/{exp_type}/{source}/{cell_type}/{chrom}.{proc}.bed'.format(
@@ -146,7 +173,7 @@ target = '{bucket}/{gs_dir}/{data_type}/{exp_type}/{source}/{cell_type}/{chrom}.
     cell_type='unspecified',
     proc='raw',
     chrom='1-23')
-targets.append(GS.remote(target))
+# targets.append(GS.remote(target))
 
 ### Make targets for Thurman 2012 DHS-promoter correlation dataset
 
@@ -160,7 +187,21 @@ target = '{bucket}/{gs_dir}/{data_type}/{exp_type}/{source}/{cell_type}/{chrom}.
     cell_type='unspecified',
     proc='processed',
     chrom='1-23')
-targets.append(GS.remote(target))
+# targets.append(GS.remote(target))
+
+# Split files
+for i in range(config['interval_split']):
+    target = '{bucket}/{gs_dir}/{data_type}/{exp_type}/{source}/{cell_type}/{chrom}.{proc}.split{i:03d}.tsv.gz'.format(
+        bucket=config['gs_bucket'],
+        gs_dir=config['gs_dir'],
+        data_type='interval',
+        exp_type='dhscor',
+        source='thurman2012',
+        cell_type='unspecified',
+        proc='processed',
+        chrom='1-23',
+        i=i)
+    targets.append(GS.remote(target))
 
 # Raw
 target = '{bucket}/{gs_dir}/{data_type}/{exp_type}/{source}/{cell_type}/{chrom}.{proc}.bed.gz'.format(
@@ -172,7 +213,7 @@ target = '{bucket}/{gs_dir}/{data_type}/{exp_type}/{source}/{cell_type}/{chrom}.
     cell_type='unspecified',
     proc='raw',
     chrom='1-23')
-targets.append(GS.remote(target))
+# targets.append(GS.remote(target))
 
 pprint(targets)
 
@@ -193,3 +234,4 @@ include: 'scripts/javierre2016_pchic.Snakefile'
 include: 'scripts/sun2018_pqtl.Snakefile'
 include: 'scripts/thurman2012_dhscor.Snakefile'
 include: 'scripts/gtex7_eqtl.Snakefile'
+include: 'scripts/utils.Snakefile'

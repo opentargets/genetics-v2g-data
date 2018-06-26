@@ -2,6 +2,7 @@
 temp_dir: 'temp'
 gs_bucket: 'genetics-portal-data'
 gs_dir: 'em21_data'
+interval_split: 128
 
 # Sun et al pQTL config
 sun2018_raw_gs_dir: 'pqtl_sun2018/raw_data'
