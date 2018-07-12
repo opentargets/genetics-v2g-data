@@ -16,14 +16,20 @@ rule extract_cis_data:
     ''' Extracts cis-regulatory data from Sun pQTL data for a single gene
     '''
     input:
-        lambda wildcards: GSRemoteProvider().remote(
-            '{bucket}/{gs_dir}/{soma_id}/{soma_id}_chrom_{chrom}_meta_final_v1.tsv.gz'.format(
-                bucket=config['gs_bucket'],
-                gs_dir=config['sun2018_raw_gs_dir'],
+        lambda wildcards: '{tmpdir}/download_pqtl/local_data/{soma_id}/{soma_id}_chrom_{chrom}_meta_final_v1.tsv.gz'.format(
+                tmpdir=tmpdir,
                 soma_id=get_manifest_info(sun2018_manifest, wildcards.ensembl_id,
                                           'SOMAMER_ID'),
                 chrom=get_manifest_info(sun2018_manifest, wildcards.ensembl_id,
-                                        'chrom')))
+                                        'chrom'))
+        # lambda wildcards: GSRemoteProvider().remote(
+        #     '{bucket}/{gs_dir}/{soma_id}/{soma_id}_chrom_{chrom}_meta_final_v1.tsv.gz'.format(
+        #         bucket=config['gs_bucket'],
+        #         gs_dir=config['sun2018_raw_gs_dir'],
+        #         soma_id=get_manifest_info(sun2018_manifest, wildcards.ensembl_id,
+        #                                   'SOMAMER_ID'),
+        #         chrom=get_manifest_info(sun2018_manifest, wildcards.ensembl_id,
+        #                                 'chrom')))
     output:
         temp('{tmpdir}/qtl/pqtl/sun2018/{{cell_type}}/{{ensembl_id}}.pval{pval}.cis_reg.tsv.gz'.format(
                 tmpdir=tmpdir,
@@ -78,9 +84,12 @@ rule concate_dataset:
                 ensembl_id=ensembl_id)
          for ensembl_id in list(sun2018_manifest['ensembl_id'].unique())]
     output:
-        GSRemoteProvider().remote('{bucket}/{gs_dir}/qtl/pqtl/sun2018/{{cell_type}}/{{chrom}}.pval{{pval}}.{{proc}}.processed.tsv.gz'.format(
+        '{bucket}/{gs_dir}/qtl/pqtl/sun2018/{{cell_type}}/{{chrom}}.pval{{pval}}.{{proc}}.processed.tsv.gz'.format(
             bucket=config['gs_bucket'],
-            gs_dir=config['gs_dir']))
+            gs_dir=config['gs_dir'])
+        # GSRemoteProvider().remote('{bucket}/{gs_dir}/qtl/pqtl/sun2018/{{cell_type}}/{{chrom}}.pval{{pval}}.{{proc}}.processed.tsv.gz'.format(
+        #     bucket=config['gs_bucket'],
+        #     gs_dir=config['gs_dir']))
     run:
         with gzip.open(output[0], 'w') as out_h:
             for i, inf in enumerate(input):

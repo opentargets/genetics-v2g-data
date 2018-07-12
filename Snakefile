@@ -70,6 +70,7 @@ target = '{bucket}/{gs_dir}/{data_type}/{exp_type}/{source}/{cell_type}/{chrom}.
     proc='cis_reg',
     pval=config['sun2018_cis_pval'])
 # targets.append(GS.remote(target))
+targets.append(target)
 
 # Create trans-regulatory data target
 target = '{bucket}/{gs_dir}/{data_type}/{exp_type}/{source}/{cell_type}/{chrom}.pval{pval}.{proc}.processed.tsv.gz'.format(
@@ -121,7 +122,7 @@ for cell_type in list(cell_types):
             proc='processed',
             chrom='1-23',
             i=i)
-        targets.append(GS.remote(target))
+        # targets.append(GS.remote(target))
 
     # Raw
     target = '{bucket}/{gs_dir}/{data_type}/{exp_type}/{source}/{cell_type}/{chrom}.{proc}.bed.gz'.format(
@@ -161,7 +162,7 @@ for i in range(config['interval_split']):
         proc='processed',
         chrom='1-23',
         i=i)
-    targets.append(GS.remote(target))
+    # targets.append(GS.remote(target))
 
 # Raw
 target = '{bucket}/{gs_dir}/{data_type}/{exp_type}/{source}/{cell_type}/{chrom}.{proc}.bed'.format(
@@ -201,7 +202,7 @@ for i in range(config['interval_split']):
         proc='processed',
         chrom='1-23',
         i=i)
-    targets.append(GS.remote(target))
+    # targets.append(GS.remote(target))
 
 # Raw
 target = '{bucket}/{gs_dir}/{data_type}/{exp_type}/{source}/{cell_type}/{chrom}.{proc}.bed.gz'.format(

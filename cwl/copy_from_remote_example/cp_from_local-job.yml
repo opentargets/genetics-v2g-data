@@ -1,0 +1,4 @@
+src_file:
+  class: File
+  path: local_src.txt
+dest_file: local_dest.txt
