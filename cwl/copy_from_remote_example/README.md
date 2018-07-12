@@ -9,6 +9,8 @@ This works for local (file://) and http:// inputs, but not for other remote inpu
 
 There is a [CWL runner script from Google Genomics](https://github.com/googlegenomics/pipelines-api-examples/tree/master/cwl_runner) which runs a workflow on Google Cloud Platform. However, this works by creating a disk, starting a compute engine, then copying all inputs from a google bucket before running the workflow.
 
+There is also [this example from ISB Cancer Genomics Cloud](https://github.com/isb-cgc/examples-Compute/tree/master/cwl-examples/gsutil) where they make a `gsutil` CWL tool and copy required files over before running.
+
 ```
 # Run using a local input (works)
 cwl-runner cp.cwl cp_from_local-job.yml
