@@ -1,12 +1,33 @@
 #!/usr/bin/env bash
 #
 
-in_slices=data/*.csv
-in_slices=data/*.FTO.csv
+#
+# Scoring using V2G data -------------------------------------------------------
+#
 
+# Input v2g data
+in_slices=input_v2g_slices/*.tsv.gz
+# in_slices=input_v2g_slices/*FTO*.tsv.gz
+
+# Make output dir
+mkdir -p output_v2g
+
+# Run scoring on v2g data
 for slice in $in_slices; do
+  # Make output name
   bn=$(basename $slice)
-  python scripts/score_test_v1.py \
+  outpref=output_v2g/${bn/.neighboorhood.tsv.gz/}
+  # Get varid from basename
+  varid=$(echo $bn | cut -f 3 -d ".")
+  # Make command
+  echo python scripts/score_v2g_v1.py \
     --v2g_slice $slice \
-    --out output/${bn/.neighboorhood.csv/.scores.txt}
-done
+    --varid $varid \
+    --outpref $outpref
+done | parallel -j 3
+
+#
+# Scoring using D2V2G data -------------------------------------------------------
+#
+
+# TODO
