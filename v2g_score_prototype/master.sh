@@ -20,7 +20,7 @@ for slice in $in_slices; do
   # Get varid from basename
   varid=$(echo $bn | cut -f 3 -d ".")
   # Make command
-  echo python scripts/score_v2g_v1.py \
+  echo python scripts/score_v2g_v2.py \
     --v2g_slice $slice \
     --varid $varid \
     --outpref $outpref
