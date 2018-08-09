@@ -3,7 +3,6 @@
 '''
 Ed Mountjoy (June 2018)
 
-Formats the output of bedtools into final format for loading
 '''
 
 import argparse

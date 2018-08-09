@@ -64,11 +64,13 @@ QTL output columns:
 #### Usage
 
 ```
+ncores=3
+
 # Install dependencies into isolated environment
-conda env create -n g2v_data --file environment.yaml
+conda env create -n v2g_data --file environment.yaml
 
 # Activate environment
-source activate g2v_data
+source activate v2g_data
 
 # Alter configuration file
 nano config.yaml
@@ -79,8 +81,18 @@ gcloud auth application-default login
 # Make manifests for QTL datasets
 snakemake -s scripts/sun2018_pqtl.make_manifest.Snakefile
 
-# Execute workflow (locally)
-snakemake
+# Execute workflows (locally)
+snakemake -s sun2018_pqtl.Snakefile --cores $ncores
+#snakemake -s andersson2014_fantom5.Snakefile --cores $ncores
+#snakemake -s gtex7_eqtl.Snakefile --cores $ncores
+#snakemake -s javierre2016_pchic.Snakefile --cores $ncores
+#snakemake -s thurman2012_dhscor.Snakefile --cores $ncores
+
+# Copy output to GCS
+for src in output/*/*/*/*/*/*.tsv.gz; do
+  dest=${src/output\//gs:\/\/genetics-portal-staging\/v2g\/}
+  gsutil cp $src $dest
+done
 ```
 
 #### Notes

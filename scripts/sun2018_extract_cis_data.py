@@ -20,27 +20,27 @@ def main():
     data = pd.read_csv(args.inf, sep='\t', header=0)
 
     # Format data types
-    data.chromosome = data.chromosome.astype(str)
-    data.position = data.position.astype(int)
-    data.Allele1 = data.Allele1.str.upper()
-    data.Allele2 = data.Allele2.str.upper()
+    data.chrom = data.chrom.astype(str)
+    data.pos_b37 = data.pos_b37.astype(int)
+    data.ref_al = data.ref_al.str.upper()
+    data.alt_al = data.alt_al.str.upper()
+    data.pval = data.pval.astype(float)
 
     # Filter by p
-    data['pval'] = data['log(P)'].rpow(10)
     data = data.loc[data.pval <= args.pval, :]
 
-    # Filter by chrom and position
-    to_keep = ((data['chromosome'] == args.chrom) &
-               (data['position'] >= (args.tss_pos - args.cis_window)) &
-               (data['position'] <= (args.tss_pos + args.cis_window)))
+    # Filter by chrom and pos_b37
+    to_keep = ((data['chrom'] == args.chrom) &
+               (data['pos_b37'] >= (args.tss_pos - args.cis_window)) &
+               (data['pos_b37'] <= (args.tss_pos + args.cis_window)))
     data = data.loc[to_keep, :]
 
     # Select required columns
     data = data.rename(columns={
-        'chromosome': 'chrom',
-        'position': 'pos',
-        'Allele1': 'effect_allele',
-        'Allele2': 'other_allele',
+        'chrom': 'chrom',
+        'pos_b37': 'pos',
+        'alt_al': 'effect_allele',
+        'ref_al': 'other_allele',
         'Effect': 'beta',
         'StdErr': 'se',
         'pval': 'pval'})

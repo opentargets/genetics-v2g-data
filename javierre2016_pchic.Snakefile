@@ -1,3 +1,79 @@
+#!/usr/bin/env snakemake
+from snakemake.remote.FTP import RemoteProvider as FTPRemoteProvider
+from snakemake.remote.GS import RemoteProvider as GSRemoteProvider
+from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
+import pandas as pd
+from pprint import pprint
+
+# Load configuration
+configfile: "configs/config.yaml"
+tmpdir = config['temp_dir']
+UPLOAD = False
+
+# Initiate remote handles
+GS = GSRemoteProvider()
+
+targets = []
+
+# Make targets for Javierre 2016 PCHiC
+
+Get list of cell line names
+cell_types,  = FTPRemoteProvider().glob_wildcards('ftp.ebi.ac.uk/pub/contrib/pchic/'
+    'CHiCAGO/{samples}.merged_samples_12Apr2015_full.txt.gz')
+
+# Add target file for each cell line
+for cell_type in list(cell_types):
+
+    # Processed
+    target = '{bucket}/{gs_dir}/{data_type}/{exp_type}/{source}/{cell_type}/{chrom}.{proc}.tsv.gz'.format(
+        bucket=config['gs_bucket'],
+        gs_dir=config['gs_dir'],
+        data_type='interval',
+        exp_type='pchic',
+        source='javierre2016',
+        cell_type=cell_type,
+        proc='processed',
+        chrom='1-23')
+    if UPLOAD:
+        targets.append(GS.remote(target))
+
+    # Split files
+    for i in range(config['interval_split']):
+        target = '{bucket}/{gs_dir}/{data_type}/{exp_type}/{source}/{cell_type}/{chrom}.{proc}.split{i:03d}.tsv.gz'.format(
+            bucket=config['gs_bucket'],
+            gs_dir=config['gs_dir'],
+            data_type='interval',
+            exp_type='pchic',
+            source='javierre2016',
+            cell_type=cell_type,
+            proc='processed',
+            chrom='1-23',
+            i=i)
+        if UPLOAD:
+            targets.append(GS.remote(target))
+
+    # Raw
+    target = '{bucket}/{gs_dir}/{data_type}/{exp_type}/{source}/{cell_type}/{chrom}.{proc}.bed.gz'.format(
+        bucket=config['gs_bucket'],
+        gs_dir=config['gs_dir'],
+        data_type='interval',
+        exp_type='pchic',
+        source='javierre2016',
+        cell_type=cell_type,
+        proc='raw',
+        chrom='1-23')
+    if UPLOAD:
+        targets.append(GS.remote(target))
+
+# "all" must be first rule that is encounterd
+rule all:
+    ''' Master rule to trigger all targets (defined above) '''
+    input:
+        targets
+
+# Import workflows
+include: 'scripts/ensembl_grch37.Snakefile'
+
 rule javierre2016_download:
     ''' Retrieves Javierre 2016 PCHiC file from the ebi FTP
     '''

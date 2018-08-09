@@ -1,18 +1,18 @@
+from snakemake.remote.GS import RemoteProvider as GSRemoteProvider
+
 # Load configuration
 configfile: "configs/config.yaml"
 tmpdir = config['temp_dir']
 
 rule all:
     input:
-        config['sun2018_manifest']
+        config['sun2018_manifest_local']
 
 rule pqtl2018_download_manifest:
     ''' Sun et at pQTL manifest file from GS
     '''
     input:
-        GSRemoteProvider().remote('{bucket}/{pqtl_dir}/SOMALOGIC_GWAS_protein_info.csv'.format(
-            bucket=config['gs_bucket'],
-            pqtl_dir=config['sun2018_raw_gs_dir']))
+        GSRemoteProvider().remote(config['sun2018_manifest_gs'])
     output:
         temp(tmpdir + '/qtl/pqtl/sun2018/Sun_pQTL_SOMALOGIC_GWAS_protein_info.manifest.csv')
     shell:
@@ -28,11 +28,21 @@ rule pqtl2018_map_manifest:
         mani=tmpdir + '/qtl/pqtl/sun2018/Sun_pQTL_SOMALOGIC_GWAS_protein_info.manifest.csv',
         map=tmpdir + '/Ensembl_to_hgnc_map.GRCh37.tsv.gz'
     output:
-        config['sun2018_manifest']
+        config['sun2018_manifest_local']
     shell:
         'python scripts/sun2018_map_manifest.py --inf {input.mani} '
         '--map {input.map} '
         '--outf {output}'
+
+# rule ensembl_to_uniprot_download:
+#     ''' Uses biomart to download file to map from Ensembl ID to Uniprot ID
+#     '''
+#     input:
+#         GSRemoteProvider().remote(config['sun2018_unitprot_lut_gs'])
+#     output:
+#         tmpdir + '/uniprot_to_ensembl_lut.tsv'
+#     shell:
+#         'cp {input} {output}'
 
 rule ensembl_to_uniprot_download:
     ''' Uses biomart to download file to map from Ensembl ID to Uniprot ID
