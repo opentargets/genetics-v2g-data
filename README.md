@@ -54,8 +54,8 @@ Output files:
 
 QTL output columns:
   - `chrom`, `pos`: genomic coordinates on GRCh37
-  - `other_allele`: non-effect allele
-  - `effect_allele`: allele on which the effect (`beta`) is measured
+  - `other_allele`: non-effect allele. Ref allele in GRCh37.
+  - `effect_allele`: allele on which the effect (`beta`) is measured. Effect should always be ALT allele in GRCh37!
   - `ensembl_id`: Ensembl gene ID
   - `beta`: the effect size and direction
   - `se`: standard error of `beta`
