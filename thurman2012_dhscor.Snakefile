@@ -1,62 +1,43 @@
 #!/usr/bin/env snakemake
-from snakemake.remote.FTP import RemoteProvider as FTPRemoteProvider
-from snakemake.remote.GS import RemoteProvider as GSRemoteProvider
 from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
 import pandas as pd
 from pprint import pprint
+from datetime import date
 
 # Load configuration
 configfile: "configs/config.yaml"
 tmpdir = config['temp_dir']
-UPLOAD = False
-
-# Initiate remote handles
-GS = GSRemoteProvider()
+version = date.today().strftime("%y%m%d")
 
 targets = []
 
 ### Make targets for Thurman 2012 DHS-promoter correlation dataset
 
 # Processed
-target = '{bucket}/{gs_dir}/{data_type}/{exp_type}/{source}/{cell_type}/{chrom}.{proc}.tsv.gz'.format(
-    bucket=config['gs_bucket'],
-    gs_dir=config['gs_dir'],
+target = '{out_dir}/{data_type}/{exp_type}/{source}/{version}/{cell_type}/{chrom}.{proc}.tsv.gz'.format(
+    out_dir=config['out_dir'],
     data_type='interval',
     exp_type='dhscor',
     source='thurman2012',
+    version=version,
     cell_type='unspecified',
     proc='processed',
     chrom='1-23')
-if UPLOAD:
-    targets.append(GS.remote(target))
+targets.append(target)
 
 # Split files
 for i in range(config['interval_split']):
-    target = '{bucket}/{gs_dir}/{data_type}/{exp_type}/{source}/{cell_type}/{chrom}.{proc}.split{i:03d}.tsv.gz'.format(
-        bucket=config['gs_bucket'],
-        gs_dir=config['gs_dir'],
+    target = '{out_dir}/{data_type}/{exp_type}/{source}/{version}/{cell_type}/{chrom}.{proc}.split{i:03d}.tsv.gz'.format(
+        out_dir=config['out_dir'],
         data_type='interval',
         exp_type='dhscor',
         source='thurman2012',
+        version=version,
         cell_type='unspecified',
         proc='processed',
         chrom='1-23',
         i=i)
-    if UPLOAD:
-        targets.append(GS.remote(target))
-
-# Raw
-target = '{bucket}/{gs_dir}/{data_type}/{exp_type}/{source}/{cell_type}/{chrom}.{proc}.bed.gz'.format(
-    bucket=config['gs_bucket'],
-    gs_dir=config['gs_dir'],
-    data_type='interval',
-    exp_type='dhscor',
-    source='thurman2012',
-    cell_type='unspecified',
-    proc='raw',
-    chrom='1-23')
-if UPLOAD:
-    targets.append(GS.remote(target))
+    targets.append(target)
 
 # "all" must be first rule that is encounterd
 rule all:
@@ -71,7 +52,8 @@ rule thurman2012_download:
     ''' Retrieves DHS correlation data from the Ensembl ENCODE FTP
     '''
     input:
-        HTTPRemoteProvider().remote('http://ftp.ebi.ac.uk/pub/databases/ensembl/encode/integration_data_jan2011/byDataType/openchrom/jan2011/dhs_gene_connectivity/genomewideCorrs_above0.7_promoterPlusMinus500kb_withGeneNames_32celltypeCategories.bed8.gz')
+        HTTPRemoteProvider().remote('http://ftp.ebi.ac.uk/pub/databases/ensembl/encode/integration_data_jan2011/byDataType/openchrom/jan2011/dhs_gene_connectivity/genomewideCorrs_above0.7_promoterPlusMinus500kb_withGeneNames_32celltypeCategories.bed8.gz',
+                                    keep_local=False)
     output:
         tmpdir + '/interval/dhscor/thurman2012/unspecified/dhs_correlations.bed.gz'
     shell:
@@ -84,7 +66,7 @@ rule thurman2012_to_final:
         bed = tmpdir + '/interval/dhscor/thurman2012/unspecified/dhs_correlations.bed.gz',
         gtf = tmpdir + '/Homo_sapiens.GRCh37.87.gtf.gz'
     output:
-        tmpdir + '/interval/dhscor/thurman2012/unspecified/1-23.processed.tsv.gz'
+        config['out_dir'] + '/interval/dhscor/thurman2012/{version}/unspecified/1-23.processed.tsv.gz'
     shell:
         'python scripts/thurman2012_to_final.py '
         '--inf {input.bed} '
@@ -92,28 +74,43 @@ rule thurman2012_to_final:
         '--gtf {input.gtf} '
         '--cell_name Unspecified'
 
-rule thurman2012_final_to_gcs:
-    ''' Copy final to google cloud storage
+rule split_unzip_final:
+    ''' Unzip and remove header in preparation for splitting
     '''
     input:
-        tmpdir + '/interval/dhscor/thurman2012/unspecified/1-23.processed.tsv.gz'
+        config['out_dir'] + '/interval/dhscor/thurman2012/{version}/unspecified/1-23.processed.tsv.gz'
     output:
-        GSRemoteProvider().remote(
-            '{bucket}/{gs_dir}/interval/dhscor/thurman2012/unspecified/1-23.processed.tsv.gz'.format(
-                bucket=config['gs_bucket'],
-                gs_dir=config['gs_dir']))
+        temp(tmpdir + '/interval/dhscor/thurman2012/{version}/unspecified/1-23.processed.tsv')
     shell:
-        'cp {input} {output}'
+        'zcat < {input} | tail -n +2 > {output}'
 
-rule thurman2012_raw_to_gcs:
-    ''' Copy raw to google cloud storage
+rule split:
+    ''' Splits file into many parts
     '''
     input:
-        tmpdir + '/interval/dhscor/thurman2012/unspecified/dhs_correlations.bed.gz'
+        tmpdir + '/interval/dhscor/thurman2012/{version}/unspecified/1-23.processed.tsv'
     output:
-        GSRemoteProvider().remote(
-            '{bucket}/{gs_dir}/interval/dhscor/thurman2012/unspecified/1-23.raw.bed.gz'.format(
-                bucket=config['gs_bucket'],
-                gs_dir=config['gs_dir']))
+        temp(expand(tmpdir + '/interval/dhscor/thurman2012/{{version}}/unspecified/1-23.processed.split{i:03d}.tsv',
+               i=range(config['interval_split'])))
+    params:
+        outpref=lambda wildcards: tmpdir + '/interval/dhscor/thurman2012/{version}/unspecified/1-23.processed.split'.format(**wildcards)
+    run:
+        import platform
+        if platform.system() == 'Darwin':
+            split_cmd = 'gsplit'
+        elif platform.system() == 'Linux':
+            split_cmd = 'split'
+        else:
+            assert(True, 'Error: platform must be Darwin or Linux')
+
+        shell(split_cmd + ' -a 3 --additional-suffix=.tsv -d -n l/128 {input} {params.outpref}')
+
+rule split_rezip:
+    ''' Re zip the split file
+    '''
+    input:
+        tmpdir + '/interval/dhscor/thurman2012/{version}/unspecified/1-23.processed.split{i}.tsv'
+    output:
+        config['out_dir'] + '/interval/dhscor/thurman2012/{version}/unspecified/1-23.processed.split{i}.tsv.gz'
     shell:
-        'cp {input} {output}'
+        'gzip -c {input} > {output}'

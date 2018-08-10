@@ -12,5 +12,5 @@ sun2018_cis_pval: 2.5e-5    # P-value threshold for cis data
 sun2018_trans_pval: 5e-8    # P-value threshold for cis data
 
 # GTEx v7 eQTL config
-gtex7_raw_gs_dir: 'genetics-portal-raw/eqtl_gtex_v7/egenes'
+gtex7_raw_gs_dir: 'gs://genetics-portal-raw/eqtl_gtex_v7/signif_variant_gene_pairs'
 gtex7_manifest: 'configs/GTEx_v7_tissues.manifest.tsv'

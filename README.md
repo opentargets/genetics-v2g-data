@@ -64,8 +64,6 @@ QTL output columns:
 #### Usage
 
 ```
-ncores=3
-
 # Install dependencies into isolated environment
 conda env create -n v2g_data --file environment.yaml
 
@@ -82,17 +80,15 @@ gcloud auth application-default login
 snakemake -s scripts/sun2018_pqtl.make_manifest.Snakefile
 
 # Execute workflows (locally)
+ncores=3
 snakemake -s sun2018_pqtl.Snakefile --cores $ncores
-#snakemake -s andersson2014_fantom5.Snakefile --cores $ncores
-#snakemake -s gtex7_eqtl.Snakefile --cores $ncores
-#snakemake -s javierre2016_pchic.Snakefile --cores $ncores
-#snakemake -s thurman2012_dhscor.Snakefile --cores $ncores
+snakemake -s gtex7_eqtl.Snakefile --cores $ncores
+snakemake -s andersson2014_fantom5.Snakefile --cores $ncores
+snakemake -s thurman2012_dhscor.Snakefile --cores $ncores
+snakemake -s javierre2016_pchic.Snakefile --cores $ncores
 
 # Copy output to GCS
-for src in output/*/*/*/*/*/*.tsv.gz; do
-  dest=${src/output\//gs:\/\/genetics-portal-staging\/v2g\/}
-  gsutil cp $src $dest
-done
+gsutil -m rsync -r -x ".*DS_Store$" output gs://genetics-portal-staging/v2g
 ```
 
 #### Notes
