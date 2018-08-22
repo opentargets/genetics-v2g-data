@@ -25,7 +25,7 @@ def main():
 
     # Split "name" column
     df2 = df['name'].str.split(';', expand=True)
-    df2 = df2.iloc[:, [0, 2, 4]]
+    df2 = df2.iloc[:, [0, 2, 3]]
 
     # Split interval column
     loc = df2.iloc[:, 0].str.split(':|-', expand=True)
@@ -33,9 +33,12 @@ def main():
     # Combine
     df3 = pd.concat([loc,
                      df2.loc[:, 2],
-                     df2.loc[:, 4].apply(lambda x: float(x.replace('FDR:', '')))
+                     df2.loc[:, 3].apply(lambda x: float(x.replace('R:', '')))
                      ], axis=1)
     df3.columns = ["chrom", "start", "end", "gene_symbol", "score"]
+
+    # Sqaure the score
+    df3['score'] = df3['score']**2
 
     # Strip "chr" from chrom
     df3.loc[:, 'chrom'] = df3.loc[:, 'chrom'].str.replace('chr', '')
