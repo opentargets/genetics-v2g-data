@@ -10,12 +10,15 @@ Process cis-regulatory datasets and upload them to 'genetics-portal-data
 - PCHiC from Javierre et al 2016
   - [Publication](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5123897/)
   - [Dataset](ftp://ftp.ebi.ac.uk/pub/contrib/pchic/CHiCAGO/))
+  - Score = CHiCAGO score (Cairns et al., 2016) (CHiCAGO >= 5 only)
 - Fantom5 enhancer-TSS associations from Andersson et al 2014
   - [Publication](https://www.nature.com/articles/nature12787#linking-enhancer-usage-with-tss-expression)
   - [Dataset](http://enhancer.binf.ku.dk/presets/enhancer_tss_associations.bed)
+  - Score = R-squared (FDR > 0.05 only)
 - DHS correlation with gene promoters from Thurman et al 2012
   - [Publication](https://www.nature.com/articles/nature11232#a-map-of-distal-dhstopromoter-connections)
   - [Dataset](http://ftp.ebi.ac.uk/pub/databases/ensembl/encode/integration_data_jan2011/byDataType/openchrom/jan2011/dhs_gene_connectivity/genomewideCorrs_above0.7_promoterPlusMinus500kb_withGeneNames_32celltypeCategories.bed8.gz)
+  - Score = R-squared (R-squared > 0.7 only)
 
 Output file naming convention:
   `{data type}/{experiment type}/{source}/{cell|tissue type}/{chrom}.{processed|raw}.tsv.gz`
