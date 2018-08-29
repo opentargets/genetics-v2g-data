@@ -64,6 +64,21 @@ QTL output columns:
   - `se`: standard error of `beta`
   - `pval`: p-value of association
 
+### Other datasets
+- Closest gene
+  - Use the input Ensembl VCF with VEP consequences as a variant index (`gs://genetics-portal-data/homo_sapiens_incl_consequences.vcf.gz`)
+    - Convert VCF to BED using variant ID (`chrom_pos_ref_alt`) as "name"
+  - Download Ensembl GRCh37 GTF gene definitions
+    - Convert GTF to TSS bed file using (i) protein coding genes only, (ii) all genes.
+  - Use `bedtools closest` to find closest (i) protein coding gene, (ii) any gene TSS to each variant in the index
+
+Closest gene output columns:
+  - `varid`: variant ID (`chrom_pos_ref_alt`) (GRCh37)
+  - `ensemblid_protein_coding`: Ensembl ID of closest protein coding gene
+  - `distance_protein_coding`: Distance (bp) from variant to closest protein coding gene
+  - `ensemblid_any`: Ensembl ID of closest gene (any)
+  - `distance_any`: Distance (bp) from variant to closest gene (any)
+
 #### Usage
 
 ```
