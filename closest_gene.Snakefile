@@ -55,6 +55,8 @@ rule find_closest_protein_coding:
         genes=tmpdir + '/Homo_sapiens.GRCh37.87.tss.protein_coding.bed.gz'
     output:
         tmpdir + '/closest_gene/{version}/closest_gene.protein_coding.tsv.gz'
+    resources:
+        threads=2
     shell:
         'bedtools closest -d -t first -a {input.vars} -b {input.genes} '
         '| cut -f 4,9,11 | gzip -c > {output}'
@@ -67,6 +69,8 @@ rule find_closest_any:
         genes=tmpdir + '/Homo_sapiens.GRCh37.87.tss.bed.gz'
     output:
         tmpdir + '/closest_gene/{version}/closest_gene.any.tsv.gz'
+    resources:
+        threads=2
     shell:
         'bedtools closest -d -t first -a {input.vars} -b {input.genes} '
         '| cut -f 4,9,11 | gzip -c > {output}'
@@ -79,8 +83,6 @@ rule merge_closest_proteincoding_and_any:
         any=tmpdir + '/closest_gene/{version}/closest_gene.any.tsv.gz'
     output:
         '{out_dir}/closest_gene/{{version}}/closest_gene.tsv.gz'.format(out_dir=config['out_dir'])
-    resources:
-        threads=2
     run:
         # Load both dfs
         protein_coding = pd.read_csv(input['protein_coding'], sep='\t', header=None)
