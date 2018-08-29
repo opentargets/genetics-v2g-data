@@ -22,10 +22,13 @@ def main():
     iter_csv = pd.read_csv(args.inf, sep='\t', header=None, comment='#',
                            iterator=True, chunksize=100000, low_memory=False)
 
-    # Only keep protein_coding transcripts
-    df = pd.concat([chunk[((chunk.iloc[:, 2] == 'transcript') &
-                           (chunk.iloc[:, 8].str.contains("protein_coding")))]
-                    for chunk in iter_csv])
+    # Only keep transcripts
+    df = pd.concat([chunk[chunk.iloc[:, 2] == 'transcript'] for chunk in iter_csv])
+
+    # Only keep protein coding
+    if args.protein_coding:
+        to_keep = df.iloc[:, 8].str.contains('protein_coding')
+        df = df.loc[to_keep, :]
 
     # Convert rows to bed format
     bed = df.apply(gtf_row_to_bed, axis=1)
@@ -77,6 +80,7 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--inf', metavar="<file>", help=('Input file'), type=str, required=True)
     parser.add_argument('--outf', metavar="<file>", help=("Output file"), type=str, required=True)
+    parser.add_argument('--protein_coding', help=("Protein coding only"), action='store_true')
     args = parser.parse_args()
     return args
 

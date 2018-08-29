@@ -11,10 +11,25 @@ rule ensembl_download_gtf:
     shell:
         'cp {input} {output}'
 
-rule ensembl_gtf_to_tssbed:
+rule ensembl_gtf_to_tssbed_protein_coding:
     ''' Converts gtf to TSS bed file
     Notes:
         - Keeps protein coding transcripts only.
+    '''
+    input:
+        tmpdir + '/Homo_sapiens.GRCh37.87.gtf.gz'
+    output:
+        tmpdir + '/Homo_sapiens.GRCh37.87.tss.protein_coding.bed.gz'
+    shell:
+        'python scripts/ensembl_gtf_to_tss_bed.py '
+        '--inf {input} '
+        '--outf {output} '
+        '--protein_coding'
+
+rule ensembl_gtf_to_tssbed_all:
+    ''' Converts gtf to TSS bed file
+    Notes:
+        - Keeps all gene types
     '''
     input:
         tmpdir + '/Homo_sapiens.GRCh37.87.gtf.gz'

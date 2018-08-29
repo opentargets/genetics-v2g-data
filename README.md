@@ -90,6 +90,9 @@ snakemake -s andersson2014_fantom5.Snakefile --cores $ncores
 snakemake -s thurman2012_dhscor.Snakefile --cores $ncores
 snakemake -s javierre2016_pchic.Snakefile --cores $ncores
 
+# Warning. The closest gene pipeline takes ~3 hours.
+snakemake -s closest_gene.Snakefile --cores $ncores --resources threads=$ncores
+
 # Copy output to GCS
 gsutil -m rsync -r -x ".*DS_Store$" output gs://genetics-portal-staging/v2g
 ```

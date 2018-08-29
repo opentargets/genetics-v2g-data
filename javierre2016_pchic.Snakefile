@@ -83,7 +83,7 @@ rule javierre2016_tss_intersect:
     '''
     input:
         pchic = tmpdir + '/interval/pchic/javierre2016/{version}/{cell}/1-23.raw.bed.gz',
-        tss = tmpdir + '/Homo_sapiens.GRCh37.87.tss.bed.gz'
+        tss = tmpdir + '/Homo_sapiens.GRCh37.87.tss.protein_coding.bed.gz'
     output:
         tmpdir + '/interval/pchic/javierre2016/{version}/{cell}/1-23.tss.bed.gz'
     shell:
