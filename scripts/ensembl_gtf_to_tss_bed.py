@@ -32,7 +32,11 @@ def main():
 
     # Convert rows to bed format
     bed = df.apply(gtf_row_to_bed, axis=1)
-    bed = bed.sort_values([0, 1])
+    bed.columns = ['chrom', 'start', 'end', 'name', 'score']
+    bed.chrom = bed.chrom.astype(str)
+    bed.start = bed.start.astype(int)
+    bed.end = bed.end.astype(int)
+    bed = bed.sort_values(['chrom', 'start', 'end'])
 
     # Drop duplicate rows (multiple transcripts)
     bed = bed.drop_duplicates()
@@ -49,7 +53,7 @@ def gtf_row_to_bed(row):
         pd.Series([chrom, start, end, ensID, "."])
     """
     # Extract required fields
-    chrom = row[0]
+    chrom = str(row[0])
     strand = row[6]
     # Take end of transcript for forward/reverse strand
     if strand == "+":

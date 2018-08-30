@@ -22,6 +22,7 @@ rule all:
     ''' Master rule to trigger all targets (defined above) '''
     input:
         targets
+        # 'tmp/Homo_sapiens.GRCh37.87.tss.protein_coding.bed.gz'
         # [tmpdir + '/closest_gene/{version}/homo_sapiens_incl_consequences.bed.gz'.format(version=version)]
 
 # Import workflows
