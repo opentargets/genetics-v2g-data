@@ -60,7 +60,7 @@ rule javierre2016_download:
     '''
     input:
         FTPRemoteProvider().remote('ftp.ebi.ac.uk/pub/contrib/pchic/CHiCAGO/{cell}.merged_samples_12Apr2015_full.txt.gz',
-                                   keep_local=False)
+                                   keep_local=False, immediate_close=True)
     output:
         tmpdir + '/interval/pchic/javierre2016/{version}/{cell}/1-23.raw.gz'
     shell:
