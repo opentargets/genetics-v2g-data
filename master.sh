@@ -1,8 +1,8 @@
 #!/bin/sh
-#BSUB -J closest_gene
+#BSUB -J v2g_master
 #BSUB -q long
 #BSUB -n 8
-#BSUB -R "select[mem>32000] rusage[mem=32000] span[hosts=1]" -M32000
+#BSUB -R "select[mem>64000] rusage[mem=64000] span[hosts=1]" -M64000
 #BSUB -o output.%J
 #BSUB -e errorfile.%J
 
