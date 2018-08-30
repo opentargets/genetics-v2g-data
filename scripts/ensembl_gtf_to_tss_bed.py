@@ -25,9 +25,9 @@ def main():
     # Only keep transcripts
     df = pd.concat([chunk[chunk.iloc[:, 2] == 'transcript'] for chunk in iter_csv])
 
-    # Only keep protein coding
+    # Only keep protein coding transcripts
     if args.protein_coding:
-        to_keep = df.iloc[:, 8].str.contains('protein_coding')
+        to_keep = df.iloc[:, 8].str.contains('transcript_biotype "protein_coding"')
         df = df.loc[to_keep, :]
 
     # Convert rows to bed format

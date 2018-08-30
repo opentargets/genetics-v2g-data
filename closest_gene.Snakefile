@@ -23,8 +23,6 @@ rule all:
     ''' Master rule to trigger all targets (defined above) '''
     input:
         targets
-        # 'tmp/Homo_sapiens.GRCh37.87.tss.protein_coding.bed.gz'
-        # [tmpdir + '/closest_gene/{version}/homo_sapiens_incl_consequences.bed.gz'.format(version=version)]
 
 # Import workflows
 include: 'scripts/ensembl_grch37.Snakefile'
@@ -108,15 +106,5 @@ rule merge_closest_proteincoding_and_any:
                 if not pc_var == any_var:
                     sys.exit('Error: files are not in sync (pc_var != any_var)')
                 # Write lines
-                out_row = [pc_var, c_gene, pc_dist, any_gene, any_dist]
+                out_row = [pc_var, pc_gene, pc_dist, any_gene, any_dist]
                 out_h.write('\t'.join(out_row) + '\n')
-        
-        # # Load both dfs
-        # protein_coding = pd.read_csv(input['protein_coding'], sep='\t', header=None)
-        # protein_coding.columns = ['varid', 'ensemblid_protein_coding', 'distance_protein_coding']
-        # any_gene = pd.read_csv(input['any'], sep='\t', header=None)
-        # any_gene.columns = ['varid', 'ensemblid_any', 'distance_any']
-        # # Merge
-        # merged = pd.merge(protein_coding, any_gene, on='varid', how='outer')
-        # # Save
-        # merged.to_csv(output[0], sep='\t', index=None, compression='gzip')
