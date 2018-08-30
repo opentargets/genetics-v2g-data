@@ -2,6 +2,7 @@
 import pandas as pd
 from pprint import pprint
 from datetime import date
+import gzip
 
 # Load configuration
 configfile: "configs/config.yaml"
@@ -85,12 +86,37 @@ rule merge_closest_proteincoding_and_any:
     output:
         '{out_dir}/closest_gene/{{version}}/closest_gene.tsv.gz'.format(out_dir=config['out_dir'])
     run:
-        # Load both dfs
-        protein_coding = pd.read_csv(input['protein_coding'], sep='\t', header=None)
-        protein_coding.columns = ['varid', 'ensemblid_protein_coding', 'distance_protein_coding']
-        any_gene = pd.read_csv(input['any'], sep='\t', header=None)
-        any_gene.columns = ['varid', 'ensemblid_any', 'distance_any']
-        # Merge
-        merged = pd.merge(protein_coding, any_gene, on='varid', how='outer')
-        # Save
-        merged.to_csv(output[0], sep='\t', index=None, compression='gzip')
+        # Open all handles
+        with gzip.open(input['protein_coding'], 'rt') as in_pc_h, \
+             gzip.open(input['any'], 'rt') as in_any_h, \
+             gzip.open(output[0], 'wt') as out_h:
+
+            # Write header
+            header = ['varid',
+                      'ensemblid_protein_coding',
+                      'distance_protein_coding',
+                      'ensemblid_any',
+                      'distance_any']
+            out_h.write('\t'.join(header) + '\n')
+
+            # Iterate over input file
+            for pc_line in in_pc_h:
+                # Parse data
+                pc_var, pc_gene, pc_dist = pc_line.rstrip().split('\t')
+                any_var, any_gene, any_dist = in_any_h.readline().rstrip().split('\t')
+                # Check that varids are the same
+                if not pc_var == any_var:
+                    sys.exit('Error: files are not in sync (pc_var != any_var)')
+                # Write lines
+                out_row = [pc_var, c_gene, pc_dist, any_gene, any_dist]
+                out_h.write('\t'.join(out_row) + '\n')
+        
+        # # Load both dfs
+        # protein_coding = pd.read_csv(input['protein_coding'], sep='\t', header=None)
+        # protein_coding.columns = ['varid', 'ensemblid_protein_coding', 'distance_protein_coding']
+        # any_gene = pd.read_csv(input['any'], sep='\t', header=None)
+        # any_gene.columns = ['varid', 'ensemblid_any', 'distance_any']
+        # # Merge
+        # merged = pd.merge(protein_coding, any_gene, on='varid', how='outer')
+        # # Save
+        # merged.to_csv(output[0], sep='\t', index=None, compression='gzip')
