@@ -79,6 +79,12 @@ Closest gene output columns:
   - `ensemblid_any`: Ensembl ID of closest gene (any)
   - `distance_any`: Distance (bp) from variant to closest gene (any)
 
+#### Requirements
+
+Requries:
+  - (Linux) split v>=8.23
+  - (Mac) gsplit v>=8.23
+
 #### Usage
 
 ```

@@ -13,6 +13,7 @@ ncores=8
 
 # Load environment
 source activate v2g_data
+module load hgi/coreutils/8.23
 
 # Make manifests for QTL datasets
 # snakemake -s scripts/sun2018_pqtl.make_manifest.Snakefile
