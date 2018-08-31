@@ -65,19 +65,19 @@ QTL output columns:
   - `pval`: p-value of association
 
 ### Other datasets
-- Closest gene
+- Nearest gene
   - Use the input Ensembl VCF with VEP consequences as a variant index (`gs://genetics-portal-data/homo_sapiens_incl_consequences.vcf.gz`)
     - Convert VCF to BED using variant ID (`chrom_pos_ref_alt`) as "name"
   - Download Ensembl GRCh37 GTF gene definitions
     - Convert GTF to TSS bed file using (i) protein coding genes only, (ii) all genes.
-  - Use `bedtools closest` to find closest (i) protein coding gene, (ii) any gene TSS to each variant in the index
+  - Use `bedtools closest` to find nearest (i) protein coding gene, (ii) any gene TSS to each variant in the index
 
-Closest gene output columns:
+Nearest gene output columns:
   - `varid`: variant ID (`chrom_pos_ref_alt`) (GRCh37)
-  - `ensemblid_protein_coding`: Ensembl ID of closest protein coding gene
-  - `distance_protein_coding`: Distance (bp) from variant to closest protein coding gene
-  - `ensemblid_any`: Ensembl ID of closest gene (any)
-  - `distance_any`: Distance (bp) from variant to closest gene (any)
+  - `ensemblid_protein_coding`: Ensembl ID of nearest protein coding gene
+  - `distance_protein_coding`: Distance (bp) from variant to nearest protein coding gene
+  - `ensemblid_any`: Ensembl ID of nearest gene (any)
+  - `distance_any`: Distance (bp) from variant to nearest gene (any)
 
 #### Requirements
 
@@ -111,8 +111,8 @@ snakemake -s andersson2014_fantom5.Snakefile --cores $ncores
 snakemake -s thurman2012_dhscor.Snakefile --cores $ncores
 snakemake -s javierre2016_pchic.Snakefile --cores $ncores
 
-# Warning. The closest gene pipeline takes ~3 hours.
-snakemake -s closest_gene.Snakefile --cores $ncores --resources threads=$ncores
+# Warning. The nearest gene pipeline takes ~3 hours.
+snakemake -s nearest_gene.Snakefile --cores $ncores --resources threads=$ncores
 
 # Copy output to GCS
 gsutil -m rsync -r -x ".*DS_Store$" output gs://genetics-portal-staging/v2g
@@ -123,8 +123,8 @@ gsutil -m rsync -r -x ".*DS_Store$" output gs://genetics-portal-staging/v2g
 Dry-run commands for copying from staging
 
 ```
-# Closest gene
-gsutil -m rsync -rn gs://genetics-portal-staging/v2g/closest_gene/180830/ gs://genetics-portal-data/v2g/closest_gene/
+# nearest gene
+gsutil -m rsync -rn gs://genetics-portal-staging/v2g/nearest_gene/180830/ gs://genetics-portal-data/v2g/nearest_gene/
 
 # Interval datasets
 gsutil -m rsync -rn gs://genetics-portal-staging/v2g/interval/pchic/javierre2016/180831/ gs://genetics-portal-data/v2g/interval/pchic/javierre2016/

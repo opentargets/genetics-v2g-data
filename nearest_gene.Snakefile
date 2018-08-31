@@ -13,7 +13,7 @@ version = date.today().strftime("%y%m%d")
 targets = []
 
 # Processed
-target = '{out_dir}/closest_gene/{version}/closest_gene.tsv.gz'.format(
+target = '{out_dir}/nearest_gene/{version}/nearest_gene.tsv.gz'.format(
     out_dir=config['out_dir'],
     version=version)
 targets.append(target)
@@ -31,7 +31,7 @@ rule download_from_gcs:
     ''' Copies from gcs to tmp folder
     '''
     output:
-        temp(tmpdir + '/closest_gene/{version}/homo_sapiens_incl_consequences.vcf.gz')
+        temp(tmpdir + '/nearest_gene/{version}/homo_sapiens_incl_consequences.vcf.gz')
     params:
         input='gs://genetics-portal-data/homo_sapiens_incl_consequences.vcf.gz'
     shell:
@@ -41,48 +41,48 @@ rule make_variant_index_bed:
     ''' Converts VCF to bed format. Warning this is slow ~2 hour!
     '''
     input:
-        tmpdir + '/closest_gene/{version}/homo_sapiens_incl_consequences.vcf.gz'
+        tmpdir + '/nearest_gene/{version}/homo_sapiens_incl_consequences.vcf.gz'
     output:
-        tmpdir + '/closest_gene/{version}/homo_sapiens_incl_consequences.bed.gz'
+        tmpdir + '/nearest_gene/{version}/homo_sapiens_incl_consequences.bed.gz'
     shell:
         'pypy3 scripts/vcf_to_bed.py --invcf {input} --outbed {output}'
 
-rule find_closest_protein_coding:
-    ''' Finds closest protein coding gene for each variant
+rule find_nearest_protein_coding:
+    ''' Finds nearest protein coding gene for each variant
     '''
     input:
-        vars=tmpdir + '/closest_gene/{version}/homo_sapiens_incl_consequences.bed.gz',
+        vars=tmpdir + '/nearest_gene/{version}/homo_sapiens_incl_consequences.bed.gz',
         genes=tmpdir + '/Homo_sapiens.GRCh37.87.tss.protein_coding.bed.gz'
     output:
-        tmpdir + '/closest_gene/{version}/closest_gene.protein_coding.tsv.gz'
+        tmpdir + '/nearest_gene/{version}/nearest_gene.protein_coding.tsv.gz'
     resources:
         threads=2
     shell:
         'bedtools closest -d -t first -a {input.vars} -b {input.genes} '
         '| cut -f 4,9,11 | gzip -c > {output}'
 
-rule find_closest_any:
-    ''' Finds closest (any) gene for each variant
+rule find_nearest_any:
+    ''' Finds nearest (any) gene for each variant
     '''
     input:
-        vars=tmpdir + '/closest_gene/{version}/homo_sapiens_incl_consequences.bed.gz',
+        vars=tmpdir + '/nearest_gene/{version}/homo_sapiens_incl_consequences.bed.gz',
         genes=tmpdir + '/Homo_sapiens.GRCh37.87.tss.bed.gz'
     output:
-        tmpdir + '/closest_gene/{version}/closest_gene.any.tsv.gz'
+        tmpdir + '/nearest_gene/{version}/nearest_gene.any.tsv.gz'
     resources:
         threads=2
     shell:
         'bedtools closest -d -t first -a {input.vars} -b {input.genes} '
         '| cut -f 4,9,11 | gzip -c > {output}'
 
-rule merge_closest_proteincoding_and_any:
+rule merge_nearest_proteincoding_and_any:
     ''' Merges the protein coding results with the any gene results
     '''
     input:
-        protein_coding=tmpdir + '/closest_gene/{version}/closest_gene.protein_coding.tsv.gz',
-        any=tmpdir + '/closest_gene/{version}/closest_gene.any.tsv.gz'
+        protein_coding=tmpdir + '/nearest_gene/{version}/nearest_gene.protein_coding.tsv.gz',
+        any=tmpdir + '/nearest_gene/{version}/nearest_gene.any.tsv.gz'
     output:
-        '{out_dir}/closest_gene/{{version}}/closest_gene.tsv.gz'.format(out_dir=config['out_dir'])
+        '{out_dir}/nearest_gene/{{version}}/nearest_gene.tsv.gz'.format(out_dir=config['out_dir'])
     run:
         # Open all handles
         with gzip.open(input['protein_coding'], 'rt') as in_pc_h, \
