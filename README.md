@@ -1,8 +1,7 @@
 Get cis-regulatory datasets
 ===========================
 
-Process cis-regulatory datasets and upload them to 'genetics-portal-data
-' bucket.
+Process cis-regulatory datasets for variant-to-gene (V2G) assignment.
 
 #### Datasets
 
@@ -31,22 +30,23 @@ Interval output columns:
 
 ### QTL datasets
 - GTEx v7
-  - Notes:
-    - None
+  - cis-regulatory "significant" associations only
 - pQTL from Sun et al 2018
-  - TODO
   - [Publication](https://www.nature.com/articles/s41586-018-0175-2)
   - [Data available from](http://www.phpc.cam.ac.uk/ceu/proteins/)
-  - Data downloaded to `gs://genetics-portal-data/pqtl_sun2018`
+  - Data downloaded to `gs://genetics-portal-raw/pqtl_sun2018`
+  - Maunipulated to be similar to GTEx datasets:
+    - Keeping only cis-regulatory (within 1 Mb of gene TSS)
+    - filtered to p < 2.5e-5 to approximately match GTEx
   - Notes:
     - Do we only keep cis-associations?
     - Do we need to exclude "pQTLs without evidence against binding effects"
       - Main body of paper: "Of 1,927 pQTLs, 549 (28%) were cis-acting (Supplementary Table 4). Genetic variants that change protein structure may result in apparent cis pQTLs owing to altered aptamer binding rather than true quantitative differences in protein levels. We found evidence against such artefactual associations for 371 (68%) cis pQTLs (Methods, Supplementary Tables 4, 7, 8). The results were materially unchanged when we repeated downstream analyses but excluded pQTLs without evidence against binding effects."
       - Methods section title "Evidence against aptamer-binding effects at cis pQTLs".
-    - What significance threshold should we use?
     - What to do when there is cross-reactivity?
     - Some genes have multiple SOMA IDs (assayed more than once)
       - 3,195 total SOMA IDs goes to 2,872 unique Ensembl gene IDs (323 lost)
+      - For these we are deduplicating by gene_id and keeping the first occurence
 
 Output file naming convention:
   `{data_type}/{exp_type}/{source}/{cell_type}/{chrom}.pval{pval}.{cis_reg|trans_reg}.tsv.gz`
@@ -118,6 +118,20 @@ snakemake -s closest_gene.Snakefile --cores $ncores --resources threads=$ncores
 gsutil -m rsync -r -x ".*DS_Store$" output gs://genetics-portal-staging/v2g
 ```
 
-#### Notes
+#### Copy from staging to genetics-portal-data
 
-None
+Dry-run commands for copying from staging
+
+```
+# Closest gene
+gsutil -m rsync -rn gs://genetics-portal-staging/v2g/closest_gene/180830/ gs://genetics-portal-data/v2g/closest_gene/
+
+# Interval datasets
+gsutil -m rsync -rn gs://genetics-portal-staging/v2g/interval/pchic/javierre2016/180831/ gs://genetics-portal-data/v2g/interval/pchic/javierre2016/
+gsutil -m rsync -rn gs://genetics-portal-staging/v2g/interval/fantom5/andersson2014/180831/ gs://genetics-portal-data/v2g/interval/fantom5/andersson2014/
+gsutil -m rsync -rn gs://genetics-portal-staging/v2g/interval/dhscor/thurman2012/180831/ gs://genetics-portal-data/v2g/interval/dhscor/thurman2012/
+
+# QTL datasets
+gsutil -m rsync -rn gs://genetics-portal-staging/v2g/qtl/eqtl/gtex_v7/180809/ gs://genetics-portal-data/v2g/qtl/eqtl/gtex_v7/
+gsutil -m rsync -rn gs://genetics-portal-staging/v2g/qtl/pqtl/sun2018/180808/ gs://genetics-portal-data/v2g/qtl/pqtl/sun2018/
+```
