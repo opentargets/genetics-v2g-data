@@ -63,7 +63,13 @@ def main():
     #
 
     # Sort
-    df3 = df3.sort_values(['chrom', 'start'])
+    df3.chrom = df3.chrom.astype(str)
+    df3 = df3.sort_values(['chrom', 'start', 'end', 'score'])
+
+    # Remove duplicates
+    df3 = df3.drop_duplicates(
+        subset=['chrom', 'start', 'end', 'ensembl_id'],
+        keep='last')
 
     # Add 1 to make it 1-based coords
     df3.loc[:, 'start'] = df3['start'].astype(int)

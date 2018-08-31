@@ -50,14 +50,20 @@ def main():
     #
 
     # Sort
-    df = df.sort_values(['chrom', 'start'])
+    df.chrom = df.chrom.astype(str)
+    df = df.sort_values(['chrom', 'start', 'end', 'score'])
+
+    # Remove duplicates
+    df = df.drop_duplicates(
+        subset=['chrom', 'start', 'end', 'ensembl_id'],
+        keep='last')
 
     # Add 1 to make it 1-based coords
     df.loc[:, 'start'] = df['start'].astype(int)
     df.loc[:, 'end'] = df['end'].astype(int)
     df['start'] = df['start'] + 1
 
-    # Outpt
+    # Output
     df.loc[:, 'cell_type'] = args.cell_name
     df.to_csv(args.outf, sep='\t', index=None, compression='gzip')
 
