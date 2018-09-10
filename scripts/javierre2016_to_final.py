@@ -17,8 +17,21 @@ def main():
     # Load
     df = pd.read_csv(args.inf, sep='\t', header=None, low_memory=False)
 
-    # Extract required columns
-    out_df = df.iloc[:, [3, 4, 5, 12, 6]]
+    total_lines = df.shape[0]
+    # Remove interactions between different chromosomes aka. "trans"
+    cis = (df.iloc[:,3] == df.iloc[:,9])
+    print("CIS interactions: \t\t{} ({:.2f} %)".format(sum(cis),(sum(cis)*100)/total_lines))
+
+    # Remove interactions where the midpoint of the interval is too far away
+    # from the gene TSS
+    df['distance'] = abs((df.iloc[:,4] + df.iloc[:,5])/2 - df.iloc[:,10])
+    twosd_thres = 2.45e6
+    near = (df['distance'] < twosd_thres)
+    print("Interactions < {:.2E} bases: \t{} ({:.2f} %)".format(twosd_thres,sum(near),(sum(near)*100)/total_lines))
+
+    # Apply filters and extract required columns
+    filtered_df = df.loc[cis & near]
+    out_df = filtered_df.iloc[:, [3, 4, 5, 12, 6]].copy()
     out_df.columns = ['chrom', 'start', 'end', 'ensembl_id', 'score']
 
     # Add 1 to the start to make everything 1-indexed
