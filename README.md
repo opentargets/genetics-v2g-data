@@ -10,7 +10,7 @@ Process cis-regulatory datasets for variant-to-gene (V2G) assignment.
   - [Publication](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5123897/)
   - [Dataset](ftp://ftp.ebi.ac.uk/pub/contrib/pchic/CHiCAGO/))
   - Score = CHiCAGO score (Cairns et al., 2016) (CHiCAGO >= 5 only)
-  - Filtering interactions across chromosomes and over 2.45e6 bases away on either side (see workflow and plots)
+  - Filtering interactions across chromosomes and over 2.45e6 bases away on either side (see [plots](https://github.com/opentargets/v2g_data/blob/master/analysis/pchic%20scores%20and%20distance.ipynb))
 - Fantom5 enhancer-TSS associations from Andersson et al 2014
   - [Publication](https://www.nature.com/articles/nature12787#linking-enhancer-usage-with-tss-expression)
   - [Dataset](http://enhancer.binf.ku.dk/presets/enhancer_tss_associations.bed)
