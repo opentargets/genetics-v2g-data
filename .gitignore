@@ -1,3 +1,4 @@
 output/
 tmp/
 .snakemake/
+analysis/.ipynb_checkpoints/

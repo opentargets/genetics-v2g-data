@@ -15,10 +15,13 @@ Process cis-regulatory datasets for variant-to-gene (V2G) assignment.
   - [Publication](https://www.nature.com/articles/nature12787#linking-enhancer-usage-with-tss-expression)
   - [Dataset](http://enhancer.binf.ku.dk/presets/enhancer_tss_associations.bed)
   - Score = R-squared (FDR > 0.05 only)
+  - Filtered under 2Mb
 - DHS correlation with gene promoters from Thurman et al 2012
   - [Publication](https://www.nature.com/articles/nature11232#a-map-of-distal-dhstopromoter-connections)
   - [Dataset](http://ftp.ebi.ac.uk/pub/databases/ensembl/encode/integration_data_jan2011/byDataType/openchrom/jan2011/dhs_gene_connectivity/genomewideCorrs_above0.7_promoterPlusMinus500kb_withGeneNames_32celltypeCategories.bed8.gz)
   - Score = R-squared (R-squared > 0.7 only)
+  - There are no trans (ie. across chromosome) relations in the source dataset
+  - The maximum distance is 500k
 
 Output file naming convention:
   `{data type}/{experiment type}/{source}/{cell|tissue type}/{chrom}.{processed|raw}.tsv.gz`
