@@ -15,7 +15,7 @@ Process cis-regulatory datasets for variant-to-gene (V2G) assignment.
   - [Publication](https://www.nature.com/articles/nature12787#linking-enhancer-usage-with-tss-expression)
   - [Dataset](http://enhancer.binf.ku.dk/presets/enhancer_tss_associations.bed)
   - Score = R-squared (FDR > 0.05 only)
-  - Filtered under 2Mb
+  - Filtered interactions across chromosomes and over 1,068,265 bases (2 stdev) on either side. At source, interactions have already been filters to >2Mb away.
 - DHS correlation with gene promoters from Thurman et al 2012
   - [Publication](https://www.nature.com/articles/nature11232#a-map-of-distal-dhstopromoter-connections)
   - [Dataset](http://ftp.ebi.ac.uk/pub/databases/ensembl/encode/integration_data_jan2011/byDataType/openchrom/jan2011/dhs_gene_connectivity/genomewideCorrs_above0.7_promoterPlusMinus500kb_withGeneNames_32celltypeCategories.bed8.gz)
@@ -127,15 +127,17 @@ gsutil -m rsync -r -x ".*DS_Store$" output gs://genetics-portal-staging/v2g
 Dry-run commands for copying from staging
 
 ```
+version_date=`date +%y%m%d`
+
 # nearest gene
-gsutil -m rsync -rn gs://genetics-portal-staging/v2g/nearest_gene/180830/ gs://genetics-portal-data/v2g/nearest_gene/
+gsutil -m rsync -rn gs://genetics-portal-staging/v2g/nearest_gene/$version_date/ gs://genetics-portal-data/v2g/nearest_gene/
 
 # Interval datasets
-gsutil -m rsync -rn gs://genetics-portal-staging/v2g/interval/pchic/javierre2016/180831/ gs://genetics-portal-data/v2g/interval/pchic/javierre2016/
-gsutil -m rsync -rn gs://genetics-portal-staging/v2g/interval/fantom5/andersson2014/180831/ gs://genetics-portal-data/v2g/interval/fantom5/andersson2014/
-gsutil -m rsync -rn gs://genetics-portal-staging/v2g/interval/dhscor/thurman2012/180831/ gs://genetics-portal-data/v2g/interval/dhscor/thurman2012/
+gsutil -m rsync -rn gs://genetics-portal-staging/v2g/interval/pchic/javierre2016/$version_date/ gs://genetics-portal-data/v2g/interval/pchic/javierre2016/
+gsutil -m rsync -rn gs://genetics-portal-staging/v2g/interval/fantom5/andersson2014/$version_date/ gs://genetics-portal-data/v2g/interval/fantom5/andersson2014/
+gsutil -m rsync -rn gs://genetics-portal-staging/v2g/interval/dhscor/thurman2012/$version_date/ gs://genetics-portal-data/v2g/interval/dhscor/thurman2012/
 
 # QTL datasets
-gsutil -m rsync -rn gs://genetics-portal-staging/v2g/qtl/eqtl/gtex_v7/180809/ gs://genetics-portal-data/v2g/qtl/eqtl/gtex_v7/
-gsutil -m rsync -rn gs://genetics-portal-staging/v2g/qtl/pqtl/sun2018/180808/ gs://genetics-portal-data/v2g/qtl/pqtl/sun2018/
+gsutil -m rsync -rn gs://genetics-portal-staging/v2g/qtl/eqtl/gtex_v7/$version_date/ gs://genetics-portal-data/v2g/qtl/eqtl/gtex_v7/
+gsutil -m rsync -rn gs://genetics-portal-staging/v2g/qtl/pqtl/sun2018/$version_date/ gs://genetics-portal-data/v2g/qtl/pqtl/sun2018/
 ```

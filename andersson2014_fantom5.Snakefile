@@ -1,6 +1,6 @@
 #!/usr/bin/env snakemake
 # from snakemake.remote.FTP import RemoteProvider as FTPRemoteProvider
-# from snakemake.remote.GS import RemoteProvider as GSRemoteProvider
+from snakemake.remote.GS import RemoteProvider as GSRemoteProvider
 from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
 import pandas as pd
 from pprint import pprint
@@ -66,14 +66,15 @@ rule andersson2014_to_final:
     '''
     input:
         bed = tmpdir + '/interval/fantom5/andersson2014/unspecified/enhancer_tss_associations.bed',
-        gtf = tmpdir + '/Homo_sapiens.GRCh37.87.gtf.gz'
+        gtf = GSRemoteProvider().remote('gs://genetics-portal-data/lut/gene_dictionary.json',
+                                        keep_local=False)
     output:
         config['out_dir'] + '/interval/fantom5/andersson2014/{version}/unspecified/1-23.processed.tsv.gz'
     shell:
         'python scripts/andersson2014_to_final.py '
         '--inf {input.bed} '
         '--outf {output} '
-        '--gtf {input.gtf} '
+        '--gene_info {input.gtf} '
         '--cell_name Unspecified'
 
 rule split_unzip_final:
