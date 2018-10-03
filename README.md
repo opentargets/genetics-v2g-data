@@ -1,5 +1,5 @@
-Get cis-regulatory datasets
-===========================
+Variant-to-gene functional datasets
+===================================
 
 Workflows to generate cis-regulatory datasets used for variant-to-gene (V2G) assignment in Open Targets Genetics.
 
