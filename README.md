@@ -1,9 +1,120 @@
 Get cis-regulatory datasets
 ===========================
 
-Process cis-regulatory datasets for variant-to-gene (V2G) assignment.
+Workflows to generate cis-regulatory datasets used for variant-to-gene (V2G) assignment in Open Targets Genetics.
 
-#### Datasets
+## Contents
+
+- Datasets
+  - [QTL]()
+    - [eQTL (GTEx V7)]()
+    - [pQTL (Sun *et al.*, 2018)]()
+  - [Interval (interaction based)]()
+    - [PCHi-C (Javierre, 2016)]()
+    - [Enhancer-TSS corr (FANTOM5)]()
+    - [DHS-promoter corr (Thurman, 2012)]()
+  - [Functional prediction]()
+    - [VEP (Ensembl)]()
+  - [Closest gene]()
+- [Requirements](#requirements)
+- [Usage](#usage)
+
+## Datasets
+
+### Quantitative trait loci (QTL) datasets
+
+QTL datatypes contain association statistics between individual genetic variation and a molecular phenotype (e.g. expression QTLs, and protein QTLs).
+
+Output file naming convention:
+  `{data_type}/{exp_type}/{source}/{cell_type}/{chrom}.pval{pval}.{cis_reg|trans_reg}.tsv.gz`
+
+Output files:
+  - `{chrom}.pval{pval}.cis_reg.tsv.gz`: cis-regulatory associations for `{ensembl_id}` within 1Mb (`config['sun2018_cis_window']`) of gene TSS. Filtered by pval < 2.5e-5 (`config['sun2018_cis_pval']`).
+  - `{chrom}.pval{pval}.trans_reg.tsv.gz`: trans-regulatory associations for `{ensembl_id}` outside 1Mb (`config['sun2018_cis_window']`) of gene TSS. Filtered by pval < 5e-8 (`config['sun2018_trans_pval']`).
+
+QTL output columns:
+  - `chrom`, `pos`: genomic coordinates on GRCh37
+  - `other_allele`: non-effect allele. Ref allele in GRCh37.
+  - `effect_allele`: allele on which the effect (`beta`) is measured. Effect should always be ALT allele in GRCh37!
+  - `ensembl_id`: Ensembl gene ID
+  - `beta`: the effect size and direction
+  - `se`: standard error of `beta`
+  - `pval`: p-value of association
+
+#### eQTL (GTEx V7)
+
+Evidence linking genetic varition to gene expression in each of the 44 GTEx V7 tissues.
+- [Publication link](https://www.ncbi.nlm.nih.gov/pubmed/29022597)
+
+#### pQTL (Sun *et al.*, 2018)
+
+Evidence linking genetic varition to protein abundance in Sun *et al.* (2018) pQTL data.
+- [Publication link](https://www.ncbi.nlm.nih.gov/pubmed/29875488)
+- [Dataset link](http://www.phpc.cam.ac.uk/ceu/proteins/)
+
+### Interval (interaction based) datasets
+
+Interval datatypes contain genomic regions that are linked to gene transcription start site through molecular interactions (e.g. promoter Capture Hi-C).
+
+Output file naming convention:
+  `{data type}/{experiment type}/{source}/{cell|tissue type}/{chrom}.{processed|raw}.tsv.gz`
+
+Interval output columns:
+  - `chrom`, `start`, `end`: 1-based genomic co-ordinates. Start and end are inclusive.
+  - `ensembl_id`: Ensembl gene ID
+  - `score`: feature score from original dataset (unmodified)
+  - `cell_type`: cell or tissue type of this experiment
+
+#### Promoter Capture Hi-C (Javierre, 2016)
+
+Evidence linking genetic variation to genes using Promoter Capture Hi-C in each of the 17 human primary hematopoietic cell types.
+- [Publication link](https://www.ncbi.nlm.nih.gov/pubmed/27863249)
+- [Dataset link](ftp://ftp.ebi.ac.uk/pub/contrib/pchic/CHiCAGO/)
+
+#### Enhancer-TSS corr (FANTOM5)
+
+
+Evidence linking genetic variation to genes using correlation between the transcriptional activity of enhancers and transcription start sites using the FANTOM5 CAGE expression atlas.
+- [Publication link](https://www.ncbi.nlm.nih.gov/pubmed/24670763)
+- [Dataset link](http://enhancer.binf.ku.dk/presets/enhancer_tss_associations.bed)
+
+#### DHS-promoter corr (Thurman, 2012)
+
+Evidence linking genetic variation to genes using correlation of DNase I hypersensitive site and gene promoters across 125 cell and tissue types from ENCODE.
+- [Publication link](https://www.ncbi.nlm.nih.gov/pubmed/22955617)
+- [Dataset link](http://ftp.ebi.ac.uk/pub/databases/ensembl/encode/integration_data_jan2011/byDataType/openchrom/jan2011/dhs_gene_connectivity/genomewideCorrs_above0.7_promoterPlusMinus500kb_withGeneNames_32celltypeCategories.bed8.gz)
+
+### Functional prediction datasets
+
+Functional prediction datatypes contain *in silico* prediction of the functional consequence of a genetic variant on a gene's transcript (e.g. VEP).
+
+#### Variant effect predictor (VEP)
+
+Most severe coding-sequence consequence(s) from Ensembl's Variant Effect Predictor.
+- [Publication link](https://www.ncbi.nlm.nih.gov/pubmed/27268795)
+- [Dataset link](ftp://ftp.ensembl.org/pub/grch37/update/variation/vcf/homo_sapiens/Homo_sapiens_incl_consequences.vcf.gz)
+
+### Closest gene
+
+Closest gene files contain the closest gene for each variant in the variant index.
+
+Closest gene output columns:
+  - `varid`: variant ID (`chrom_pos_ref_alt`) (GRCh37)
+  - `ensemblid_protein_coding`: Ensembl ID of nearest protein coding gene
+  - `distance_protein_coding`: Distance (bp) from variant to nearest protein coding gene
+  - `ensemblid_any`: Ensembl ID of nearest gene (any)
+  - `distance_any`: Distance (bp) from variant to nearest gene (any)
+
+Closest gene methods
+  - Use the input Ensembl VCF with VEP consequences as a variant index (`gs://genetics-portal-data/homo_sapiens_incl_consequences.vcf.gz`)
+    - Convert VCF to BED using variant ID (`chrom_pos_ref_alt`) as "name"
+  - Download Ensembl GRCh37 GTF gene definitions
+    - Convert GTF to TSS bed file using (i) protein coding genes only, (ii) all genes.
+  - Use `bedtools closest` to find nearest (i) protein coding gene, (ii) any gene TSS to each variant in the index
+
+
+
+--------------------
 
 ### Interval datasets
 - PCHiC from Javierre et al 2016
@@ -23,14 +134,7 @@ Process cis-regulatory datasets for variant-to-gene (V2G) assignment.
   - There are no trans (ie. across chromosome) relations in the source dataset
   - The maximum distance is 500k
 
-Output file naming convention:
-  `{data type}/{experiment type}/{source}/{cell|tissue type}/{chrom}.{processed|raw}.tsv.gz`
 
-Interval output columns:
-  - `chrom`, `start`, `end`: 1-based genomic co-ordinates. Start and end are inclusive.
-  - `ensembl_id`: Ensembl gene ID
-  - `score`: feature score from original dataset (unmodified)
-  - `cell_type`: cell or tissue type of this experiment
 
 ### QTL datasets
 - GTEx v7
@@ -51,37 +155,6 @@ Interval output columns:
     - Some genes have multiple SOMA IDs (assayed more than once)
       - 3,195 total SOMA IDs goes to 2,872 unique Ensembl gene IDs (323 lost)
       - For these we are deduplicating by gene_id and keeping the first occurence
-
-Output file naming convention:
-  `{data_type}/{exp_type}/{source}/{cell_type}/{chrom}.pval{pval}.{cis_reg|trans_reg}.tsv.gz`
-
-Output files:
-  - `{chrom}.pval{pval}.cis_reg.tsv.gz`: cis-regulatory associations for `{ensembl_id}` within 1Mb (`config['sun2018_cis_window']`) of gene TSS. Filtered by pval < 2.5e-5 (`config['sun2018_cis_pval']`).
-  - `{chrom}.pval{pval}.trans_reg.tsv.gz`: trans-regulatory associations for `{ensembl_id}` outside 1Mb (`config['sun2018_cis_window']`) of gene TSS. Filtered by pval < 5e-8 (`config['sun2018_trans_pval']`).
-
-QTL output columns:
-  - `chrom`, `pos`: genomic coordinates on GRCh37
-  - `other_allele`: non-effect allele. Ref allele in GRCh37.
-  - `effect_allele`: allele on which the effect (`beta`) is measured. Effect should always be ALT allele in GRCh37!
-  - `ensembl_id`: Ensembl gene ID
-  - `beta`: the effect size and direction
-  - `se`: standard error of `beta`
-  - `pval`: p-value of association
-
-### Other datasets
-- Nearest gene
-  - Use the input Ensembl VCF with VEP consequences as a variant index (`gs://genetics-portal-data/homo_sapiens_incl_consequences.vcf.gz`)
-    - Convert VCF to BED using variant ID (`chrom_pos_ref_alt`) as "name"
-  - Download Ensembl GRCh37 GTF gene definitions
-    - Convert GTF to TSS bed file using (i) protein coding genes only, (ii) all genes.
-  - Use `bedtools closest` to find nearest (i) protein coding gene, (ii) any gene TSS to each variant in the index
-
-Nearest gene output columns:
-  - `varid`: variant ID (`chrom_pos_ref_alt`) (GRCh37)
-  - `ensemblid_protein_coding`: Ensembl ID of nearest protein coding gene
-  - `distance_protein_coding`: Distance (bp) from variant to nearest protein coding gene
-  - `ensemblid_any`: Ensembl ID of nearest gene (any)
-  - `distance_any`: Distance (bp) from variant to nearest gene (any)
 
 #### Requirements
 
