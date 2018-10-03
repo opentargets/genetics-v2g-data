@@ -22,6 +22,7 @@ Workflows to generate cis-regulatory datasets used for variant-to-gene (V2G) ass
 #### Requirements
 
 Requries:
+  - Conda
   - (Linux) split v>=8.23
   - (Mac) gsplit v>=8.23
 
@@ -126,8 +127,7 @@ Evidence linking genetic variation to genes using Promoter Capture Hi-C in each 
   - Pre-filtered at source to contain only CHiCAGO >= 5
   - Filtered interactions across chromosomes and over 2.45e6 bases away on either side (see [plots](https://github.com/opentargets/v2g_data/blob/master/analysis/pchic%20scores%20and%20distance.ipynb))
 
-#### Enhancer-TSS corr (FANTOM5)
-
+#### Enhancer-TSS correlation (FANTOM5)
 
 Evidence linking genetic variation to genes using correlation between the transcriptional activity of enhancers and transcription start sites using the FANTOM5 CAGE expression atlas.
 - [Publication link](https://www.ncbi.nlm.nih.gov/pubmed/24670763)
@@ -138,7 +138,7 @@ Evidence linking genetic variation to genes using correlation between the transc
   - Pre-filtered at source to remove interactions >2Mb
   - Filtered interactions between chromosomes and over 1,068,265 bases (2 stdev) on either side (see [plots](https://github.com/opentargets/v2g_data/blob/master/analysis/fantom5.ipynb))
 
-#### DHS-promoter corr (Thurman, 2012)
+#### DHS-promoter correlation (Thurman, 2012)
 
 Evidence linking genetic variation to genes using correlation of DNase I hypersensitive site and gene promoters across 125 cell and tissue types from ENCODE.
 - [Publication link](https://www.ncbi.nlm.nih.gov/pubmed/22955617)
