@@ -86,6 +86,7 @@ QTL output columns:
 Evidence linking genetic varition to gene expression in each of the 44 GTEx V7 tissues.
 - [Publication link](https://www.ncbi.nlm.nih.gov/pubmed/29022597)
 - Dataset: GTEx significant pairs files
+- Score = -log10(pval)
 - Filters:
   - Pre-filtered at source to contain only "significant" associations based on permutation analysis (p_perm < 0.05)
   - Pre-filtered at source to remove associations >1Mb from gene TSS
@@ -95,6 +96,7 @@ Evidence linking genetic varition to gene expression in each of the 44 GTEx V7 t
 Evidence linking genetic varition to protein abundance in Sun *et al.* (2018) pQTL data.
 - [Publication link](https://www.ncbi.nlm.nih.gov/pubmed/29875488)
 - [Dataset link](http://www.phpc.cam.ac.uk/ceu/proteins/)
+- Score = -log10(pval)
 - Filters:
   - Filtered to approximately match GTEx permutation filtering using a p < 2.5e-5 threshold. This equates to ~2000 independant tests per gene region.
   - Filtered to remove associations >1Mb from each gene TSS.
@@ -143,7 +145,7 @@ Evidence linking genetic variation to genes using correlation between the transc
 Evidence linking genetic variation to genes using correlation of DNase I hypersensitive site and gene promoters across 125 cell and tissue types from ENCODE.
 - [Publication link](https://www.ncbi.nlm.nih.gov/pubmed/22955617)
 - [Dataset link](http://ftp.ebi.ac.uk/pub/databases/ensembl/encode/integration_data_jan2011/byDataType/openchrom/jan2011/dhs_gene_connectivity/genomewideCorrs_above0.7_promoterPlusMinus500kb_withGeneNames_32celltypeCategories.bed8.gz)
-- Score = R-squared (R-squared > 0.7 only)
+- Score = R-squared
 - Filters:
   - Pre-filtered at source to contain R-squared > 0.7 only
   - Pre-filtered at source to remove interactions over 500 kb
