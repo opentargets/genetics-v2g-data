@@ -7,7 +7,7 @@ Workflows to generate cis-regulatory datasets used for variant-to-gene (V2G) ass
 
 - [Requirements](#requirements)
 - [Usage](#usage)
-- Datasets
+- [Datasets](#datasets)
   - [QTL](#quantitative-trait-loci-qtl-datasets)
     - [eQTL (GTEx V7)](#eqtl-gtex-v7)
     - [pQTL (Sun *et al.*, 2018)](#pqtl-sun-et-al-2018)
