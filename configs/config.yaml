@@ -14,3 +14,7 @@ sun2018_trans_pval: 5e-8    # P-value threshold for cis data
 # GTEx v7 eQTL config
 gtex7_raw_gs_dir: 'gs://genetics-portal-input/eqtl_gtex_v7/signif_variant_gene_pairs'
 gtex7_manifest: 'configs/GTEx_v7_tissues.manifest.tsv'
+
+# Tissue name to ontology maps
+javierre_cell_map: configs/javierre2016_bio_feature_map.csv
+gtex7_map: configs/gtex7_bio_feature_map.csv

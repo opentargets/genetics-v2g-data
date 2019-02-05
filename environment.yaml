@@ -7,3 +7,4 @@ dependencies:
   - snakemake
   - pandas
   - pypy3.5
+  - pyspark=2.4.0

@@ -44,6 +44,9 @@ gcloud auth application-default login
 # Make manifests for QTL datasets
 snakemake -s scripts/sun2018_pqtl.make_manifest.Snakefile
 
+# Increase spark memory if running locally
+export PYSPARK_SUBMIT_ARGS="--driver-memory 8g pyspark-shell"
+
 # Execute workflows (locally)
 ncores=3
 snakemake -s sun2018_pqtl.Snakefile --cores $ncores
