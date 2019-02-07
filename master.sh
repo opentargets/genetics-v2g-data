@@ -14,6 +14,8 @@ ncores=8
 # Load environment
 source activate v2g_data
 module load hgi/coreutils/8.23
+module load hgi/systems/jdk/1.8.0_74
+export PYSPARK_SUBMIT_ARGS="--driver-memory 8g pyspark-shell"
 
 # Make manifests for QTL datasets
 snakemake -s scripts/sun2018_pqtl.make_manifest.Snakefile
