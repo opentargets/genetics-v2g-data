@@ -3,7 +3,7 @@
 set -euo pipefail
 
 # Args
-ncores=8
+ncores=15
 
 # Load environment
 source activate v2g_data
