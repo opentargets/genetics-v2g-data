@@ -185,20 +185,17 @@ Closest gene methods
 
 #### Copy from staging to genetics-portal-data
 
-Dry-run commands for copying from staging
+Commands for copying from staging
 
 ```
 version_date=`date +%y%m%d`
 
-# nearest gene
-gsutil -m rsync -rn gs://genetics-portal-staging/v2g/nearest_gene/$version_date/ gs://genetics-portal-data/v2g/nearest_gene/
-
 # Interval datasets
-gsutil -m rsync -rn gs://genetics-portal-staging/v2g/interval/pchic/javierre2016/$version_date/ gs://genetics-portal-data/v2g/interval/pchic/javierre2016/
-gsutil -m rsync -rn gs://genetics-portal-staging/v2g/interval/fantom5/andersson2014/$version_date/ gs://genetics-portal-data/v2g/interval/fantom5/andersson2014/
-gsutil -m rsync -rn gs://genetics-portal-staging/v2g/interval/dhscor/thurman2012/$version_date/ gs://genetics-portal-data/v2g/interval/dhscor/thurman2012/
+gsutil -m rsync -r gs://genetics-portal-staging/v2g/interval/pchic/javierre2016/$version_date/ gs://genetics-portal-data/v2g/$version_date/interval/pchic/javierre2016/
+gsutil -m rsync -r gs://genetics-portal-staging/v2g/interval/fantom5/andersson2014/$version_date/ gs://genetics-portal-data/v2g/$version_date/interval/fantom5/andersson2014/
+gsutil -m rsync -r gs://genetics-portal-staging/v2g/interval/dhscor/thurman2012/$version_date/ gs://genetics-portal-data/v2g/$version_date/interval/dhscor/thurman2012/
 
 # QTL datasets
-gsutil -m rsync -rn gs://genetics-portal-staging/v2g/qtl/eqtl/gtex_v7/$version_date/ gs://genetics-portal-data/v2g/qtl/eqtl/gtex_v7/
-gsutil -m rsync -rn gs://genetics-portal-staging/v2g/qtl/pqtl/sun2018/$version_date/ gs://genetics-portal-data/v2g/qtl/pqtl/sun2018/
+gsutil -m rsync -r gs://genetics-portal-staging/v2g/qtl/eqtl/gtex_v7/$version_date/ gs://genetics-portal-data/v2g/$version_date/qtl/eqtl/gtex_v7/
+gsutil -m rsync -r gs://genetics-portal-staging/v2g/qtl/pqtl/sun2018/$version_date/ gs://genetics-portal-data/v2g/$version_date/qtl/pqtl/sun2018/
 ```
