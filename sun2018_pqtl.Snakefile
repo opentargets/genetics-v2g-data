@@ -28,16 +28,13 @@ sun2018_manifest = sun2018_manifest.drop_duplicates(subset='gene')
 sun2018_manifest['gcs_id'] = sun2018_manifest.UniProt.apply(lambda x: 'UNIPROT_' + '_'.join(x.split(',')))
 
 # Create cis-regulatory data target
-target = '{out_dir}/{data_type}/{exp_type}/{source}/{version}/{cell_type}/{chrom}.pval{pval}.{proc}.processed.tsv.gz'.format(
+target = '{out_dir}/{data_type}/{exp_type}/{source}/{version}/data.parquet'.format(
     out_dir=config['out_dir'],
     data_type='qtl',
     exp_type='pqtl',
     source='sun2018',
     version=version,
-    cell_type='Blood_plasma',
-    chrom='1-22',
-    proc='cis_reg',
-    pval=config['sun2018_cis_pval'])
+    cell_type=config['sun2018_cell'])
 targets.append(target)
 
 # "all" must be first rule that is encounterd
@@ -77,7 +74,7 @@ rule extract_cis_data:
                 uniprot_id=get_manifest_info(sun2018_manifest, wildcards.ensembl_id, 'gcs_id'),
                 chrom=get_manifest_info(sun2018_manifest, wildcards.ensembl_id, 'chrom'))
     output:
-        temp('{tmpdir}/qtl/pqtl/sun2018/{{version}}/{{cell_type}}/{{ensembl_id}}.pval{pval}.cis_reg.tsv.gz'.format(
+        temp('{tmpdir}/qtl/pqtl/sun2018/{{version}}/{{ensembl_id}}.cis.tsv.gz'.format(
                 tmpdir=tmpdir,
                 pval=config['sun2018_cis_pval']))
     params:
@@ -94,31 +91,25 @@ rule extract_cis_data:
         '--cis_window {params.window} '
         '--pval {params.pval}'
 
-rule concate_dataset:
+rule to_parquet:
     ''' Concatenate separate gene files into a single file, and upload to GCS
     '''
     input:
-        ['{tmpdir}/qtl/pqtl/sun2018/{{version}}/{{cell_type}}/{ensembl_id}.pval{{pval}}.{{proc}}.tsv.gz'.format(
+        data = ['{tmpdir}/qtl/pqtl/sun2018/{{version}}/{ensembl_id}.cis.tsv.gz'.format(
                 tmpdir=tmpdir,
                 ensembl_id=ensembl_id)
-         for ensembl_id in list(sun2018_manifest['ensembl_id'].unique())]
+         for ensembl_id in list(sun2018_manifest['ensembl_id'].unique()) ]
+         # for ensembl_id in ['ENSG00000160712']], # DEBUG
     output:
-        '{out_dir}/{{data_type}}/{{exp_type}}/{{source}}/{{version}}/{{cell_type}}/{{chrom}}.pval{{pval}}.{{proc}}.processed.tsv.gz'.format(
-            out_dir=config['out_dir'])
-    run:
-        with gzip.open(output[0], 'w') as out_h:
-            for i, inf in enumerate(input):
-                # Get ensembl ID name from path
-                ensembl_id = os.path.split(inf)[1].split('.')[0]
-                # Open file
-                with gzip.open(inf, 'r') as in_h:
-                    # Write header if first file
-                    header = in_h.readline().decode().rstrip().split('\t')
-                    if i == 0:
-                        header.insert(4, 'ensembl_id')
-                        out_h.write(('\t'.join(header) + '\n').encode())
-                    # Write all lines to file
-                    for line in in_h:
-                        line = line.decode().rstrip().split('\t')
-                        line.insert(4, ensembl_id)
-                        out_h.write(('\t'.join(line) + '\n').encode())
+        directory('{out_dir}/{{data_type}}/{{exp_type}}/{{source}}/{{version}}/data.parquet'.format(
+            out_dir=config['out_dir']))
+    params:
+        cell = config['sun2018_cell'],
+        pattern = '{tmpdir}/qtl/pqtl/sun2018/{version}/*.cis.tsv.gz'.format(
+            tmpdir=tmpdir,
+            version=version)
+    shell:
+        'python scripts/sun2018_to_parquet.py '
+        '--infs {params.pattern} '
+        '--outf {output} '
+        '--cell_code {params.cell}'

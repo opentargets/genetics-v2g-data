@@ -18,3 +18,4 @@ gtex7_manifest: 'configs/GTEx_v7_tissues.manifest.tsv'
 # Tissue name to ontology maps
 javierre_cell_map: configs/javierre2016_bio_feature_map.csv
 gtex7_map: configs/gtex7_bio_feature_map.csv
+sun2018_cell: UBERON_0001969
