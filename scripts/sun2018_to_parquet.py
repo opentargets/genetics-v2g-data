@@ -46,10 +46,10 @@ def main():
     df = df.withColumn('gene_id', get_gene_udf(input_file_name()))
 
     # Add bio_feature
-    df = df.withColumn('bio_feaute', lit(args.cell_code))
+    df = df.withColumn('bio_feature', lit(args.cell_code))
 
     # Rearrange columns
-    df = df.select('chrom', 'pos', 'ref', 'alt', 'gene_id', 'beta', 'se', 'pval', 'bio_feaute')
+    df = df.select('chrom', 'pos', 'ref', 'alt', 'gene_id', 'beta', 'se', 'pval', 'bio_feature')
 
     # df.show(3)
     # df.printSchema()
