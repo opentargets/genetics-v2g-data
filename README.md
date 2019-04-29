@@ -44,22 +44,45 @@ nano config.yaml
 # Authenticate google cloud storage
 gcloud auth application-default login
 
-# Make manifests for QTL datasets
-snakemake -s scripts/sun2018_pqtl.make_manifest.Snakefile
-
 # Increase spark memory if running locally
 export PYSPARK_SUBMIT_ARGS="--driver-memory 8g pyspark-shell"
 
 # Execute workflows (locally)
 ncores=3
-snakemake -s sun2018_pqtl.Snakefile --cores $ncores
-snakemake -s gtex7_eqtl.Snakefile --cores $ncores
 snakemake -s andersson2014_fantom5.Snakefile --cores $ncores
 snakemake -s thurman2012_dhscor.Snakefile --cores $ncores
 snakemake -s javierre2016_pchic.Snakefile --cores $ncores
 
 # Copy output to GCS
 gsutil -m rsync -r -x ".*DS_Store$" output gs://genetics-portal-staging/v2g
+
+# Update list of QTL studies in process_QTL_datasets_from_sumstats.py
+
+# Start dataproc server
+gcloud beta dataproc clusters create \
+    em-qtlprocess \
+    --image-version=preview \
+    --properties=spark:spark.debug.maxToStringFields=100,spark:spark.executor.cores=32,spark:spark.executor.instances=1 \
+    --master-machine-type=n1-standard-32 \
+    --master-boot-disk-size=1TB \
+    --num-master-local-ssds=1 \
+    --zone=europe-west1-d \
+    --initialization-action-timeout=20m \
+    --single-node \
+    --max-idle=10m
+
+# Submit QTL processing job
+gcloud dataproc jobs submit pyspark \
+    --cluster=em-qtlprocess \
+    process_QTL_datasets_from_sumstats.py
+
+# To monitor
+gcloud compute ssh em-qtlprocess-m \
+  --project=open-targets-genetics \
+  --zone=europe-west1-d -- -D 1080 -N
+"EdApplications/Google Chrome.app/Contents/MacOS/Google Chrome" \
+  --proxy-server="socks5://localhost:1080" \
+  --user-data-dir="/tmp/em-qtlprocess-m" http://em-qtlprocess-m:8088
 ```
 
 ## Datasets
