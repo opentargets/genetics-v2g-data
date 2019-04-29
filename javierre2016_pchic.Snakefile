@@ -16,10 +16,9 @@ targets = []
 # Get list of cell line names
 cell_types,  = GSRemoteProvider().glob_wildcards('gs://genetics-portal-input/v2g_input/javierre2016/{samples}.merged_samples_12Apr2015_full.txt.gz')
 
-# DEBUG
-print("WARNING! Only running 1 cell type")
-cell_types = cell_types[:1]
-# sys.exit()
+# # DEBUG
+# print("WARNING! Only running 1 cell type")
+# cell_types = cell_types[:1]
 
 # Create output
 target = '{out_dir}/{data_type}/{exp_type}/{source}/{version}/data.parquet'.format(
@@ -112,7 +111,7 @@ rule javierre2016_to_parquet:
     input:
         data=[tmpdir + '/interval/pchic/javierre2016/{version}/{cell}/processed_b38.tsv.gz'.format(
             version=version, cell=cell_type) for cell_type in cell_types],
-        cell_map=config['javierre_cell_map']
+        cell_map = GSRemoteProvider().remote(config['cell_map'], keep_local=False, immediate_close=True)
     output:
         directory(config['out_dir'] + '/interval/pchic/javierre2016/{version}/data.parquet')
     shell:

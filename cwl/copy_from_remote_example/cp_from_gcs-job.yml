@@ -1,4 +1,0 @@
-src_file:
-  class: File
-  location: gs://genetics-portal-data/lut/vep_consequences.tsv
-dest_file: gcs_dest.txt

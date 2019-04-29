@@ -1,4 +1,0 @@
-src_file:
-  class: File
-  location: ftp://ftp.ensembl.org/pub/release-92/variation/vcf/homo_sapiens/README
-dest_file: ftp_dest.txt

@@ -1,24 +1,9 @@
 # Output config
 temp_dir: 'tmp'
 out_dir: 'output'
-interval_split: 128
-
-# Sun et al pQTL config
-sun2018_in_gs_dir: 'gs://genetics-portal-sumstats/molecular_qtl/pqtl/SUN2018'
-sun2018_manifest_gs: 'gs://genetics-portal-input/pqtl_sun2018/raw_data/001_SOMALOGIC_GWAS_protein_info.csv'
-sun2018_manifest_local: 'configs/Sun_pQTL_SOMALOGIC_GWAS_protein_info.ensembl.manifest.tsv'
-sun2018_cis_window: 1000000 # Window around gene TSS to be called "cis" data
-sun2018_cis_pval: 2.5e-5    # P-value threshold for cis data
-sun2018_trans_pval: 5e-8    # P-value threshold for cis data
-
-# GTEx v7 eQTL config
-gtex7_raw_gs_dir: 'gs://genetics-portal-input/eqtl_gtex_v7/signif_variant_gene_pairs'
-gtex7_manifest: 'configs/GTEx_v7_tissues.manifest.tsv'
 
 # Tissue name to ontology maps
-javierre_cell_map: configs/javierre2016_bio_feature_map.csv
-gtex7_map: configs/gtex7_bio_feature_map.csv
-sun2018_cell: UBERON_0001969
+cell_map: gs://genetics-portal-data/lut/biofeature_lut_190328.json
 
 # Interval Liftover
 chain_grch37_to_grch38: grch37_to_grch38.over.chain.gz

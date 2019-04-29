@@ -4,12 +4,20 @@
 Ed Mountjoy
 '''
 
+'''
+# Set SPARK_HOME and PYTHONPATH to use 2.4.0
+export PYSPARK_SUBMIT_ARGS="--driver-memory 8g pyspark-shell"
+export SPARK_HOME=/Users/em21/software/spark-2.4.0-bin-hadoop2.7
+export PYTHONPATH=$SPARK_HOME/python:$SPARK_HOME/python/lib/py4j-2.4.0-src.zip:$PYTHONPATH
+'''
+
 import sys
 import argparse
 import pyspark.sql
 from pyspark.sql.types import *
 from pyspark.sql.functions import *
 from functools import partial
+import json
 
 def main():
 
@@ -42,7 +50,6 @@ def main():
 
     # Show schema
     df.printSchema()
-    print(df.count())
 
     # Load cell map and broadcast
     cell_map_dict = sc.broadcast(load_cell_map(args.cell_map))
@@ -74,10 +81,9 @@ def cell_map_func(x, d):
 def load_cell_map(inf):
     d = {}
     with open(inf, 'r') as in_h:
-        in_h.readline()
         for line in in_h:
-            original, label, code = line.rstrip().split(',')
-            d[original] = code
+            parts = json.loads(line)
+            d[parts['biofeature_string']] = parts['biofeature_code']
     return d
 
 def parse_args():

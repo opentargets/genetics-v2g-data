@@ -1,4 +1,0 @@
-src_file:
-  class: File
-  location: https://www.commonwl.org/user_guide/rec-practices/index.html
-dest_file: http_dest.txt
