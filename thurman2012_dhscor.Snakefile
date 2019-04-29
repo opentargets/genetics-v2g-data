@@ -50,7 +50,7 @@ rule thurman2012_format:
         bed = tmpdir + '/interval/dhscor/thurman2012/unspecified/dhs_correlations.bed.gz',
         gtf = tmpdir + '/Homo_sapiens.GRCh37.87.gtf.gz'
     output:
-        tmpdir + '/interval/dhscor/thurman2012/{version}/data.tsv.gz'
+        tmpdir + '/interval/dhscor/thurman2012/{version}/data_b37.tsv.gz'
     shell:
         'python scripts/thurman2012_format.py '
         '--inf {input.bed} '
@@ -58,11 +58,28 @@ rule thurman2012_format:
         '--gtf {input.gtf} '
         '--cell_name aggregate'
 
+rule liftover_to_GRCh38:
+    ''' Lifts over co-ordinates to build 38
+    '''
+    input:
+        data = tmpdir + '/interval/dhscor/thurman2012/{version}/data_b37.tsv.gz',
+        chainfile = config['chain_grch37_to_grch38']
+    output:
+        tmpdir + '/interval/dhscor/thurman2012/{version}/data_b38.tsv.gz'
+    params:
+        maxdiff = config['max_len_dff']
+    shell:
+        'python scripts/liftover_interval.py '
+        '--inf {input.data} '
+        '--outf {output} '
+        '--chainfile {input.chainfile} '
+        '--maxdiff {params.maxdiff} '
+
 rule thurman2012_to_parquet:
     ''' Uses spark to write parquet file
     '''
     input:
-        tmpdir + '/interval/dhscor/thurman2012/{version}/data.tsv.gz'
+        tmpdir + '/interval/dhscor/thurman2012/{version}/data_b38.tsv.gz'
     output:
         directory(config['out_dir'] + '/interval/dhscor/thurman2012/{version}/data.parquet')
     shell:

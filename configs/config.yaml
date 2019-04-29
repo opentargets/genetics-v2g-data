@@ -19,3 +19,7 @@ gtex7_manifest: 'configs/GTEx_v7_tissues.manifest.tsv'
 javierre_cell_map: configs/javierre2016_bio_feature_map.csv
 gtex7_map: configs/gtex7_bio_feature_map.csv
 sun2018_cell: UBERON_0001969
+
+# Interval Liftover
+chain_grch37_to_grch38: grch37_to_grch38.over.chain.gz
+max_len_dff: 100 # Max difference in length between old and new interval (in bases)

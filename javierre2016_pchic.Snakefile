@@ -16,6 +16,11 @@ targets = []
 # Get list of cell line names
 cell_types,  = GSRemoteProvider().glob_wildcards('gs://genetics-portal-input/v2g_input/javierre2016/{samples}.merged_samples_12Apr2015_full.txt.gz')
 
+# DEBUG
+print("WARNING! Only running 1 cell type")
+cell_types = cell_types[:1]
+# sys.exit()
+
 # Create output
 target = '{out_dir}/{data_type}/{exp_type}/{source}/{version}/data.parquet'.format(
     out_dir=config['out_dir'],
@@ -77,18 +82,35 @@ rule javierre2016_format:
     input:
         tmpdir + '/interval/pchic/javierre2016/{version}/{cell}/tss.bed.gz'
     output:
-        tmpdir + '/interval/pchic/javierre2016/{version}/{cell}/processed.tsv.gz'
+        tmpdir + '/interval/pchic/javierre2016/{version}/{cell}/processed_b37.tsv.gz'
     shell:
         'python scripts/javierre2016_format.py '
         '--inf {input} '
         '--outf {output} '
         '--cell_name {wildcards.cell}'
 
+rule liftover_to_GRCh38:
+    ''' Lifts over co-ordinates to build 38
+    '''
+    input:
+        data = tmpdir + '/interval/pchic/javierre2016/{version}/{cell}/processed_b37.tsv.gz',
+        chainfile = config['chain_grch37_to_grch38']
+    output:
+        tmpdir + '/interval/pchic/javierre2016/{version}/{cell}/processed_b38.tsv.gz'
+    params:
+        maxdiff = config['max_len_dff']
+    shell:
+        'python scripts/liftover_interval.py '
+        '--inf {input.data} '
+        '--outf {output} '
+        '--chainfile {input.chainfile} '
+        '--maxdiff {params.maxdiff} '
+
 rule javierre2016_to_parquet:
     ''' Uses spark to write parquet file
     '''
     input:
-        data=[tmpdir + '/interval/pchic/javierre2016/{version}/{cell}/processed.tsv.gz'.format(
+        data=[tmpdir + '/interval/pchic/javierre2016/{version}/{cell}/processed_b38.tsv.gz'.format(
             version=version, cell=cell_type) for cell_type in cell_types],
         cell_map=config['javierre_cell_map']
     output:

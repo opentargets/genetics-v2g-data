@@ -35,6 +35,9 @@ conda env create -n v2g_data --file environment.yaml
 # Activate environment
 source activate v2g_data
 
+# Install pyliftover
+pip install pyliftover
+
 # Alter configuration file
 nano config.yaml
 

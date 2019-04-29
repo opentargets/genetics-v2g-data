@@ -51,7 +51,7 @@ rule andersson2014_format:
         gtf = GSRemoteProvider().remote('gs://genetics-portal-data/lut/gene_dictionary.json',
                                         keep_local=False)
     output:
-        tmpdir + '/interval/fantom5/andersson2014/{version}/data.tsv.gz'
+        tmpdir + '/interval/fantom5/andersson2014/{version}/data_b37.tsv.gz'
     shell:
         'python scripts/andersson2014_format.py '
         '--inf {input.bed} '
@@ -59,11 +59,28 @@ rule andersson2014_format:
         '--gene_info {input.gtf} '
         '--cell_name aggregate'
 
+rule liftover_to_GRCh38:
+    ''' Lifts over co-ordinates to build 38
+    '''
+    input:
+        data = tmpdir + '/interval/fantom5/andersson2014/{version}/data_b37.tsv.gz',
+        chainfile = config['chain_grch37_to_grch38']
+    output:
+        tmpdir + '/interval/fantom5/andersson2014/{version}/data_b38.tsv.gz'
+    params:
+        maxdiff = config['max_len_dff']
+    shell:
+        'python scripts/liftover_interval.py '
+        '--inf {input.data} '
+        '--outf {output} '
+        '--chainfile {input.chainfile} '
+        '--maxdiff {params.maxdiff} '
+
 rule andersson2014_to_parquet:
     ''' Uses spark to write parquet file
     '''
     input:
-        tmpdir + '/interval/fantom5/andersson2014/{version}/data.tsv.gz'
+        tmpdir + '/interval/fantom5/andersson2014/{version}/data_b38.tsv.gz'
     output:
         directory(config['out_dir'] + '/interval/fantom5/andersson2014/{version}/data.parquet')
     shell:
