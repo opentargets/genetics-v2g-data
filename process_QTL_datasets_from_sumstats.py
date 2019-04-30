@@ -25,7 +25,7 @@ def main():
     in_path = 'gs://genetics-portal-sumstats-b38/unfiltered/molecular_trait'
     study_list = [
         'ALASOO_2018.parquet',
-        'BLUEPRINT.parquet',
+        'Blueprint.parquet',
         'CEDAR.parquet',
         'FAIRFAX_2012.parquet',
         'FAIRFAX_2014.parquet',
