@@ -31,7 +31,7 @@ def main():
         'FAIRFAX_2014.parquet',
         'GENCORD.parquet',
         'GEUVADIS.parquet',
-        'GTEX_V7.parquet',
+        'GTEX_v7.parquet',
         'HIPSCI.parquet',
         'NARANBHAI_2015.parquet',
         'NEDELEC_2016.parquet',
