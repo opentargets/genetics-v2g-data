@@ -80,10 +80,9 @@ def main():
         df
         .write
         .partitionBy('type', 'study_id', 'bio_feature')
-        .parquet(
+        .json(
             outf,
-            mode='overwrite',
-            compression='snappy'
+            mode='overwrite'
         )
     )
     
