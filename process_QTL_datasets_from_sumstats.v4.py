@@ -3,6 +3,13 @@
 #
 # Ed Mountjoy
 #
+'''
+This is the version of the script for version 4 (post- June 2019),
+for version 3 (June 2019) I will hack the data so that the main
+pipeline doesn't require any changes
+'''
+
+
 
 '''
 # Set SPARK_HOME and PYTHONPATH to use 2.4.0
@@ -22,26 +29,7 @@ from datetime import date
 def main():
 
     # Args
-    in_path = 'gs://genetics-portal-sumstats-b38/unfiltered/molecular_trait'
-    study_list = [
-        'ALASOO_2018.parquet',
-        'Blueprint.parquet',
-        'CEDAR.parquet',
-        'FAIRFAX_2012.parquet',
-        'FAIRFAX_2014.parquet',
-        'GENCORD.parquet',
-        'GEUVADIS.parquet',
-        'GTEX_v7.parquet',
-        'HIPSCI.parquet',
-        'NARANBHAI_2015.parquet',
-        'NEDELEC_2016.parquet',
-        'QUACH_2016.parquet',
-        'SCHWARTZENTRUBER_2018.parquet',
-        'SUN2018.parquet',
-        'TWINSUK.parquet',
-        'VAN_DE_BUNT_2015.parquet',
-        'eQTLGen.parquet'
-    ]
+    in_path = 'gs://genetics-portal-sumstats-b38/filtered/pvalue_0.05/molecular_trait'
     outf = 'gs://genetics-portal-staging/v2g/qtl/{version}'.format(
         version=date.today().strftime("%y%m%d")
     )
@@ -53,15 +41,9 @@ def main():
         .getOrCreate()
     )
     print('Spark version: ', spark.version)
-
-    # Load list of datasets
-    dfs = []
-    for in_path in [os.path.join(in_path, study) for study in study_list]:
-        df_temp = spark.read.parquet(in_path)
-        dfs.append(df_temp)
     
-    # Take union
-    df = reduce(pyspark.sql.DataFrame.unionByName, dfs)
+    # Load datasets
+    df = spark.read.json(in_path)
 
     # Filter based on bonferonni correction of number of tests per gene
     df = df.filter(col('pval') <= (0.05 / col('num_tests')))

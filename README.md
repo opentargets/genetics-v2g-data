@@ -33,10 +33,7 @@ Requries:
 conda env create -n v2g_data --file environment.yaml
 
 # Activate environment
-source activate v2g_data
-
-# Install pyliftover
-pip install pyliftover
+conda activate v2g_data
 
 # Alter configuration file
 nano config.yaml
@@ -74,7 +71,7 @@ gcloud beta dataproc clusters create \
 # Submit QTL processing job
 gcloud dataproc jobs submit pyspark \
     --cluster=em-qtlprocess \
-    process_QTL_datasets_from_sumstats.py
+    process_QTL_datasets_from_sumstats.v3.py
 
 # To monitor
 gcloud compute ssh em-qtlprocess-m \
