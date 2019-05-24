@@ -63,7 +63,10 @@ def main():
           .withColumnRenamed('bio_feature_code', 'bio_feature') )
 
     # Repartition
-    df = df.repartitionByRange('chrom', 'start', 'end')
+    df = (
+        df.repartitionByRange('chrom', 'start', 'end')
+        .sortWithinPartitions('chrom', 'start', 'end')
+    )
     print('Num partitions: ', df.rdd.getNumPartitions())
 
     # Write

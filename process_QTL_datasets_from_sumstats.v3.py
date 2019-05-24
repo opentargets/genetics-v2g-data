@@ -67,7 +67,7 @@ def main():
     # Repartition
     hack = (
         hack.repartitionByRange('chrom', 'pos')
-        .orderBy('chrom', 'pos')
+        .sortWithinPartitions('chrom', 'pos')
     ).persist()
 
     # Save data

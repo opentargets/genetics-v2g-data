@@ -41,7 +41,10 @@ def main():
     df.printSchema()
 
     # Repartition
-    df = df.repartitionByRange('chrom', 'start', 'end')
+    df = (
+        df.repartitionByRange('chrom', 'start', 'end')
+        .sortWithinPartitions('chrom', 'start', 'end')
+    )
     print('Num partitions: ', df.rdd.getNumPartitions())
 
     # Write
