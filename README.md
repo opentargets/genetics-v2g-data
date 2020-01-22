@@ -15,9 +15,6 @@ Workflows to generate cis-regulatory datasets used for variant-to-gene (V2G) ass
     - [PCHi-C (Javierre, 2016)](#promoter-capture-hi-c-javierre-2016)
     - [Enhancer-TSS corr (FANTOM5)](#enhancer-tss-correlation-fantom5)
     - [DHS-promoter corr (Thurman, 2012)](#dhs-promoter-correlation-thurman-2012)
-  - [Functional prediction](#functional-prediction-datasets)
-    - [VEP (Ensembl)](#variant-effect-predictor-vep)
-  - [Closest gene](#closest-gene)
 
 #### Requirements
 
