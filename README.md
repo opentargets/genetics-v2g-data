@@ -12,6 +12,7 @@ Workflows to generate cis-regulatory datasets used for variant-to-gene (V2G) ass
     - [eQTL (GTEx V7)](#eqtl-gtex-v7)
     - [pQTL (Sun *et al.*, 2018)](#pqtl-sun-et-al-2018)
   - [Interval (interaction based)](#interval-interaction-based-datasets)
+    - [PCHi-C (Jung, 2019)](#promoter-capture-hi-c-jung-201)
     - [PCHi-C (Javierre, 2016)](#promoter-capture-hi-c-javierre-2016)
     - [Enhancer-TSS corr (FANTOM5)](#enhancer-tss-correlation-fantom5)
     - [DHS-promoter corr (Thurman, 2012)](#dhs-promoter-correlation-thurman-2012)
@@ -139,6 +140,15 @@ Interval output columns:
   - `ensembl_id`: Ensembl gene ID
   - `score`: feature score from original dataset (unmodified)
   - `cell_type`: cell or tissue type of this experiment
+
+#### Promoter Capture Hi-C (Jung, 2019)
+
+Evidence linking genetic variation to genes using Promoter Capture Hi-C in 27 human cell/tissue types.
+- [Publication link](https://www.nature.com/articles/s41588-019-0494-8)
+- [Dataset link: Table S3](https://static-content.springer.com/esm/art%3A10.1038%2Fs41588-019-0494-8/MediaObjects/41588_2019_494_MOESM3_ESM.xlsx)
+- Score = 1 or 0
+- Filters:
+  - Only significant P–O pcHi-C interactions included at source
 
 #### Promoter Capture Hi-C (Javierre, 2016)
 
