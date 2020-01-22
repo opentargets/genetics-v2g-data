@@ -72,7 +72,7 @@ gcloud beta dataproc clusters create \
 # Submit QTL processing job
 gcloud dataproc jobs submit pyspark \
     --cluster=em-qtlprocess \
-    process_QTL_datasets_from_sumstats.v3.py
+    process_QTL_datasets_from_sumstats.w_hack.py
 
 # To monitor
 gcloud compute ssh em-qtlprocess-m \
