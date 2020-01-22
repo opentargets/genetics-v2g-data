@@ -12,7 +12,7 @@ Workflows to generate cis-regulatory datasets used for variant-to-gene (V2G) ass
     - [eQTL (GTEx V7)](#eqtl-gtex-v7)
     - [pQTL (Sun *et al.*, 2018)](#pqtl-sun-et-al-2018)
   - [Interval (interaction based)](#interval-interaction-based-datasets)
-    - [PCHi-C (Jung, 2019)](#promoter-capture-hi-c-jung-201)
+    - [PCHi-C (Jung, 2019)](#promoter-capture-hi-c-jung-2019)
     - [PCHi-C (Javierre, 2016)](#promoter-capture-hi-c-javierre-2016)
     - [Enhancer-TSS corr (FANTOM5)](#enhancer-tss-correlation-fantom5)
     - [DHS-promoter corr (Thurman, 2012)](#dhs-promoter-correlation-thurman-2012)
