@@ -175,37 +175,6 @@ Evidence linking genetic variation to genes using correlation of DNase I hyperse
   - Pre-filtered at source to remove interactions over 500 kb
   - Pre-filtered at source to between chromsome interactions
 
-### Functional prediction datasets
-
-Functional prediction datatypes contain *in silico* prediction of the functional consequence of a genetic variant on a gene's transcript (e.g. VEP).
-
-#### Variant effect predictor (VEP)
-
-Most severe coding-sequence consequence(s) from Ensembl's Variant Effect Predictor.
-- [Publication link](https://www.ncbi.nlm.nih.gov/pubmed/27268795)
-- [Dataset link](ftp://ftp.ensembl.org/pub/grch37/update/variation/vcf/homo_sapiens/Homo_sapiens_incl_consequences.vcf.gz)
-- Scores = consequences are mapped to `v2g_score` in [this file](configs/vep_consequences.tsv)
-- Filters:
-  - Consequences with score 0 are removed from V2G assignment
-
-### Closest gene
-
-Closest gene files contain the closest gene for each variant in the variant index.
-
-Closest gene output columns:
-  - `varid`: variant ID (`chrom_pos_ref_alt`) (GRCh37)
-  - `ensemblid_protein_coding`: Ensembl ID of nearest protein coding gene
-  - `distance_protein_coding`: Distance (bp) from variant to nearest protein coding gene
-  - `ensemblid_any`: Ensembl ID of nearest gene (any)
-  - `distance_any`: Distance (bp) from variant to nearest gene (any)
-
-Closest gene methods
-  - Use the input Ensembl VCF with VEP consequences as a variant index (`gs://genetics-portal-data/homo_sapiens_incl_consequences.vcf.gz`)
-    - Convert VCF to BED using variant ID (`chrom_pos_ref_alt`) as "name"
-  - Download Ensembl GRCh37 GTF gene definitions
-    - Convert GTF to TSS bed file using (i) protein coding genes only, (ii) all genes.
-  - Use `bedtools closest` to find nearest (i) protein coding gene, (ii) any gene TSS to each variant in the index
-
 
 #### Copy from staging to genetics-portal-data
 
