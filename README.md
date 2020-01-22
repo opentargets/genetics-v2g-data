@@ -26,7 +26,9 @@ Requries:
 
 #### Usage
 
-```
+##### Generate chromatin interaction datasets
+
+```bash
 # Install dependencies into isolated environment
 conda env create -n v2g_data --file environment.yaml
 
@@ -46,13 +48,18 @@ export PYSPARK_SUBMIT_ARGS="--driver-memory 8g pyspark-shell"
 ncores=3
 snakemake -s andersson2014_fantom5.Snakefile --cores $ncores
 snakemake -s thurman2012_dhscor.Snakefile --cores $ncores
-snakemake -s javierre2016_pchic.Snakefile --cores $ncores # To be removed?
+# snakemake -s javierre2016_pchic.Snakefile --cores $ncores
 snakemake -s jung2019_pchic.Snakefile --cores $ncores
 
 # Copy output to GCS
 gsutil -m rsync -r -x ".*DS_Store$" output gs://genetics-portal-staging/v2g
 
-# Update list of QTL studies in process_QTL_datasets_from_sumstats.py
+```
+
+##### Process molecular QTL datasets
+
+```bash
+# Update list of QTL studies in process_QTL_datasets_from_sumstats.w_hack.py
 
 # Start dataproc server
 gcloud beta dataproc clusters create \
