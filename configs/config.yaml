@@ -6,7 +6,7 @@ out_dir: 'output'
 cell_map: gs://genetics-portal-data/lut/biofeature_lut_190920.w_composites.json
 
 # Gene information
-genes: gs://genetics-portal-data/lut/19.06_gene_symbol_synonym_map.json
+genes: gs://genetics-portal-input/luts/19.06_gene_symbol_synonym_map.json
 
 # Interval Liftover
 chain_grch37_to_grch38: grch37_to_grch38.over.chain.gz
