@@ -117,7 +117,7 @@ Evidence linking genetic varition to gene expression in each of the 44 GTEx V7 t
 - Dataset: GTEx significant pairs files
 - Score = -log10(pval)
 - Filters:
-  - Pre-filtered at source to contain only "significant" associations based on permutation analysis (p_perm < 0.05)
+  - Variants are filtered to keep those with p-value ≤ (0.05 / number of variants tested for the gene)
   - Pre-filtered at source to remove associations >1Mb from gene TSS
 
 #### pQTL (Sun *et al.*, 2018)
@@ -127,7 +127,7 @@ Evidence linking genetic varition to protein abundance in Sun *et al.* (2018) pQ
 - [Dataset link](http://www.phpc.cam.ac.uk/ceu/proteins/)
 - Score = -log10(pval)
 - Filters:
-  - Filtered to approximately match GTEx permutation filtering using a p < 2.5e-5 threshold. This equates to ~2000 independant tests per gene region.
+  - Variants are filtered to keep those with p-value ≤ (0.05 / number of variants tested for the gene)
   - Filtered to remove associations >1Mb from each gene TSS.
 - Notes:
   - 3,195 total SOMA IDs goes to 2,872 unique Ensembl gene IDs (323 lost). For these we are deduplicating by gene_id and keeping the first occurence in the manifest.
