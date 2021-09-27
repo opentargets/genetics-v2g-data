@@ -36,7 +36,7 @@ conda env create -n v2g_data --file environment.yaml
 conda activate v2g_data
 
 # Alter configuration file
-nano config.yaml
+nano configs/config.yaml
 
 # Authenticate google cloud storage
 gcloud auth application-default login
@@ -66,9 +66,9 @@ gcloud beta dataproc clusters create \
     em-qtlprocess \
     --image-version=preview \
     --properties=spark:spark.debug.maxToStringFields=100,spark:spark.executor.cores=32,spark:spark.executor.instances=1 \
-    --master-machine-type=n1-standard-32 \
-    --master-boot-disk-size=1TB \
-    --num-master-local-ssds=1 \
+    --master-machine-type=n2-standard-32 \
+    --master-boot-disk-size=2TB \
+    --num-master-local-ssds=0 \
     --zone=europe-west1-d \
     --initialization-action-timeout=20m \
     --single-node \
@@ -77,13 +77,13 @@ gcloud beta dataproc clusters create \
 # Submit QTL processing job
 gcloud dataproc jobs submit pyspark \
     --cluster=em-qtlprocess \
-    process_QTL_datasets_from_sumstats.w_hack.py
+    process_QTL_datasets_from_sumstats.wo_hack.py
 
 # To monitor
 gcloud compute ssh em-qtlprocess-m \
-  --project=open-targets-genetics \
+  --project=open-targets-genetics-dev \
   --zone=europe-west1-d -- -D 1080 -N
-"EdApplications/Google Chrome.app/Contents/MacOS/Google Chrome" \
+"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
   --proxy-server="socks5://localhost:1080" \
   --user-data-dir="/tmp/em-qtlprocess-m" http://em-qtlprocess-m:8088
 ```
@@ -112,7 +112,7 @@ QTL output columns:
 
 #### eQTL (GTEx V7)
 
-Evidence linking genetic varition to gene expression in each of the 44 GTEx V7 tissues.
+Evidence linking genetic variation to gene expression in each of the 44 GTEx V7 tissues.
 - [Publication link](https://www.ncbi.nlm.nih.gov/pubmed/29022597)
 - Dataset: GTEx significant pairs files
 - Score = -log10(pval)
@@ -122,7 +122,7 @@ Evidence linking genetic varition to gene expression in each of the 44 GTEx V7 t
 
 #### pQTL (Sun *et al.*, 2018)
 
-Evidence linking genetic varition to protein abundance in Sun *et al.* (2018) pQTL data.
+Evidence linking genetic variation to protein abundance in Sun *et al.* (2018) pQTL data.
 - [Publication link](https://www.ncbi.nlm.nih.gov/pubmed/29875488)
 - [Dataset link](http://www.phpc.cam.ac.uk/ceu/proteins/)
 - Score = -log10(pval)
