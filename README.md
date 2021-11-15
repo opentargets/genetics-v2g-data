@@ -88,6 +88,10 @@ gcloud compute ssh em-qtlprocess-m \
   --user-data-dir="/tmp/em-qtlprocess-m" http://em-qtlprocess-m:8088
 ```
 
+## Make mappings file
+
+Follow steps in mapping/README.md.
+
 ## Datasets
 
 ### Quantitative trait loci (QTL) datasets
@@ -110,16 +114,26 @@ QTL output columns:
   - `se`: standard error of `beta`
   - `pval`: p-value of association
 
-#### eQTL (GTEx V7)
+#### eQTL
 
-Evidence linking genetic variation to gene expression in each of the 44 GTEx V7 tissues.
-- [Publication link](https://www.ncbi.nlm.nih.gov/pubmed/29022597)
-- Dataset: GTEx significant pairs files
+Most data now comes from eQTL catalogue, including GTEx eQTLs, which have been reprocessed by eQTL catalogue.
+
+- [Publication link](https://pubmed.ncbi.nlm.nih.gov/34493866/)
+- Dataset: summary statistics ingested from eQTL catalogue and other eQTL datasets
 - Score = -log10(pval)
 - Filters:
   - Variants are filtered to keep those with p-value ≤ (0.05 / number of variants tested for the gene)
   - Pre-filtered at source to remove associations >1Mb from gene TSS
 
+#### sQTL
+
+This is still to be done.
+sQTL data will be integrated initially from GTEx v8, but may be switched to uniform data from the eQTL catalogue in the future, once this is ready.
+
+- [Publication link](https://www.ncbi.nlm.nih.gov/pubmed/29022597)
+- Score = -log10(pval)
+- Filters:
+  - Same as for eQTLs
 #### pQTL (Sun *et al.*, 2018)
 
 Evidence linking genetic variation to protein abundance in Sun *et al.* (2018) pQTL data.

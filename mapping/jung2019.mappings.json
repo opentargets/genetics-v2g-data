@@ -1,0 +1,23 @@
+{"original_source": "jung2019", "biofeature_string": "Trophoblast", "label": "Trophoblast", "biofeature_code": "UBERON_0000088", "biofeature_ontology_term": "UBERON_0000088"}
+{"original_source": "jung2019", "biofeature_string": "Left Ventricle", "label": "Heart left ventricle", "biofeature_code": "UBERON_0002084", "biofeature_ontology_term": "UBERON_0002084"}
+{"original_source": "jung2019", "biofeature_string": "Adrenal Gland", "label": "Adrenal gland", "biofeature_code": "UBERON_0002369", "biofeature_ontology_term": "UBERON_0002369"}
+{"original_source": "jung2019", "biofeature_string": "Human ES cells", "label": "Embryonic stem cells", "biofeature_code": "ES_CELLS", "biofeature_ontology_term": ""}
+{"original_source": "jung2019", "biofeature_string": "Neural Progenitor Cell", "label": "Neural Progenitor Cell", "biofeature_code": "NEURAL_PROGENITOR_CELL", "biofeature_ontology_term": ""}
+{"original_source": "jung2019", "biofeature_string": "Small Bowel", "label": "Small intestine", "biofeature_code": "UBERON_0002108", "biofeature_ontology_term": "UBERON_0002108"}
+{"original_source": "jung2019", "biofeature_string": "Right Ventricle", "label": "Right Ventricle", "biofeature_code": "UBERON_0002080", "biofeature_ontology_term": "UBERON_0002080"}
+{"original_source": "jung2019", "biofeature_string": "Mesendoderm", "label": "Mesendoderm", "biofeature_code": "MESENDODERM", "biofeature_ontology_term": ""}
+{"original_source": "jung2019", "biofeature_string": "Mesenchymal Stem Cell", "label": "Mesenchymal Stem Cell", "biofeature_code": "MESENCHYMAL_STEM_CELL", "biofeature_ontology_term": ""}
+{"original_source": "jung2019", "biofeature_string": "Sigmoid Colon", "label": "Colon sigmoid", "biofeature_code": "UBERON_0001159", "biofeature_ontology_term": "UBERON_0001159"}
+{"original_source": "jung2019", "biofeature_string": "Fibroblast", "label": "Fibroblast", "biofeature_code": "FIBROBLAST", "biofeature_ontology_term": ""}
+{"original_source": "jung2019", "biofeature_string": "Hippocampus", "label": "Brain hippocampus", "biofeature_code": "UBERON_0002421", "biofeature_ontology_term": "UBERON_0002421"}
+{"original_source": "jung2019", "biofeature_string": "Esophagus", "label": "Esophagus", "biofeature_code": "UBERON_0001043", "biofeature_ontology_term": "UBERON_0001043"}
+{"original_source": "jung2019", "biofeature_string": "Dorsolateral Prefrontal Cortex", "label": "Dorsolateral Prefrontal Cortex", "biofeature_code": "UBERON_0009834", "biofeature_ontology_term": "UBERON_0009834"}
+{"original_source": "jung2019", "biofeature_string": "Fat", "label": "Fat", "biofeature_code": "FAT", "biofeature_ontology_term": ""}
+{"original_source": "jung2019", "biofeature_string": "Bladder", "label": "Bladder", "biofeature_code": "UBERON_0001255", "biofeature_ontology_term": "UBERON_0001255"}
+{"original_source": "jung2019", "biofeature_string": "Thymus", "label": "Thymus", "biofeature_code": "UBERON_0002370", "biofeature_ontology_term": "UBERON_0002370"}
+{"original_source": "jung2019", "biofeature_string": "Psoas", "label": "Psoas", "biofeature_code": "UBERON_0008450", "biofeature_ontology_term": "UBERON_0008450"}
+{"original_source": "jung2019", "biofeature_string": "Lymphoblastoid cell lines", "label": "Lymphoblastoid cell lines", "biofeature_code": "LYMPHOBLASTOID_CELL", "biofeature_ontology_term": ""}
+{"original_source": "jung2019", "biofeature_string": "Aorta", "label": "Artery aorta", "biofeature_code": "UBERON_0000947", "biofeature_ontology_term": "UBERON_0000947"}
+{"original_source": "jung2019", "biofeature_string": "Gastric", "label": "Gastric", "biofeature_code": "GASTRIC", "biofeature_ontology_term": ""}
+{"original_source": "jung2019", "biofeature_string": "Right Atrium", "label": "Right Atrium", "biofeature_code": "UBERON_0002078", "biofeature_ontology_term": "UBERON_0002078"}
+{"original_source": "jung2019", "biofeature_string": "Spleen", "label": "spleen", "biofeature_code": "UBERON_0002106", "biofeature_ontology_term": "UBERON_0002106"}

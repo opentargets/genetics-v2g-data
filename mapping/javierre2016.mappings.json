@@ -1,0 +1,17 @@
+{"original_source": "javierre2016", "biofeature_string": "Endothelial_precursors", "label": "Endothelial precursors", "biofeature_code": "ENDOTHELIAL_PRECURSORS"}
+{"original_source": "javierre2016", "biofeature_string": "Erythroblasts", "label": "Erythroblasts", "biofeature_code": "ERYTHROBLASTS"}
+{"original_source": "javierre2016", "biofeature_string": "Foetal_thymus", "label": "Foetal thymus", "biofeature_code": "FOETAL_THYMUS"}
+{"original_source": "javierre2016", "biofeature_string": "Macrophages_M0", "label": "Macrophages M0", "biofeature_code": "MACROPHAGES_M0"}
+{"original_source": "javierre2016", "biofeature_string": "Macrophages_M1", "label": "Macrophages M1", "biofeature_code": "MACROPHAGES_M1"}
+{"original_source": "javierre2016", "biofeature_string": "Macrophages_M2", "label": "Macrophages M2", "biofeature_code": "MACROPHAGES_M2"}
+{"original_source": "javierre2016", "biofeature_string": "Megakaryocytes", "label": "Megakaryocytes", "biofeature_code": "MEGAKARYOCYTES"}
+{"original_source": "javierre2016", "biofeature_string": "Monocytes", "label": "Monocytes", "biofeature_code": "MONOCYTES"}
+{"original_source": "javierre2016", "biofeature_string": "Naive_B", "label": "Naive B", "biofeature_code": "NAIVE_B"}
+{"original_source": "javierre2016", "biofeature_string": "Naive_CD4", "label": "Naive CD4", "biofeature_code": "NAIVE_CD4"}
+{"original_source": "javierre2016", "biofeature_string": "Naive_CD8", "label": "Naive CD8", "biofeature_code": "NAIVE_CD8"}
+{"original_source": "javierre2016", "biofeature_string": "Neutrophils", "label": "Neutrophils", "biofeature_code": "NEUTROPHILS"}
+{"original_source": "javierre2016", "biofeature_string": "Total_B", "label": "Total B", "biofeature_code": "TOTAL_B"}
+{"original_source": "javierre2016", "biofeature_string": "Total_CD4_Activated", "label": "Total CD4 Activated", "biofeature_code": "TOTAL_CD4_ACTIVATED"}
+{"original_source": "javierre2016", "biofeature_string": "Total_CD4_MF", "label": "Total CD4 MF", "biofeature_code": "TOTAL_CD4_MF"}
+{"original_source": "javierre2016", "biofeature_string": "Total_CD4_NonActivated", "label": "Total CD4 NonActivated", "biofeature_code": "TOTAL_CD4_NONACTIVATED"}
+{"original_source": "javierre2016", "biofeature_string": "Total_CD8", "label": "Total CD8", "biofeature_code": "TOTAL_CD8"}
