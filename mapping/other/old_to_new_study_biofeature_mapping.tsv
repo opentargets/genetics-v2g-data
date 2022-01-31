@@ -1,0 +1,128 @@
+study_id	biofeature_string	biofeature_code	biofeature_ontology_term	label	tissue_label	condition_label	old_study_id	old_bio_feature_code
+Alasoo_2018	macrophage_IFNg	MACROPHAGE_IFNG	CL_0000235	macrophage IFNg 18h	macrophage	IFNg_18h	ALASOO_2018	MACROPHAGE_IFNG
+Alasoo_2018	macrophage_IFNg+Salmonella	MACROPHAGE_IFNG+SALMONELLA	CL_0000235	macrophage IFNg 18h+Salmonella 5h	macrophage	IFNg_18h+Salmonella_5h	ALASOO_2018	MACROPHAGE_IFNG_SALMONELLA
+Alasoo_2018	macrophage_naive	MACROPHAGE_NAIVE	CL_0000235	macrophage	macrophage	naive	ALASOO_2018	MACROPHAGE_NAIVE
+Alasoo_2018	macrophage_Salmonella	MACROPHAGE_SALMONELLA	CL_0000235	macrophage Salmonella 5h	macrophage	Salmonella_5h	ALASOO_2018	MACROPHAGE_SALMONELLA
+BLUEPRINT	monocyte	MONOCYTE	CL_0002057	monocyte	monocyte	naive	Blueprint	MONOCYTE
+BLUEPRINT	neutrophil	NEUTROPHIL	CL_0000775	neutrophil	neutrophil	naive	Blueprint	NEUTROPHIL
+BLUEPRINT	T-cell	T-CELL	CL_0000624	CD4+ T cell	CD4+ T cell	naive	Blueprint	T_CELL
+Braineac2	putamen	PUTAMEN	UBERON_0001874	brain (putamen)	brain (putamen)	naive		
+Braineac2	substantia_nigra	SUBSTANTIA_NIGRA	UBERON_0002038	brain (substantia nigra)	brain (substantia_nigra)	naive		
+BrainSeq	brain	BRAIN	UBERON_0009834	brain (DLPFC)	brain (DLPFC)	naive		
+CAP	LCL_naive	LCL_NAIVE	EFO_0005292	LCL	LCL	naive		
+CAP	LCL_statin	LCL_STATIN	EFO_0005292	LCL statin	LCL	statin		
+CEDAR	B-cell_CD19	B-CELL_CD19	CL_0000236	B cell	B cell	naive	CEDAR	B_CELL_CD19
+CEDAR	ileum	ILEUM	UBERON_0002116	ileum	ileum	naive	CEDAR	ILEUM
+CEDAR	monocyte_CD14	MONOCYTE_CD14	CL_0002057	monocyte	monocyte	naive	CEDAR	MONOCYTE_CD14
+CEDAR	neutrophil_CD15	NEUTROPHIL_CD15	CL_0000775	neutrophil	neutrophil	naive	CEDAR	NEUTROPHIL_CD15
+CEDAR	platelet	PLATELET	CL_0000233	platelet	platelet	naive	CEDAR	PLATELET
+CEDAR	rectum	RECTUM	UBERON_0001052	rectum	rectum	naive	CEDAR	RECTUM
+CEDAR	T-cell_CD4	T-CELL_CD4	CL_0000624	CD4+ T cell	CD4+ T cell	naive	CEDAR	T_CELL_CD4
+CEDAR	T-cell_CD8	T-CELL_CD8	CL_0000625	CD8+ T cell	CD8+ T cell	naive	CEDAR	T_CELL_CD8
+CEDAR	transverse_colon	TRANSVERSE_COLON	UBERON_0001157	transverse colon	transverse colon	naive	CEDAR	TRANSVERSE_COLON
+CommonMind	DLPFC_naive	DLPFC_NAIVE	UBERON_0009834	brain (DLPFC)	brain (DLPFC)	naive		
+eQTLGen	UBERON_0000178	UBERON_0000178	UBERON_0000178	Blood	Blood	naive	eQTLGen	UBERON_0000178
+Fairfax_2012	B-cell_CD19	B-CELL_CD19	CL_0000236	B cell	B cell	naive	FAIRFAX_2012	B_CELL_CD19
+Fairfax_2014	monocyte_IFN24	MONOCYTE_IFN24	CL_0002057	monocyte IFNg 24h	monocyte	IFNg_24h	FAIRFAX_2014	MONOCYTE_IFN24
+Fairfax_2014	monocyte_LPS2	MONOCYTE_LPS2	CL_0002057	monocyte LPS 2h	monocyte	LPS_2h	FAIRFAX_2014	MONOCYTE_LPS2
+Fairfax_2014	monocyte_LPS24	MONOCYTE_LPS24	CL_0002057	monocyte LPS 24h	monocyte	LPS_24h	FAIRFAX_2014	MONOCYTE_LPS24
+Fairfax_2014	monocyte_naive	MONOCYTE_NAIVE	CL_0002057	monocyte	monocyte	naive	FAIRFAX_2014	MONOCYTE_NAIVE
+FUSION	adipose_naive	ADIPOSE_NAIVE	UBERON_0001013	adipose	adipose	naive		
+FUSION	muscle_naive	MUSCLE_NAIVE	UBERON_0001134	muscle	muscle	naive		
+GENCORD	fibroblast	FIBROBLAST	CL_0000057	fibroblast	fibroblast	naive	GENCORD	FIBROBLAST
+GENCORD	LCL	LCL	EFO_0005292	LCL	LCL	naive	GENCORD	LCL
+GENCORD	T-cell	T-CELL	CL_0000084	T cell	T cell	naive	GENCORD	T_CELL
+GEUVADIS	LCL	LCL	EFO_0005292	LCL	LCL	naive	GEUVADIS	LCL
+GTEx-eQTL	adipose_subcutaneous	ADIPOSE_SUBCUTANEOUS	UBERON_0001013	adipose	adipose	naive	GTEX_v7	UBERON_0002190
+GTEx-eQTL	adipose_visceral	ADIPOSE_VISCERAL	UBERON_0010414	adipose (visceral)	adipose (visceral)	naive	GTEX_v7	UBERON_0014454
+GTEx-eQTL	adrenal_gland	ADRENAL_GLAND	UBERON_0002369	adrenal gland	adrenal gland	naive	GTEX_v7	UBERON_0002369
+GTEx-eQTL	artery_aorta	ARTERY_AORTA	UBERON_0001496	artery (aorta)	artery (aorta)	naive	GTEX_v7	UBERON_0000947
+GTEx-eQTL	artery_coronary	ARTERY_CORONARY	UBERON_0001621	artery (coronary)	artery (coronary)	naive	GTEX_v7	UBERON_0001621
+GTEx-eQTL	artery_tibial	ARTERY_TIBIAL	UBERON_0007610	artery (tibial)	artery (tibial)	naive	GTEX_v7	UBERON_0007610
+GTEx-eQTL	blood	BLOOD	UBERON_0000178	blood	blood	naive	GTEX_v7	UBERON_0000178
+GTEx-eQTL	brain_amygdala	BRAIN_AMYGDALA	UBERON_0001876	brain (amygdala)	brain (amygdala)	naive	GTEX_v7	UBERON_0001876
+GTEx-eQTL	brain_anterior_cingulate_cortex	BRAIN_ANTERIOR_CINGULATE_CORTEX	UBERON_0009835	brain (anterior cingulate cortex)	brain (anterior cingulate cortex)	naive	GTEX_v7	UBERON_0009835
+GTEx-eQTL	brain_caudate	BRAIN_CAUDATE	UBERON_0001873	brain (caudate)	brain (caudate)	naive	GTEX_v7	UBERON_0001873
+GTEx-eQTL	brain_cerebellar_hemisphere	BRAIN_CEREBELLAR_HEMISPHERE	UBERON_0002037	brain (cerebellum)	brain (cerebellum)	naive	GTEX_v7	UBERON_0002037
+GTEx-eQTL	brain_cerebellum	BRAIN_CEREBELLUM	UBERON_0002037	brain (cerebellum)	brain (cerebellum)	naive	GTEX_v7	UBERON_0002037
+GTEx-eQTL	brain_cortex	BRAIN_CORTEX	UBERON_0001870	brain (cortex)	brain (cortex)	naive	GTEX_v7	UBERON_0001870
+GTEx-eQTL	brain_frontal_cortex	BRAIN_FRONTAL_CORTEX	UBERON_0009834	brain (DLPFC)	brain (DLPFC)	naive	GTEX_v7	UBERON_0001870
+GTEx-eQTL	brain_hippocampus	BRAIN_HIPPOCAMPUS	UBERON_0001954	brain (hippocampus)	brain (hippocampus)	naive	GTEX_v7	UBERON_0002421
+GTEx-eQTL	brain_hypothalamus	BRAIN_HYPOTHALAMUS	UBERON_0001898	brain (hypothalamus)	brain (hypothalamus)	naive	GTEX_v7	UBERON_0001898
+GTEx-eQTL	brain_nucleus_accumbens	BRAIN_NUCLEUS_ACCUMBENS	UBERON_0001882	brain (nucleus accumbens)	brain (nucleus accumbens)	naive	GTEX_v7	UBERON_0001882
+GTEx-eQTL	brain_putamen	BRAIN_PUTAMEN	UBERON_0001874	brain (putamen)	brain (putamen)	naive	GTEX_v7	UBERON_0001874
+GTEx-eQTL	brain_spinal_cord	BRAIN_SPINAL_CORD	UBERON_0006469	brain (spinal cord)	brain (spinal cord)	naive	GTEX_v7	UBERON_0002726
+GTEx-eQTL	brain_substantia_nigra	BRAIN_SUBSTANTIA_NIGRA	UBERON_0002038	brain (substantia nigra)	brain (substantia nigra)	naive	GTEX_v7	UBERON_0002038
+GTEx-eQTL	breast	BREAST	UBERON_0008367	breast	breast	naive	GTEX_v7	UBERON_0003584
+GTEx-eQTL	colon_sigmoid	COLON_SIGMOID	UBERON_0001159	sigmoid colon	sigmoid colon	naive	GTEX_v7	UBERON_0001159
+GTEx-eQTL	colon_transverse	COLON_TRANSVERSE	UBERON_0001157	transverse colon	transverse colon	naive	GTEX_v7	UBERON_0001157
+GTEx-eQTL	esophagus_gej	ESOPHAGUS_GEJ	UBERON_0004550	esophagus (gej)	esophagus (gej)	naive	GTEX_v7	UBERON_0007650
+GTEx-eQTL	esophagus_mucosa	ESOPHAGUS_MUCOSA	UBERON_0006920	esophagus (mucosa)	esophagus (mucosa)	naive	GTEX_v7	UBERON_0002469
+GTEx-eQTL	esophagus_muscularis	ESOPHAGUS_MUSCULARIS	UBERON_0004648	esophagus (muscularis)	esophagus (muscularis)	naive	GTEX_v7	UBERON_0011878
+GTEx-eQTL	fibroblast	FIBROBLAST	CL_0000057	fibroblast	fibroblast	naive	GTEX_v7	CLO_0000161
+GTEx-eQTL	heart_atrial_appendage	HEART_ATRIAL_APPENDAGE	UBERON_0006631	heart (atrial appendage)	heart (atrial appendage)	naive	GTEX_v7	UBERON_0006618
+GTEx-eQTL	heart_left_ventricle	HEART_LEFT_VENTRICLE	UBERON_0006566	heart (left ventricle)	heart (left ventricle)	naive	GTEX_v7	UBERON_0002084
+GTEx-eQTL	kidney_cortex	KIDNEY_CORTEX	UBERON_0001225	kidney (cortex)	kidney (cortex)	naive		
+GTEx-eQTL	LCL	LCL	EFO_0005292	LCL	LCL	naive	GTEX_v7	CLO_0000468
+GTEx-eQTL	liver	LIVER	UBERON_0001114	liver	liver	naive	GTEX_v7	UBERON_0002107
+GTEx-eQTL	lung	LUNG	UBERON_0008952	lung	lung	naive	GTEX_v7	UBERON_0002048
+GTEx-eQTL	minor_salivary_gland	MINOR_SALIVARY_GLAND	UBERON_0006330	minor salivary gland	minor salivary gland	naive	GTEX_v7	UBERON_0001830
+GTEx-eQTL	muscle	MUSCLE	UBERON_0001134	muscle	muscle	naive	GTEX_v7	UBERON_0001134
+GTEx-eQTL	nerve_tibial	NERVE_TIBIAL	UBERON_0001323	tibial nerve	tibial nerve	naive	GTEX_v7	UBERON_0001323
+GTEx-eQTL	ovary	OVARY	UBERON_0000992	ovary	ovary	naive	GTEX_v7	UBERON_0000992
+GTEx-eQTL	pancreas	PANCREAS	UBERON_0001150	pancreas	pancreas	naive	GTEX_v7	UBERON_0001264
+GTEx-eQTL	pituitary	PITUITARY	UBERON_0000007	pituitary	pituitary	naive	GTEX_v7	UBERON_0000007
+GTEx-eQTL	prostate	PROSTATE	UBERON_0002367	prostate	prostate	naive	GTEX_v7	UBERON_0002367
+GTEx-eQTL	skin_not_sun_exposed	SKIN_NOT_SUN_EXPOSED	UBERON_0036149	skin (suprapubic)	skin (suprapubic)	naive	GTEX_v7	UBERON_0036149
+GTEx-eQTL	skin_sun_exposed	SKIN_SUN_EXPOSED	UBERON_0002097	skin	skin	naive	GTEX_v7	UBERON_0004264
+GTEx-eQTL	small_intestine	SMALL_INTESTINE	UBERON_0001211	small intestine	small intestine	naive	GTEX_v7	UBERON_0002116
+GTEx-eQTL	spleen	SPLEEN	UBERON_0002106	spleen	spleen	naive	GTEX_v7	UBERON_0002106
+GTEx-eQTL	stomach	STOMACH	UBERON_0000945	stomach	stomach	naive	GTEX_v7	UBERON_0000945
+GTEx-eQTL	testis	TESTIS	UBERON_0000473	testis	testis	naive	GTEX_v7	UBERON_0000473
+GTEx-eQTL	thyroid	THYROID	UBERON_0002046	thyroid	thyroid	naive	GTEX_v7	UBERON_0002046
+GTEx-eQTL	uterus	UTERUS	UBERON_0000995	uterus	uterus	naive	GTEX_v7	UBERON_0000995
+GTEx-eQTL	vagina	VAGINA	UBERON_0000996	vagina	vagina	naive	GTEX_v7	UBERON_0000996
+HipSci	iPSC	IPSC	EFO_0004905	iPSC	iPSC	naive	HIPSCI	IPSC
+iPSCORE	iPSC	IPSC	EFO_0004905	iPSC	iPSC	naive		
+Kasela_2017	T-cell_CD4	T-CELL_CD4	CL_0000624	CD4+ T cell	CD4+ T cell	naive		
+Kasela_2017	T-cell_CD8	T-CELL_CD8	CL_0000625	CD8+ T cell	CD8+ T cell	naive		
+Lepik_2017	blood	BLOOD	UBERON_0000178	blood	blood	naive		
+Naranbhai_2015	neutrophil_CD16	NEUTROPHIL_CD16	CL_0000775	neutrophil	neutrophil	naive	NARANBHAI_2015	NEUTROPHIL_CD16
+Nedelec_2016	macrophage_Listeria	MACROPHAGE_LISTERIA	CL_0000235	macrophage Listeria 5h	macrophage	Listeria_5h	NEDELEC_2016	MACROPHAGE_LISTERIA
+Nedelec_2016	macrophage_naive	MACROPHAGE_NAIVE	CL_0000235	macrophage	macrophage	naive	NEDELEC_2016	MACROPHAGE_NAIVE
+Nedelec_2016	macrophage_Salmonella	MACROPHAGE_SALMONELLA	CL_0000235	macrophage Salmonella 5h	macrophage	Salmonella_5h	NEDELEC_2016	MACROPHAGE_SALMONELLA
+Peng_2018	placenta_naive	PLACENTA_NAIVE	UBERON_0001987	placenta	placenta	naive		
+PhLiPS	HLC	HLC	CL_0000182	hepatocyte	hepatocyte	naive		
+PhLiPS	iPSC	IPSC	EFO_0004905	iPSC	iPSC	naive		
+Quach_2016	monocyte_IAV	MONOCYTE_IAV	CL_0002057	monocyte Influenza 6h	monocyte	Influenza_6h	QUACH_2016	MONOCYTE_IAV
+Quach_2016	monocyte_LPS	MONOCYTE_LPS	CL_0002057	monocyte LPS 6h	monocyte	LPS_6h	QUACH_2016	MONOCYTE_LPS
+Quach_2016	monocyte_naive	MONOCYTE_NAIVE	CL_0002057	monocyte	monocyte	naive	QUACH_2016	MONOCYTE_NAIVE
+Quach_2016	monocyte_Pam3CSK4	MONOCYTE_PAM3CSK4	CL_0002057	monocyte Pam3CSK4 6h	monocyte	Pam3CSK4_6h	QUACH_2016	MONOCYTE_PAM3CSK4
+Quach_2016	monocyte_R848	MONOCYTE_R848	CL_0002057	monocyte R848 6h	monocyte	R848_6h	QUACH_2016	MONOCYTE_R848
+ROSMAP	brain_naive	BRAIN_NAIVE	UBERON_0009834	brain (DLPFC)	brain (DLPFC)	naive		
+Schmiedel_2018	B-cell_naive	B-CELL_NAIVE	CL_0000236	B cell	B cell	naive		
+Schmiedel_2018	CD4_T-cell_anti-CD3-CD28	CD4_T-CELL_ANTI-CD3-CD28	CL_0000624	CD4+ T cell anti-CD3-CD28 4h	CD4+ T cell	anti-CD3-CD28_4h		
+Schmiedel_2018	CD4_T-cell_naive	CD4_T-CELL_NAIVE	CL_0000624	CD4+ T cell	CD4+ T cell	naive		
+Schmiedel_2018	CD8_T-cell_anti-CD3-CD28	CD8_T-CELL_ANTI-CD3-CD28	CL_0000625	CD8+ T cell anti-CD3-CD28 4h	CD8+ T cell	anti-CD3-CD28_4h		
+Schmiedel_2018	CD8_T-cell_naive	CD8_T-CELL_NAIVE	CL_0000625	CD8+ T cell	CD8+ T cell	naive		
+Schmiedel_2018	monocyte_CD16_naive	MONOCYTE_CD16_NAIVE	CL_0002396	CD16+ monocyte	CD16+ monocyte	naive		
+Schmiedel_2018	monocyte_naive	MONOCYTE_NAIVE	CL_0002057	monocyte	monocyte	naive		
+Schmiedel_2018	NK-cell_naive	NK-CELL_NAIVE	CL_0000623	NK cell	NK cell	naive		
+Schmiedel_2018	Tfh_memory	TFH_MEMORY	CL_0002038	Tfh cell	Tfh cell	naive		
+Schmiedel_2018	Th1_memory	TH1_MEMORY	CL_0000545	Th1 cell	Th1 cell	naive		
+Schmiedel_2018	Th1-17_memory	TH1-17_MEMORY	CL_0000899	Th17 cell	Th17 cell	naive		
+Schmiedel_2018	Th17_memory	TH17_MEMORY	CL_0000899	Th17 cell	Th17 cell	naive		
+Schmiedel_2018	Th2_memory	TH2_MEMORY	CL_0000546	Th2 cell	Th2 cell	naive		
+Schmiedel_2018	Treg_memory	TREG_MEMORY	CL_0002678	Treg	Treg naive	naive		
+Schmiedel_2018	Treg_naive	TREG_NAIVE	CL_0002677	Treg memory	Treg memory	naive		
+Schwartzentruber_2018	sensory_neuron	SENSORY_NEURON	CL_0000101	sensory neuron	sensory neuron	naive	SCHWARTZENTRUBER_2018	SENSORY_NEURON
+Steinberg_2020	high_grade_cartilage_naive	HIGH_GRADE_CARTILAGE_NAIVE	UBERON_0002418	cartilage	cartilage	naive		
+Steinberg_2020	low_grade_cartilage_naive	LOW_GRADE_CARTILAGE_NAIVE	UBERON_0002418	cartilage	cartilage	naive		
+Steinberg_2020	synovium_naive	SYNOVIUM_NAIVE	UBERON_0007616	synovium	synovium	naive		
+SUN2018	UBERON_0001969	UBERON_0001969	UBERON_0001969	Blood plasma	Blood plasma	naive	SUN2018	UBERON_0001969
+TwinsUK	blood	BLOOD	UBERON_0000178	blood	blood	naive	TWINSUK	FAT
+TwinsUK	fat	FAT	UBERON_0001013	adipose	adipose	naive	TWINSUK	LCL
+TwinsUK	LCL	LCL	EFO_0005292	LCL	LCL	naive	TWINSUK	SKIN
+TwinsUK	skin	SKIN	UBERON_0002097	skin	skin	naive	TWINSUK	UBERON_0000178
+van_de_Bunt_2015	pancreatic_islet	PANCREATIC_ISLET	UBERON_0000006	pancreatic islet	pancreatic islet	naive	VAN_DE_BUNT_2015	PANCREATIC_ISLET
+Young_2019	microglia_naive	MICROGLIA_NAIVE	CL_0000129	microglia	microglia	naive		
