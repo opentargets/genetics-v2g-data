@@ -22,7 +22,7 @@ import pandas as pd
 def main():
 
     # Args
-    in_path = 'gs://genetics-portal-dev-sumstats/filtered/pvalue_0.05/molecular_trait/210917'
+    in_path = 'gs://genetics-portal-dev-sumstats/filtered/pvalue_0.005/molecular_trait/220105'
     outf = 'gs://genetics-portal-dev-staging/v2g/qtl/{version}'.format(
         version=date.today().strftime("%y%m%d")
     )

@@ -21,19 +21,38 @@ python get_eqtl_catalogue_mappings.py
 
 ## Merge together mapping tables from separate sources
 
-Mappings files for individual datasets, e.g. Jung 2019, Sun 2018, were made manually.
+Mappings files for individual datasets, e.g. Jung 2019, pqtls, were made manually.
 
 ```
+cd mapping
 cat jung2019.mappings.json \
     javierre2016.mappings.json \
-    pqtl_sun2018.mappings.json \
+    pqtl_mappings.json \
     eqtlgen_2018.mappings.json \
     eqtl_catalogue.mappings.json \
     > biofeature_labels.json
 ```
 
-These mappings are used in the v2g pipeline to match QTL variants to biofeatures/tissue codes.
+## Make composite biofeature mappings
+
+This is a "hack" that is used by the frontend UI to display both study ID and biofeatures, grouping by biofeature.
+```
+python get_composite_mappings.py --in biofeature_labels.json --out biofeature_labels.composites.json
+```
+
+## Merge in composite mappings
+
+```
+cat biofeature_labels.json \
+    biofeature_labels.composites.json \
+    > biofeature_labels.w_composites_new.json
+```
+
+Edit this file as needed to make labels more readable, etc.
+This is not an ideal process, because when you re-run the above then you will overwrite the manual edits.
+What I do is to manually take only the new lines from the above process.
+
 ## Upload to GCS
 ```
-gsutil cp biofeature_labels.json gs://genetics-portal-dev-staging/lut/211115/biofeature_labels.json
+gsutil cp biofeature_labels.w_composites.json gs://genetics-portal-dev-staging/lut/biofeature_labels/220105/biofeature_labels.w_composites.json
 ```

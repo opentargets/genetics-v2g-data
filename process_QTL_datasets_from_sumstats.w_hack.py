@@ -22,8 +22,8 @@ from datetime import date
 def main():
 
     # Args
-    in_path = 'gs://genetics-portal-sumstats-b38/filtered/pvalue_0.05/molecular_trait'
-    outf = 'gs://genetics-portal-staging/v2g/qtl/{version}'.format(
+    in_path = 'gs://genetics-portal-dev-sumstats/filtered/pvalue_0.005/molecular_trait/220105'
+    outf = 'gs://genetics-portal-dev-staging/v2g/qtl/{version}'.format(
         version=date.today().strftime("%y%m%d")
     )
 
@@ -42,7 +42,7 @@ def main():
     print('Spark version: ', spark.version)
 
     # Load datasets
-    df = spark.read.json(in_path)
+    df = spark.read.parquet(in_path)
 
     # Filter based on bonferonni correction of number of tests per gene
     df = df.filter(col('pval') <= (0.05 / col('num_tests')))
@@ -53,13 +53,14 @@ def main():
     # Hack the columns to fit the current structure
     hack = (
         df
-        .withColumn('source', col('type'))
+        .withColumn('source', col('type_id'))
+        .withColumnRenamed('type_id', 'type')
         .withColumn('feature', concat_ws('-', col('study_id'), col('bio_feature')))
         .withColumnRenamed('gene_id', 'ensembl_id')
         .withColumnRenamed('ref', 'other_allele')
         .withColumnRenamed('alt', 'effect_allele')
-        .select('type', 'source', 'feature', 'chrom',
-                'pos', 'other_allele', 'effect_allele',
+        .select('type', 'source', 'study_id', 'feature',
+                'chrom', 'pos', 'other_allele', 'effect_allele',
                 'ensembl_id', 'beta', 'se', 'pval'
         )
     )
@@ -85,12 +86,8 @@ def main():
         hack
         .select('source', 'feature')
         .drop_duplicates()
-        .coalesce(1)
-        .write
-        .json(
-            outf + '.feature_list.json',
-            mode='overwrite'
-        )
+        .toPandas()
+        .to_json(outf + '.feature_list.json', orient='records', lines=True)
     )
 
 

@@ -26,6 +26,14 @@ Requries:
 
 #### Usage
 
+If necessary, install conda.
+```bash
+wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+bash miniconda.sh -b -p $HOME/miniconda
+echo export PATH="$HOME/miniconda/bin:\$PATH" >> ~/.profile
+. ~/.profile
+```
+
 ##### Generate chromatin interaction datasets
 
 ```bash
@@ -64,6 +72,7 @@ gsutil -m rsync -r -x ".*DS_Store$" output gs://genetics-portal-staging/v2g
 # Start dataproc server
 gcloud beta dataproc clusters create \
     em-qtlprocess \
+    --region europe-west1 \
     --image-version=preview \
     --properties=spark:spark.debug.maxToStringFields=100,spark:spark.executor.cores=32,spark:spark.executor.instances=1 \
     --master-machine-type=n2-standard-32 \
@@ -77,7 +86,8 @@ gcloud beta dataproc clusters create \
 # Submit QTL processing job
 gcloud dataproc jobs submit pyspark \
     --cluster=em-qtlprocess \
-    process_QTL_datasets_from_sumstats.wo_hack.py
+    --region europe-west1 \
+    process_QTL_datasets_from_sumstats.w_hack.py
 
 # To monitor
 gcloud compute ssh em-qtlprocess-m \
@@ -206,7 +216,8 @@ Evidence linking genetic variation to genes using correlation of DNase I hyperse
 
 #### Copy from staging to genetics-portal-data
 
-Commands for copying from staging
+Commands for copying from staging.
+NOTE: This is normally taken care of by the backend team, and the code below hasn't been updated.
 
 ```
 version_date=`date +%y%m%d`
