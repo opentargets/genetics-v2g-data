@@ -8,5 +8,6 @@ dependencies:
   - pandas
   - pypy3.5
   - pyspark=2.4.0
+  - pip
   - pip:
     - pyliftover
