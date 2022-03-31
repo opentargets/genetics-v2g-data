@@ -3,28 +3,12 @@ Variant-to-gene functional datasets
 
 Workflows to generate cis-regulatory datasets used for variant-to-gene (V2G) assignment in Open Targets Genetics.
 
-## Contents
+## Setup
 
-- [Requirements](#requirements)
-- [Usage](#usage)
-- [Datasets](#datasets)
-  - [QTL](#quantitative-trait-loci-qtl-datasets)
-    - [eQTL (GTEx V7)](#eqtl-gtex-v7)
-    - [pQTL (Sun *et al.*, 2018)](#pqtl-sun-et-al-2018)
-  - [Interval (interaction based)](#interval-interaction-based-datasets)
-    - [PCHi-C (Jung, 2019)](#promoter-capture-hi-c-jung-2019)
-    - [PCHi-C (Javierre, 2016)](#promoter-capture-hi-c-javierre-2016)
-    - [Enhancer-TSS corr (FANTOM5)](#enhancer-tss-correlation-fantom5)
-    - [DHS-promoter corr (Thurman, 2012)](#dhs-promoter-correlation-thurman-2012)
-
-#### Requirements
-
-Requries:
+Requires:
   - Conda
   - (Linux) split v>=8.23
   - (Mac) gsplit v>=8.23
-
-#### Usage
 
 If necessary, install conda.
 ```bash
@@ -34,7 +18,8 @@ echo export PATH="$HOME/miniconda/bin:\$PATH" >> ~/.profile
 . ~/.profile
 ```
 
-##### Generate chromatin interaction datasets
+## Generate chromatin interaction datasets
+This only needs to be run if these datasets have been updated.
 
 ```bash
 # Install dependencies into isolated environment
@@ -64,7 +49,8 @@ gsutil -m rsync -r -x ".*DS_Store$" output gs://genetics-portal-staging/v2g
 
 ```
 
-##### Process molecular QTL datasets
+## Process molecular QTL datasets
+This needs to be run if QTL datasets have been added or updated.
 
 ```bash
 # Update list of QTL studies in process_QTL_datasets_from_sumstats.w_hack.py
@@ -100,7 +86,7 @@ gcloud compute ssh em-qtlprocess-m \
 
 ## Make mappings file
 
-Follow steps in mapping/README.md.
+Follow steps in mapping/README.md, if new datasets have been added or updated.
 
 ## Datasets
 
@@ -214,7 +200,7 @@ Evidence linking genetic variation to genes using correlation of DNase I hyperse
   - Pre-filtered at source to between chromsome interactions
 
 
-#### Copy from staging to genetics-portal-data
+#### (OLD) Copy from staging to genetics-portal-data
 
 Commands for copying from staging.
 NOTE: This is normally taken care of by the backend team, and the code below hasn't been updated.
