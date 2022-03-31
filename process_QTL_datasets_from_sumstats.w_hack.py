@@ -22,7 +22,7 @@ from datetime import date
 def main():
 
     # Args
-    in_path = 'gs://genetics-portal-dev-sumstats/filtered/pvalue_0.005/molecular_trait/220105'
+    in_path = 'gs://genetics-portal-dev-sumstats/filtered/pvalue_0.005/molecular_trait/220330'
     outf = 'gs://genetics-portal-dev-staging/v2g/qtl/{version}'.format(
         version=date.today().strftime("%y%m%d")
     )

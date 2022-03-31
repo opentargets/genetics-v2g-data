@@ -30,6 +30,7 @@ cat jung2019.mappings.json \
     pqtl_mappings.json \
     eqtlgen_2018.mappings.json \
     eqtl_catalogue.mappings.json \
+    gtex_sqtl.mappings.json \
     > biofeature_labels.json
 ```
 
@@ -54,5 +55,5 @@ What I do is to manually take only the new lines from the above process.
 
 ## Upload to GCS
 ```
-gsutil cp biofeature_labels.w_composites.json gs://genetics-portal-dev-staging/lut/biofeature_labels/220105/biofeature_labels.w_composites.json
+gsutil cp biofeature_labels.w_composites.json gs://genetics-portal-dev-staging/lut/biofeature_labels/220212/biofeature_labels.w_composites.json
 ```
