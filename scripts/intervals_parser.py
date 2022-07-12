@@ -1,5 +1,6 @@
-from statistics import median
 import pandas as pd
+
+from pyliftover import LiftOver
 
 from pyspark.sql import dataframe
 import pyspark.sql
@@ -7,21 +8,19 @@ import pyspark.sql.types as t
 import pyspark.sql.functions as f
 from pyspark.sql import SparkSession
 
-from pyliftover import LiftOver
-
 
 class LiftOverSpark:
     """
     LiftOver class for mapping genomic coordinates to an other genome build.
 
     The input is a Spark DataFrame with a chromosome and position column. This classs can
-    also map regions, if a start and end position are provided.
+    also map regions, if a start and end positions are provided.
 
     **Logic**:
 
-    - The mapping is dropped if the new chromosome is not on the same chromosome.
-    - The mapping is dropped if the mapping is ambiguous.
-    - If regions are provided, the mapping is dropped if the new regions is reversed (mapped_start > mapped_end).
+    - The mapping is dropped if the mapped chromosome is not on the same as the source.
+    - The mapping is dropped if the mapping is ambiguous (more than one mapping is available).
+    - If regions are provided, the mapping is dropped if the new region is reversed (mapped_start > mapped_end).
     - If regions are provided, the mapping is dropped if the difference of the lenght of the mapped region and original is larger than a threshold.
 
     """
