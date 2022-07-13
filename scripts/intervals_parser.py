@@ -33,7 +33,14 @@ class LiftOverSpark:
         """
 
         self.chain_file = chain_file
-        self.lo = LiftOver(chain_file)
+
+        # Initializing liftover object by opening the chain file:
+        if chain_file.startswith('gs://'):
+            chain_file_object = gcsfs.GCSFileSystem().open(chain_file).read()
+            self.lo = LiftOver(chain_file_object)
+        else:
+            self.lo = LiftOver(chain_file)
+
         self.max_difference = max_difference
 
         # UDF to do map genomic coordinates to liftover coordinates:
@@ -102,7 +109,6 @@ class LiftOverSpark:
             .drop('mapped', 'mapped_' + chrom_name)
             .persist()
         )
-
 
 def parse_anderson(anderson_file, lift):
     """
