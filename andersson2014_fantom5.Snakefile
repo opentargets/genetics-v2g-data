@@ -82,7 +82,7 @@ rule andersson2014_to_parquet:
     input:
         tmpdir + '/interval/fantom5/andersson2014/{version}/data_b38.tsv.gz'
     output:
-        directory(config['out_dir'] + '/interval/s/andersson2014/{version}/data.parquet')
+        directory(config['out_dir'] + '/interval/fantom5/andersson2014/{version}/data.parquet')
     shell:
         'python scripts/andersson2014_to_parquet.py '
         '--inf {input} '

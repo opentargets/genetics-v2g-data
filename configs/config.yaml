@@ -16,25 +16,34 @@ max_len_dff: 100 # Max difference in length between old and new interval (in bas
 intervals:
   liftover_chain_file: gs://genetics-portal-input/v2g_input/grch37_to_grch38.over.chain.gz
   max_lenght_difference: 100
+  # An atlas of active enhancers across human cell types and tissues
   anderson:
     data_file: gs://genetics-portal-input/v2g_input/andersson2014/enhancer_tss_associations.bed
     dataset_name: andersson2014
     data_type: interval
     pubmed_id: '24670763'
     cell_type: aggregate
+    experiment_type: fantom5
+  # Lineage-Specific Genome Architecture Links Enhancers and Non-coding Disease Variants to Target Gene Promoters
   javierre:
     data_folder: gs://genetics-portal-input/v2g_input/javierre2016/
     dataset_name: javierre2016
     pubmed_id: '27863249'
-    data_type:
+    data_type: interval
+    experiment_type: pchic
+  # A compendium of promoter-centered long-range chromatin interactions in the human genome
   jung:
-    data_folder:
-    dataset_name:
-    pubmed_id:
-    data_type:
+    data_folder: gs://genetics-portal-raw/pchic_jung2019/jung2019_pchic_tableS3.csv
+    dataset_name: jung2019
+    pubmed_id: '31501517'
+    data_type: interval
+    experiment_type: pchic
+  # The accessible chromatin landscape of the human genome
   thurman:
-    data_folder:
-    dataset_name:
-    pubmed_id:
-    data_type:
+    data_file: gs://genetics-portal-input/v2g_input/thurman2012/genomewideCorrs_above0.7_promoterPlusMinus500kb_withGeneNames_32celltypeCategories.bed8.gz
+    dataset_name: thurman2012
+    pubmed_id: '22955617'
+    data_type: interval
+    experiment_type: dhscor
+    cell_type: aggregate
 
