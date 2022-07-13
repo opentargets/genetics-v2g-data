@@ -1,6 +1,7 @@
 import pandas as pd
 
 from pyliftover import LiftOver
+import gcsfs
 
 from pyspark.sql import dataframe
 import pyspark.sql
