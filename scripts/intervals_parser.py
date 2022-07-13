@@ -28,7 +28,7 @@ class LiftOverSpark:
     def __init__(self, chain_file: str, max_difference: int = None) -> None:
         """
 
-        :param chain_file: Path to the chain file.
+        :param chain_file: Path to the chain file. Local or google bucket. Chainfile is not gzipped!
         :param max_difference: Maximum difference between the length of the mapped region and the original region.
         """
 
@@ -36,8 +36,8 @@ class LiftOverSpark:
 
         # Initializing liftover object by opening the chain file:
         if chain_file.startswith('gs://'):
-            chain_file_object = gcsfs.GCSFileSystem().open(chain_file).read()
-            self.lo = LiftOver(chain_file_object)
+            with gcsfs.GCSFileSystem().open(chain_file) as chain_file_object:
+                self.lo = LiftOver(chain_file_object)
         else:
             self.lo = LiftOver(chain_file)
 
