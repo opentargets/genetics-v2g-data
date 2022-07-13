@@ -1,7 +1,10 @@
+from datetime import date
+import gcsfs
 import pandas as pd
 
+import hydra
+
 from pyliftover import LiftOver
-import gcsfs
 
 from pyspark.sql import dataframe
 import pyspark.sql
@@ -23,7 +26,7 @@ class LiftOverSpark:
     - The mapping is dropped if the mapping is ambiguous (more than one mapping is available).
     - If regions are provided, the mapping is dropped if the new region is reversed (mapped_start > mapped_end).
     - If regions are provided, the mapping is dropped if the difference of the lenght of the mapped region and original is larger than a threshold.
-
+    - When lifting over intervals, only unique coordinates are lifted, they joined back to the original dataframe.
     """
     def __init__(self, chain_file: str, max_difference: int = None) -> None:
         """
@@ -110,16 +113,17 @@ class LiftOverSpark:
             .persist()
         )
 
-def parse_anderson(anderson_file, lift):
+def parse_anderson(cfg, lift):
     """
     Parse the anderson file and return a dataframe with the intervals.
 
     :param anderson_file: Path to the anderson file.
     :return: Spark Dataframe with the intervals.
     """
+
     # Read the anderson file:
     anderson_df = (
-        SparkSession.getActiveSession().createDataFrame(pd.read_csv(anderson_file, sep='\t', header=0, low_memory=False, skiprows=1))
+        SparkSession.getActiveSession().createDataFrame(pd.read_csv(cfg.data_file, sep='\t', header=0, low_memory=False, skiprows=1))
         # Parsing score column and casting as float:
         .withColumn('score', f.col('score').cast('float') / f.lit(1000))
 
@@ -146,15 +150,25 @@ def parse_anderson(anderson_file, lift):
     )
 
     return (
+        # Lift over the intervals:
         lift.convert_intervals(anderson_df, 'chrom', 'start', 'end')
         .drop('start', 'end')
         .withColumnRenamed('mapped_start', 'start')
         .withColumnRenamed('mapped_end', 'end')
         .distinct()
+
+        # Adding constant values:
+        .withColumn('dataset_name', f.lit(cfg.dataset_name))
+        .withColumn('data_type', f.lit(cfg.data_type))
+        .withColumn('experiment_type', f.lit(cfg.experiment_type))
+        .withColumn('pmid', f.lit(cfg.pubmed_id))
+        .withColumn('cell_type', f.lit(cfg.cell_type))
+
         .persist()
     )
 
-def main(anderson_file, chain_file, max_difference, output):
+@hydra.main(config_path='../configs', config_name='config')
+def main(cfg):
 
     spark = (
         pyspark.sql.SparkSession
@@ -163,25 +177,23 @@ def main(anderson_file, chain_file, max_difference, output):
         .getOrCreate()
     )
 
+    chain_file = cfg.intervals.liftover_chain_file
+    max_difference = cfg.intervals.max_lenght_difference
+
     # Initialize liftover object:
-    lift = LiftOverSpark(chain_file, max_difference=max_difference)
+    lift = LiftOverSpark(chain_file, max_difference)
 
     # Parsing the anderson file:
-    anderson_df = parse_anderson(anderson_file, lift)
+    anderson_df = parse_anderson(cfg.intervals.anderson, lift)
 
     # Further parsers will come here...
 
     # Saving data:
-    anderson_df.write.parquet(output)
+    version = date.today().strftime("%y%m%d")
+    anderson_df.write.parquet(cfg.intervals.output + f'/interval_{version}')
 
 
 if __name__ == '__main__':
-    # Input datasets (adjust to your needs):
-    anderson_file = 'enhancer_tss_associations.bed'
-
-    # LiftOver chain file (adjust to your needs):
-    chain_file = 'grch37_to_grch38.over.chain.gz'
-    max_diff = 100
 
     # Calling parsers:
-    main(anderson_file, chain_file, max_diff, 'intervals.parquet')
+    main()

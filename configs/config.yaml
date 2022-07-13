@@ -16,6 +16,7 @@ max_len_dff: 100 # Max difference in length between old and new interval (in bas
 intervals:
   liftover_chain_file: gs://genetics-portal-input/v2g_input/grch37_to_grch38.over.chain
   max_lenght_difference: 100
+  output: gs://genetics-portal-dev-data/dev_intervals
   # An atlas of active enhancers across human cell types and tissues
   anderson:
     data_file: gs://genetics-portal-input/v2g_input/andersson2014/enhancer_tss_associations.bed
