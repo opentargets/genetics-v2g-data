@@ -66,22 +66,32 @@ class LiftOverSpark:
         start_df = self.convert_coordinates(start_df, chrom_col, start_col).withColumnRenamed('mapped_pos', 'mapped_' + start_col)
 
         # Lift over end coordinates:
-        end_df =  df.select(chrom_col, end_col).distinct()
+        end_df = df.select(chrom_col, end_col).distinct()
         end_df = self.convert_coordinates(end_df, chrom_col, end_col).withColumnRenamed('mapped_pos', 'mapped_' + end_col)
 
         # Join dataframe with mappings:
         return (
             df
-            .join(start_df, on=[chrom_col, start_col], how='inner')
-            .join(end_df, on=[chrom_col, end_col], how='inner')
+            .join(start_df, on=[chrom_col, start_col], how='left')
+            .join(end_df, on=[chrom_col, end_col], how='left')
 
             # Select only rows where the start is smaller than the end:
-            .filter(f.col('mapped_' + end_col) >= f.col('mapped_' + start_col))
+            .filter(
+                # Drop rows with no mappings:
+                f.col('mapped_start').isNotNull() & f.col('mapped_end').isNotNull()
 
-            # Filter based on the difference:
-            .withColumn('mapped_distance', f.abs(f.col('mapped_' + end_col) - f.col('mapped_' + start_col)))
-            .filter(f.col('mapped_distance') <= self.max_difference)
-            .drop('mapped_distance')
+                # Drop rows where the start is larger than the end:
+                & (f.col('mapped_' + end_col) >= f.col('mapped_' + start_col))
+
+                # Drop rows where the difference of the length of the regions are larger than the threshold:
+                & (
+                    f.abs(
+                        (f.col('mapped_' + end_col) - f.col('mapped_' + start_col)) -
+                        (f.col('mapped_' + end_col) - f.col('mapped_' + start_col))
+                    ) <= self.max_difference
+                )
+            )
+            .persist()
         )
 
     def convert_coordinates(self, df: dataframe, chrom_name: str, pos_name: str) -> list:
@@ -94,11 +104,9 @@ class LiftOverSpark:
 
         :return: Spark Dataframe with the mapped position column.
         """
-        return (
+        mapped =  (
             df
             .withColumn('mapped', self.liftover_udf(f.col(chrom_name), f.col(pos_name)))
-
-            # Drop rows with no mappings:
             .filter((f.col('mapped').isNotNull()) & (f.size(f.col('mapped')) == 1))
 
             # Extracting mapped corrdinates:
@@ -113,11 +121,13 @@ class LiftOverSpark:
             .persist()
         )
 
+        return mapped
+
 def parse_anderson(cfg, gene_index, lift, proximity_limit):
     """
     Parse the anderson file and return a dataframe with the intervals.
 
-    :param anderson_file: Path to the anderson file.
+    :param anderson_file: Path to the anderson file (.bed).
     :return: Spark Dataframe with the intervals.
     """
 
