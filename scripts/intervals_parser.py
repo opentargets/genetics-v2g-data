@@ -113,7 +113,7 @@ class LiftOverSpark:
             .persist()
         )
 
-def parse_anderson(cfg, lift):
+def parse_anderson(cfg, gene_index, lift, proximity_limit):
     """
     Parse the anderson file and return a dataframe with the intervals.
 
@@ -149,6 +149,9 @@ def parse_anderson(cfg, lift):
         .persist()
     )
 
+    # Selecting relevant columns from gene set:
+    genes = gene_index.withColumnRenamed('gene_name', 'gene_symbol').select('gene_symbol', 'chr', 'gene_id', 'TSS')
+
     return (
         # Lift over the intervals:
         lift.convert_intervals(anderson_df, 'chrom', 'start', 'end')
@@ -157,13 +160,26 @@ def parse_anderson(cfg, lift):
         .withColumnRenamed('mapped_end', 'end')
         .distinct()
 
+        # Joining with the gene index (unfortunately we are losing a bunch of genes here due to old symols):
+        .join(genes, on='gene_symbol', how='left')
+        .filter(
+            # Drop rows where the gene is not on the same chromosome
+            (f.col('chrom') == f.regexp_replace(f.col('chr'), 'chr', ''))
+            # Drop rows where the TSS is far from the start of the region
+            & (f.abs((f.col('start') - f.col('end') / 2) - f.col('TSS')) <= proximity_limit)
+        )
+
         # Adding constant values:
         .withColumn('dataset_name', f.lit(cfg.dataset_name))
         .withColumn('data_type', f.lit(cfg.data_type))
         .withColumn('experiment_type', f.lit(cfg.experiment_type))
         .withColumn('pmid', f.lit(cfg.pubmed_id))
-        .withColumn('cell_type', f.lit(cfg.cell_type))
+        .withColumn('bio_feature', f.lit(cfg.bio_feature))
 
+        # Select relevant columns:
+        .select(
+            'chrom', 'start', 'end', 'gene_id', 'score', 'dataset_name', 'data_type', 'experiment_type', 'pmid', 'bio_feature'
+        )
         .persist()
     )
 
@@ -179,12 +195,16 @@ def main(cfg):
 
     chain_file = cfg.intervals.liftover_chain_file
     max_difference = cfg.intervals.max_lenght_difference
+    proximity_limit = 2 * float(cfg.intervals.proximity_limit)
+
+    # Open and process gene file:
+    gene_index = spark.read.parquet(cfg.intervals.gene_index).persist()
 
     # Initialize liftover object:
     lift = LiftOverSpark(chain_file, max_difference)
 
     # Parsing the anderson file:
-    anderson_df = parse_anderson(cfg.intervals.anderson, lift)
+    anderson_df = parse_anderson(cfg.intervals.anderson, gene_index, lift, proximity_limit)
 
     # Further parsers will come here...
 

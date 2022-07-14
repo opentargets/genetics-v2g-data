@@ -31,8 +31,19 @@ def main():
         df = df.loc[to_keep, :]
 
     # Convert rows to bed format
-    bed = df.apply(gtf_row_to_bed, axis=1)
+    bed =(
+        df.head(10000)
+        .apply(gtf_row_to_bed, axis=1)
+    )
     bed.columns = ['chrom', 'start', 'end', 'name', 'score']
+    bed = (
+        bed
+        .assign(
+            gene_id = bed.name.apply(lambda x: x[0]),
+            transcript_id = bed.name.apply(lambda x: x[1])
+        )
+        .drop('name', axis=1)
+    )
     bed.chrom = bed.chrom.astype(str)
     bed.start = bed.start.astype(int)
     bed.end = bed.end.astype(int)
@@ -62,7 +73,7 @@ def gtf_row_to_bed(row):
         end = int(row[4])
     # Bed files are 0-indexed (whereas GTF are 1-index) so start should be end-1
     start = end - 1
-    ensID = parse_gtf_info_field(row[8])['gene_id']
+    ensID = parse_gtf_info_field(row[8]).loc[['gene_id', 'transcript_id']].tolist()
 
     return pd.Series([chrom, start, end, ensID, "."])
 
@@ -75,9 +86,12 @@ def parse_gtf_info_field(info_str):
     """
     d = {}
     for pair in info_str.split('; '):
-        key, value = pair.split(' ')
-        d[key] = value.strip('"')
-    return d
+        try:
+            key, value = pair.split(' ')
+            d[key] = value.strip('"')
+        except ValueError:
+            pass
+    return pd.Series(d)
 
 def parse_args():
     """ Load command line args """

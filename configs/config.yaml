@@ -17,13 +17,15 @@ intervals:
   liftover_chain_file: gs://genetics-portal-input/v2g_input/grch37_to_grch38.over.chain
   max_lenght_difference: 100
   output: gs://genetics-portal-dev-data/dev_intervals
+  gene_index: gs://genetics-portal-input/v2g_input/geneset.parquet
+  proximity_limit: 5.341328e05
   # An atlas of active enhancers across human cell types and tissues
   anderson:
     data_file: gs://genetics-portal-input/v2g_input/andersson2014/enhancer_tss_associations.bed
     dataset_name: andersson2014
     data_type: interval
     pubmed_id: '24670763'
-    cell_type: aggregate
+    bio_feature: aggregate
     experiment_type: fantom5
   # Lineage-Specific Genome Architecture Links Enhancers and Non-coding Disease Variants to Target Gene Promoters
   javierre:
@@ -46,5 +48,5 @@ intervals:
     pubmed_id: '22955617'
     data_type: interval
     experiment_type: dhscor
-    cell_type: aggregate
+    bio_feature: aggregate
 
