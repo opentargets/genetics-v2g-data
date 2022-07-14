@@ -128,7 +128,18 @@ def parse_anderson(cfg, gene_index, lift, proximity_limit):
     Parse the anderson file and return a dataframe with the intervals.
 
     :param anderson_file: Path to the anderson file (.bed).
-    :return: Spark Dataframe with the intervals.
+    :return: Spark Dataframe
+
+    **Summary of the logic**
+
+    - Reading .bed file (input)
+    - Parsing the names column -> chr, start, end, gene, score
+    - Mapping the coordinates to the new build -> liftover
+    - Joining with target index by gene symbol (some loss as input uses obsoleted terms)
+    - Dropping rows where the gene is on other chromosomes
+    - Dropping rows where the gene TSS is too far from the midpoint of the intervals
+    - Adding constant columns for this dataset
+    - Return spark dataframe.
     """
 
     # Read the anderson file:
@@ -159,7 +170,7 @@ def parse_anderson(cfg, gene_index, lift, proximity_limit):
         .persist()
     )
 
-    # Selecting relevant columns from gene set:
+    # Prepare gene set:
     genes = gene_index.withColumnRenamed('gene_name', 'gene_symbol').select('gene_symbol', 'chr', 'gene_id', 'TSS')
 
     return (
@@ -170,13 +181,17 @@ def parse_anderson(cfg, gene_index, lift, proximity_limit):
         .withColumnRenamed('mapped_end', 'end')
         .distinct()
 
-        # Joining with the gene index (unfortunately we are losing a bunch of genes here due to old symols):
+        # Joining with the gene index (unfortunately we are losing a bunch of genes here due to old symbols):
         .join(genes, on='gene_symbol', how='left')
         .filter(
             # Drop rows where the gene is not on the same chromosome
             (f.col('chrom') == f.regexp_replace(f.col('chr'), 'chr', ''))
             # Drop rows where the TSS is far from the start of the region
-            & (f.abs((f.col('start') - f.col('end') / 2) - f.col('TSS')) <= proximity_limit)
+            & (
+                f.abs(
+                    (f.col('start') + f.col('end')) / 2 - f.col('TSS')
+                ) <= proximity_limit
+            )
         )
 
         # Adding constant values:
@@ -220,7 +235,7 @@ def main(cfg):
 
     # Saving data:
     version = date.today().strftime("%y%m%d")
-    anderson_df.write.parquet(cfg.intervals.output + f'/interval_{version}')
+    anderson_df.write.mode('overwrite').parquet(cfg.intervals.output + f'/interval_{version}')
 
 
 if __name__ == '__main__':
