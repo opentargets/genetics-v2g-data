@@ -7,10 +7,9 @@ import hydra
 from pyliftover import LiftOver
 
 from pyspark.sql import dataframe
-import pyspark.sql
 import pyspark.sql.types as t
 import pyspark.sql.functions as f
-from pyspark.sql import SparkSession
+from pyspark.sql import dataframe, SparkSession
 
 
 class LiftOverSpark:
@@ -78,7 +77,7 @@ class LiftOverSpark:
             # Select only rows where the start is smaller than the end:
             .filter(
                 # Drop rows with no mappings:
-                f.col('mapped_start').isNotNull() & f.col('mapped_end').isNotNull()
+                f.col('mapped_' + start_col).isNotNull() & f.col('mapped_' + end_col).isNotNull()
 
                 # Drop rows where the start is larger than the end:
                 & (f.col('mapped_' + end_col) >= f.col('mapped_' + start_col))
@@ -116,7 +115,7 @@ class LiftOverSpark:
             # Drop rows that mapped to the other chromosomes:
             .filter(f.col('mapped_' + chrom_name) == f.concat(f.lit('chr'),f.col(chrom_name)))
 
-            # Dropping unused coluns:
+            # Dropping unused columns:
             .drop('mapped', 'mapped_' + chrom_name)
             .persist()
         )
@@ -219,7 +218,7 @@ def main(cfg):
     )
 
     chain_file = cfg.intervals.liftover_chain_file
-    max_difference = cfg.intervals.max_lenght_difference
+    max_difference = cfg.intervals.max_length_difference
     proximity_limit = 2 * float(cfg.intervals.proximity_limit)
 
     # Open and process gene file:

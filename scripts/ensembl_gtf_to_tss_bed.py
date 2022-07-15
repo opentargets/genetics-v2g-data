@@ -32,7 +32,7 @@ def main():
 
     # Convert rows to bed format
     bed =(
-        df.head(10000)
+df
         .apply(gtf_row_to_bed, axis=1)
     )
     bed.columns = ['chrom', 'start', 'end', 'name', 'score']
