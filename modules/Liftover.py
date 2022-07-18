@@ -37,7 +37,8 @@ class LiftOverSpark:
         else:
             self.lo = LiftOver(chain_file)
 
-        self.max_difference = max_difference
+        # If no maximum difference is provided, set it to 100:
+        self.max_difference = 100 if max_difference is None else max_difference
 
         # UDF to do map genomic coordinates to liftover coordinates:
         self.liftover_udf = F.udf(lambda chrom, pos: self.lo.convert_coordinate(chrom, pos), T.ArrayType(T.ArrayType(T.StringType())))
@@ -74,7 +75,7 @@ class LiftOverSpark:
                 F.col('mapped_' + start_col).isNotNull() & F.col('mapped_' + end_col).isNotNull()
 
                 # Drop rows where the start is larger than the end:
-                & (f.col('mapped_' + end_col) >= F.col('mapped_' + start_col))
+                & (F.col('mapped_' + end_col) >= F.col('mapped_' + start_col))
 
                 # Drop rows where the difference of the length of the regions are larger than the threshold:
                 & (
