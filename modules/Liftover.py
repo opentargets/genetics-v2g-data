@@ -48,7 +48,7 @@ class LiftOverSpark:
         # UDF to do map genomic coordinates to liftover coordinates:
         self.liftover_udf = F.udf(lambda chrom, pos: self.lo.convert_coordinate(chrom, pos), T.ArrayType(T.ArrayType(T.StringType())))
 
-    def convert_intervals(self, df: dataframe, chrom_col: str, start_col: str, end_col: str) -> dataframe:
+    def convert_intervals(self, df: dataframe, chrom_col: str, start_col: str, end_col: str, filter: bool = True) -> dataframe:
         """
         Convert genomic intervals to liftover coordinates
 
@@ -56,6 +56,7 @@ class LiftOverSpark:
         :param chrom_col: Name of the chromosome column.
         :param start_col: Name of the start column.
         :param end_col: Name of the end column.
+        :param filter: If True, filter is applied on the mapped data, otherwise return everything. Default: True.
 
         :return: filtered Spark Dataframe with the mapped start and end coordinates.
         """
@@ -69,29 +70,36 @@ class LiftOverSpark:
         end_df = self.convert_coordinates(end_df, chrom_col, end_col).withColumnRenamed('mapped_pos', 'mapped_' + end_col)
 
         # Join dataframe with mappings:
-        return (
+        mapped_df = (
             df
             .join(start_df, on=[chrom_col, start_col], how='left')
             .join(end_df, on=[chrom_col, end_col], how='left')
-
-            # Select only rows where the start is smaller than the end:
-            .filter(
-                # Drop rows with no mappings:
-                F.col('mapped_' + start_col).isNotNull() & F.col('mapped_' + end_col).isNotNull()
-
-                # Drop rows where the start is larger than the end:
-                & (F.col('mapped_' + end_col) >= F.col('mapped_' + start_col))
-
-                # Drop rows where the difference of the length of the regions are larger than the threshold:
-                & (
-                    F.abs(
-                        (F.col('mapped_' + end_col) - F.col('mapped_' + start_col)) -
-                        (F.col('mapped_' + end_col) - F.col('mapped_' + start_col))
-                    ) <= self.max_difference
-                )
-            )
-            .persist()
         )
+
+        # The filter option allows to get all the data and filter it afterwards.
+        if filter:
+            return (
+                mapped_df
+                # Select only rows where the start is smaller than the end:
+                .filter(
+                    # Drop rows with no mappings:
+                    F.col('mapped_start').isNotNull() & F.col('mapped_end').isNotNull()
+
+                    # Drop rows where the start is larger than the end:
+                    & (F.col('mapped_' + end_col) >= F.col('mapped_' + start_col))
+
+                    # Drop rows where the difference of the length of the regions are larger than the threshold:
+                    & (
+                        F.abs(
+                            (F.col('mapped_' + end_col) - F.col('mapped_' + start_col)) -
+                            (F.col('mapped_' + end_col) - F.col('mapped_' + start_col))
+                        ) <= self.max_difference
+                    )
+                )
+                .persist()
+            )
+        else:
+            return mapped_df.persist()
 
     def convert_coordinates(self, df: dataframe, chrom_name: str, pos_name: str) -> list:
         """
