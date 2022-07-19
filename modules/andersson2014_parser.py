@@ -36,8 +36,9 @@ class parse_anderson:
     EXPERIMENT_TYPE = 'fantom5'
     PMID = '24670763'
     BIO_FEATURE = 'aggregate'
+    TWOSIDED_THRESHOLD = 2.45e6
 
-    def __init__(self, anderson_data_file: str, gene_index: dataframe, lift: LiftOverSpark, proximity_limit) -> None:
+    def __init__(self, anderson_data_file: str, gene_index: dataframe, lift: LiftOverSpark) -> None:
 
         # Read the anderson file:
         parserd_anderson_df = (
@@ -88,7 +89,7 @@ class parse_anderson:
                 & (
                     F.abs(
                         (F.col('start') + F.col('end')) / 2 - F.col('TSS')
-                    ) <= proximity_limit
+                    ) <= self.TWOSIDED_THRESHOLD
                 )
             )
 
@@ -156,7 +157,6 @@ if __name__ == '__main__':
     parser.add_argument('--anderson_file', type=str, help='Path to the anderson file (.bed)')
     parser.add_argument('--gene_index', type=str, help='Path to the gene index file (.csv)')
     parser.add_argument('--chain_file', type=str, help='Path to the chain file (.chain)')
-    parser.add_argument('--proximity_limit', type=int, help='Proximity limit for the TSS', default=5.341328e05)
     parser.add_argument('--output_file', type=str, help='Path to the output file (.parquet)')
     args = parser.parse_args()
 
@@ -171,13 +171,11 @@ if __name__ == '__main__':
     logging.info(f'Adnerson file: {args.anderson_file}')
     logging.info(f'Gene index file: {args.gene_index}')
     logging.info(f'Chain file: {args.chain_file}')
-    logging.info(f'Proximity limit: {args.proximity_limit}')
     logging.info(f'Output file: {args.output_file}')
 
     main(
         args.anderson_file,
         args.gene_index,
         args.chain_file,
-        args.proximity_limit,
         args.output_file
     )

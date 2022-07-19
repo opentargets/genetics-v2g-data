@@ -10,6 +10,7 @@ import pyspark.sql.functions as F
 from pyspark.sql import dataframe, SparkSession
 
 from modules.andersson2014_parser import parse_anderson
+from modules.javierre2016_parser import parse_javierre
 from modules.Liftover import LiftOverSpark
 
 # Get real path for the file:
@@ -35,14 +36,21 @@ def main(cfg):
     # Initialize liftover object:
     lift = LiftOverSpark(chain_file, max_difference)
 
-    # Parsing the anderson file: <- Once more parsers are added a more elegant solution will be added.
-    anderson_df = parse_anderson(cfg.intervals.anderson_file, gene_index, lift, proximity_limit).get_anderson_intervals()
+    # Parsing datasets:
+    datasets = [
+
+        # Parsing Andersson data:
+        parse_anderson(cfg.intervals.anderson_file, gene_index, lift, proximity_limit).get_intervals(),
+
+        # Parsing Javierre data:
+        parse_javierre(cfg.intervals.javierre_dataset, gene_index, lift, proximity_limit).get_intervals()
+    ]
 
     # Further parsers will come here...
 
     # Saving data:
     version = date.today().strftime("%y%m%d")
-    anderson_df.write.mode('overwrite').parquet(cfg.intervals.output + f'/interval_{version}')
+    # anderson_df.write.mode('overwrite').parquet(cfg.intervals.output + f'/interval_{version}')
 
 
 if __name__ == '__main__':

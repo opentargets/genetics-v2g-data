@@ -16,24 +16,21 @@ max_len_dff: 100 # Max difference in length between old and new interval (in bas
 intervals:
   liftover_chain_file: gs://genetics-portal-input/v2g_input/grch37_to_grch38.over.chain
   max_length_difference: 100
-  output: gs://genetics-portal-dev-data/dev_intervals
-  gene_index: gs://genetics-portal-input/v2g_input/geneset.parquet
+  # output: gs://genetics-portal-dev-data/dev_intervals
+  output: /Users/dsuveges/project_data/
+  # gene_index: gs://genetics-portal-input/v2g_input/geneset.parquet
+  gene_index:  /Users/dsuveges/project_data/geneset.parquet
   proximity_limit: 5.341328e05
+
   # An atlas of active enhancers across human cell types and tissues
-  anderson:
-    data_file: gs://genetics-portal-input/v2g_input/andersson2014/enhancer_tss_associations.bed
-    dataset_name: andersson2014
-    data_type: interval
-    pubmed_id: '24670763'
-    bio_feature: aggregate
-    experiment_type: fantom5
+  anderson_file: gs://genetics-portal-input/v2g_input/andersson2014/enhancer_tss_associations.bed
+
   # Lineage-Specific Genome Architecture Links Enhancers and Non-coding Disease Variants to Target Gene Promoters
-  javierre:
-    data_folder: gs://genetics-portal-input/v2g_input/javierre2016/
-    dataset_name: javierre2016
-    pubmed_id: '27863249'
-    data_type: interval
-    experiment_type: pchic
+  javierre_dataset: gs://genetics-portal-input/v2g_input/javierre_2016_preprocessed.parquet
+
+  #
+  # The config for the other datasets will be cleaned as I progress.
+  #
   # A compendium of promoter-centered long-range chromatin interactions in the human genome
   jung:
     data_folder: gs://genetics-portal-raw/pchic_jung2019/jung2019_pchic_tableS3.csv
