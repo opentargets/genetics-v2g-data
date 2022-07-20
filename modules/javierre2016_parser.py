@@ -1,15 +1,12 @@
 import argparse
 from functools import reduce
 import logging
-import os
-
-import gcsfs
-import pandas as pd
 
 import pyspark
 import pyspark.sql.types as T
 import pyspark.sql.functions as F
 from pyspark.sql import dataframe, SparkSession
+from pyspark.conf import SparkConf
 
 from modules.Liftover import LiftOverSpark
 
@@ -17,6 +14,19 @@ from modules.Liftover import LiftOverSpark
 class parser_javierre:
     """
     Parser Javierre 2016 dataset
+
+    :param javierre_parquet: path to the parquet file containing the Javierre 2016 data
+    :param gene_index: Pyspark dataframe containing the gene index
+    :param lift: LiftOverSpark object
+
+    **Summary of the logic:**
+
+    - Reading parquet file containing the pre-processed Javierre dataset.
+    - Splitting name column into chromosome, start, end, and score.
+    - Lifting over the intervals.
+    - Mapping intervals to genes by overlapping regions.
+    - For each gene/interval pair, keep only the highest scoring interval.
+    - Filter gene/interval pairs by the distance between the TSS and the start of the interval.
     """
 
     # Constants:
@@ -24,7 +34,7 @@ class parser_javierre:
     DATA_TYPE = 'interval'
     EXPERIMENT_TYPE = 'pchic'
     PMID = '27863249'
-    TWOSIDED_THRESHOLD = 2.45e6
+    TWOSIDED_THRESHOLD = 2.45e6  # <-  this needs to phased out. Filter by percentile instead of absolute value.
 
     def __init__(self,
                  javierre_parquet: str,
@@ -51,35 +61,36 @@ class parser_javierre:
 
             # Keep canonical chromosomes and consistent chromosomes:
             .filter(
-                (F.col('chrom') == F.col('name_chr')) & # 6_473_184 -> 6_428_824
-                F.col('name_chr').isin([f'{x}' for x in range(1, 23)] + ['X', 'Y', 'MT'])
+                (F.col('name_score').isNotNull())  &  # Dropping rows without score
+                (F.col('chrom') == F.col('name_chr')) &  # 6_473_184 -> 6_428_824
+                F.col('name_chr').isin([f'{x}' for x in range(1, 23)] + ['X', 'Y', 'MT'])  # Keep only canonical chromosomes
             )
+            .sample(0.001)
         )
 
         # Lifting over intervals:
         javierre_remapped = (
             javierre_raw
-            # Mapping interval 1:
+            # Lifting over to GRCh39 interval 1:
             .transform(lambda df: lift.convert_intervals(df, 'chrom', 'start', 'end', filter=False))
             .drop('start', 'end')
             .withColumnRenamed('mapped_chrom', 'chrom')
             .withColumnRenamed('mapped_start', 'start')
             .withColumnRenamed('mapped_end', 'end')
 
-            # Mapping interval 2:
+            # Lifting over interval 2 to GRCh39:
             .transform(lambda df: lift.convert_intervals(df, 'name_chr', 'name_start', 'name_end', filter=False))
             .drop('name_start', 'name_end')
             .withColumnRenamed('mapped_name_chr', 'name_chr')
             .withColumnRenamed('mapped_name_start', 'name_start')
             .withColumnRenamed('mapped_name_end', 'name_end')
-
             .persist()
         )
 
         # Mapping intervals to genes:
-        self.javierre_intervals = (
+        javierre_intervals = (
             javierre_remapped
-            .join(genes, on=[
+            .join(genes, how='inner', on=[
                 (genes.gene_chr == javierre_remapped.chrom) &
                 ((genes.gene_start <= javierre_remapped.end) & (genes.gene_start >= javierre_remapped.start)) |
                 ((genes.gene_end <= javierre_remapped.end) & (genes.gene_end >= javierre_remapped.start))
@@ -88,7 +99,15 @@ class parser_javierre:
                 # Drop rows where the TSS is far from the start of the region
                 F.abs((F.col('start') + F.col('end')) / 2 - F.col('TSS')) <= self.TWOSIDED_THRESHOLD
             )
+            .persist()
+        )
 
+        print('javierre_intervals')
+        javierre_intervals.show()
+        print(javierre_intervals.count())
+
+        self.javierre_intervals = (
+            javierre_intervals
             # For each gene, keep only the highest scoring interval:
             .groupBy('name_chr', 'name_start', 'name_end', 'gene_id', 'bio_feature')
             .agg(F.max(F.col('name_score')).alias('score'))
@@ -101,7 +120,7 @@ class parser_javierre:
                 F.col('score'),
                 F.col('gene_id').alias('gene_id'),
                 F.col('bio_feature').alias('cell_type'),
-                F.lit(None).alias('bio_feature'),
+                F.lit(None).alias('bio_feature').cast(T.StringType()),
                 F.lit(self.DATASET_NAME).alias('dataset'),
                 F.lit(self.DATA_TYPE).alias('data_type'),
                 F.lit(self.EXPERIMENT_TYPE).alias('experiment_type'),
@@ -109,8 +128,11 @@ class parser_javierre:
             )
             .persist()
         )
+        print('self.javierre_intervals')
+        self.javierre_intervals.show()
+        print(self.javierre_intervals.count())
 
-    def get_intervals_data(self) -> dataframe:
+    def get_intervals(self) -> dataframe:
         return self.javierre_intervals
 
     def qc_intervals(self) -> None:
@@ -154,10 +176,19 @@ class parser_javierre:
 
 def main(javierre_data_file: str, gene_index_file: str, chain_file: str, output_file: str) -> None:
 
+    spark_conf = (
+        SparkConf()
+        .set('spark.driver.memory', '10g')
+        .set('spark.executor.memory', '10g')
+        .set('spark.driver.maxResultSize', '0')
+        .set('spark.debug.maxToStringFields', '2000')
+        .set('spark.sql.execution.arrow.maxRecordsPerBatch', '500000')
+        .set('spark.ui.showConsoleProgress', 'false')
+    )
     spark = (
-        pyspark.sql.SparkSession
-        .builder
-        .master("local[*]")
+        pyspark.sql.SparkSession.builder.config(conf=spark_conf)
+        .master('local[*]')
+        .config("spark.driver.bindAddress", "127.0.0.1")
         .getOrCreate()
     )
 
@@ -181,11 +212,29 @@ def main(javierre_data_file: str, gene_index_file: str, chain_file: str, output_
 
 
 if __name__ == '__main__':
-    # Parse arguments:
+    parser = argparse.ArgumentParser('Wrapper for the the Javierre interval data parser.')
+    parser.add_argument('--javierre_file', type=str, help='Path to the pre-processed parquet dataset.')
+    parser.add_argument('--gene_index', type=str, help='Path to the gene index file (.parquet)')
+    parser.add_argument('--chain_file', type=str, help='Path to the chain file (.chain)')
+    parser.add_argument('--output_file', type=str, help='Path to the output file (.parquet)')
+    args = parser.parse_args()
 
-    # Initialize logger:
+    # Initialize logging:
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(name)s - %(levelname)s - %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S',
+    )
 
-    # Initialize SparkSession:
+    # Just print out some of the arguments:
+    logging.info(f'Javierre file: {args.javierre_file}')
+    logging.info(f'Gene index file: {args.gene_index}')
+    logging.info(f'Chain file: {args.chain_file}')
+    logging.info(f'Output file: {args.output_file}')
 
-    # Call main:
-    main()
+    main(
+        args.javierre_file,
+        args.gene_index,
+        args.chain_file,
+        args.output_file
+    )

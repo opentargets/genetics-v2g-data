@@ -16,7 +16,8 @@ class parse_anderson:
     Parse the anderson file and return a dataframe with the intervals.
 
     :param anderson_file: Path to the anderson file (.bed).
-    :return: Spark Dataframe
+    :param gene_index: PySpark dataframe with the gene index.
+    :param lift: LiftOverSpark object.
 
     **Summary of the logic**
 
@@ -27,7 +28,6 @@ class parse_anderson:
     - Dropping rows where the gene is on other chromosomes
     - Dropping rows where the gene TSS is too far from the midpoint of the intervals
     - Adding constant columns for this dataset
-    - Return spark dataframe.
     """
 
     # Constant values:
@@ -36,7 +36,7 @@ class parse_anderson:
     EXPERIMENT_TYPE = 'fantom5'
     PMID = '24670763'
     BIO_FEATURE = 'aggregate'
-    TWOSIDED_THRESHOLD = 2.45e6
+    TWOSIDED_THRESHOLD = 2.45e6  # <-  this needs to phased out. Filter by percentile instead of absolute value.
 
     def __init__(self, anderson_data_file: str, gene_index: dataframe, lift: LiftOverSpark) -> None:
 
@@ -107,10 +107,10 @@ class parse_anderson:
             .persist()
         )
 
-    def get_anderson_intervals(self) -> dataframe:
+    def get_intervals(self) -> dataframe:
         return self.anderson_intervals
 
-    def qc_anderson_intervals(self) -> None:
+    def qc_intervals(self) -> None:
         """
         Perform QC on the anderson intervals.
         """
