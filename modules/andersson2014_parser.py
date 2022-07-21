@@ -16,7 +16,8 @@ class parse_anderson:
     Parse the anderson file and return a dataframe with the intervals.
 
     :param anderson_file: Path to the anderson file (.bed).
-    :return: Spark Dataframe
+    :param gene_index: PySpark dataframe with the gene index.
+    :param lift: LiftOverSpark object.
 
     **Summary of the logic**
 
@@ -27,7 +28,6 @@ class parse_anderson:
     - Dropping rows where the gene is on other chromosomes
     - Dropping rows where the gene TSS is too far from the midpoint of the intervals
     - Adding constant columns for this dataset
-    - Return spark dataframe.
     """
 
     # Constant values:
@@ -36,8 +36,11 @@ class parse_anderson:
     EXPERIMENT_TYPE = 'fantom5'
     PMID = '24670763'
     BIO_FEATURE = 'aggregate'
+    TWOSIDED_THRESHOLD = 2.45e6  # <-  this needs to phased out. Filter by percentile instead of absolute value.
 
-    def __init__(self, anderson_data_file: str, gene_index: dataframe, lift: LiftOverSpark, proximity_limit) -> None:
+    def __init__(self, anderson_data_file: str, gene_index: dataframe, lift: LiftOverSpark) -> None:
+
+        logging.info('Parsing Andersson 2014 data...')
 
         # Read the anderson file:
         parserd_anderson_df = (
@@ -88,7 +91,7 @@ class parse_anderson:
                 & (
                     F.abs(
                         (F.col('start') + F.col('end')) / 2 - F.col('TSS')
-                    ) <= proximity_limit
+                    ) <= self.TWOSIDED_THRESHOLD
                 )
             )
 
@@ -98,18 +101,19 @@ class parse_anderson:
             .withColumn('experiment_type', F.lit(self.EXPERIMENT_TYPE))
             .withColumn('pmid', F.lit(self.PMID))
             .withColumn('bio_feature', F.lit(self.BIO_FEATURE))
+            .withColumn('cell_type', F.lit(None).cast(T.StringType()))
 
             # Select relevant columns:
             .select(
-                'chrom', 'start', 'end', 'gene_id', 'score', 'dataset_name', 'data_type', 'experiment_type', 'pmid', 'bio_feature'
+                'chrom', 'start', 'end', 'gene_id', 'score', 'dataset_name', 'data_type', 'experiment_type', 'pmid', 'bio_feature', 'cell_type'
             )
             .persist()
         )
 
-    def get_anderson_intervals(self) -> dataframe:
+    def get_intervals(self) -> dataframe:
         return self.anderson_intervals
 
-    def qc_anderson_intervals(self) -> None:
+    def qc_intervals(self) -> None:
         """
         Perform QC on the anderson intervals.
         """
@@ -156,7 +160,6 @@ if __name__ == '__main__':
     parser.add_argument('--anderson_file', type=str, help='Path to the anderson file (.bed)')
     parser.add_argument('--gene_index', type=str, help='Path to the gene index file (.csv)')
     parser.add_argument('--chain_file', type=str, help='Path to the chain file (.chain)')
-    parser.add_argument('--proximity_limit', type=int, help='Proximity limit for the TSS', default=5.341328e05)
     parser.add_argument('--output_file', type=str, help='Path to the output file (.parquet)')
     args = parser.parse_args()
 
@@ -171,13 +174,11 @@ if __name__ == '__main__':
     logging.info(f'Adnerson file: {args.anderson_file}')
     logging.info(f'Gene index file: {args.gene_index}')
     logging.info(f'Chain file: {args.chain_file}')
-    logging.info(f'Proximity limit: {args.proximity_limit}')
     logging.info(f'Output file: {args.output_file}')
 
     main(
         args.anderson_file,
         args.gene_index,
         args.chain_file,
-        args.proximity_limit,
         args.output_file
     )
