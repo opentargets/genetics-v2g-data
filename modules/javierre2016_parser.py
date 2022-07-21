@@ -1,7 +1,7 @@
 import argparse
 from functools import reduce
 import logging
-
+from psutil import virtual_memory
 import pyspark
 import pyspark.sql.types as T
 import pyspark.sql.functions as F
@@ -61,11 +61,10 @@ class parser_javierre:
 
             # Keep canonical chromosomes and consistent chromosomes:
             .filter(
-                (F.col('name_score').isNotNull())  &  # Dropping rows without score
+                (F.col('name_score').isNotNull()) &  # Dropping rows without score
                 (F.col('chrom') == F.col('name_chr')) &  # 6_473_184 -> 6_428_824
                 F.col('name_chr').isin([f'{x}' for x in range(1, 23)] + ['X', 'Y', 'MT'])  # Keep only canonical chromosomes
             )
-            .sample(0.001)
         )
 
         # Lifting over intervals:
@@ -87,27 +86,32 @@ class parser_javierre:
             .persist()
         )
 
-        # Mapping intervals to genes:
-        javierre_intervals = (
+        # Once the intervals are lifted, extracting the unique intervals:
+        unique_intervals_with_genes = (
             javierre_remapped
-            .join(genes, how='inner', on=[
-                (genes.gene_chr == javierre_remapped.chrom) &
-                ((genes.gene_start <= javierre_remapped.end) & (genes.gene_start >= javierre_remapped.start)) |
-                ((genes.gene_end <= javierre_remapped.end) & (genes.gene_end >= javierre_remapped.start))
-            ])
+            .select(
+                'chrom',
+                F.col('start').cast(T.IntegerType()),
+                F.col('end').cast(T.IntegerType())
+            )
+            .distinct()
+            .join(genes, on=['chrom'], how='left')
+            .filter(
+                ((F.col('start') >= F.col('gene_start')) & (F.col('start') <= F.col('gene_end'))) |
+                ((F.col('end') >= F.col('gene_start')) & (F.col('end') <= F.col('gene_end')))
+            )
+            .select('chrom', 'start', 'end', 'gene_id', 'TSS')
+        )
+
+        # Joining back the data:
+        self.javierre_intervals = (
+            javierre_remapped
+            .join(unique_intervals_with_genes, on=['chrom', 'start', 'end'], how='left')
             .filter(
                 # Drop rows where the TSS is far from the start of the region
                 F.abs((F.col('start') + F.col('end')) / 2 - F.col('TSS')) <= self.TWOSIDED_THRESHOLD
             )
-            .persist()
-        )
 
-        print('javierre_intervals')
-        javierre_intervals.show()
-        print(javierre_intervals.count())
-
-        self.javierre_intervals = (
-            javierre_intervals
             # For each gene, keep only the highest scoring interval:
             .groupBy('name_chr', 'name_start', 'name_end', 'gene_id', 'bio_feature')
             .agg(F.max(F.col('name_score')).alias('score'))
@@ -128,6 +132,7 @@ class parser_javierre:
             )
             .persist()
         )
+
         print('self.javierre_intervals')
         self.javierre_intervals.show()
         print(self.javierre_intervals.count())
@@ -161,15 +166,11 @@ class parser_javierre:
         return (
             gene_index
             .select(
-                F.regexp_replace(F.col('chr'), 'chr', '').alias('chr'),
-                F.col('start').alias('gene_start'),
-                F.col('end').alias('gene_end'),
+                F.regexp_replace(F.col('chr'), 'chr', '').alias('chrom'),
+                F.col('start').cast(T.IntegerType()).alias('gene_start'),
+                F.col('end').cast(T.IntegerType()).alias('gene_end'),
                 'gene_id', 'TSS'
             )
-            .withColumn('chr', F.regexp_replace(F.col('chr'), 'chr', ''))
-            .withColumnRenamed('chr', 'gene_chr')
-            .withColumnRenamed('start', 'gene_start')
-            .withColumnRenamed('end', 'gene_end')
             .persist()
         )
 
@@ -183,7 +184,6 @@ def main(javierre_data_file: str, gene_index_file: str, chain_file: str, output_
         .set('spark.driver.maxResultSize', '0')
         .set('spark.debug.maxToStringFields', '2000')
         .set('spark.sql.execution.arrow.maxRecordsPerBatch', '500000')
-        .set('spark.ui.showConsoleProgress', 'false')
     )
     spark = (
         pyspark.sql.SparkSession.builder.config(conf=spark_conf)
