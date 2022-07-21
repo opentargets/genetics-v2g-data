@@ -1,4 +1,5 @@
 from datetime import date
+from functools import reduce
 import os
 import pandas as pd
 
@@ -28,7 +29,6 @@ def main(cfg):
 
     chain_file = cfg.intervals.liftover_chain_file
     max_difference = cfg.intervals.max_length_difference
-    proximity_limit = 2 * float(cfg.intervals.proximity_limit)
 
     # Open and process gene file:
     gene_index = spark.read.parquet(cfg.intervals.gene_index).persist()
@@ -40,17 +40,18 @@ def main(cfg):
     datasets = [
 
         # Parsing Andersson data:
-        parse_anderson(cfg.intervals.anderson_file, gene_index, lift, proximity_limit).get_intervals(),
+        parse_anderson(cfg.intervals.anderson_file, gene_index, lift).get_intervals(),
 
         # Parsing Javierre data:
-        parse_javierre(cfg.intervals.javierre_dataset, gene_index, lift, proximity_limit).get_intervals()
+        parse_javierre(cfg.intervals.javierre_dataset, gene_index, lift).get_intervals()
     ]
 
     # Further parsers will come here...
+    df = reduce(lambda x, y: x.union(y), datasets)
 
     # Saving data:
     version = date.today().strftime("%y%m%d")
-    # anderson_df.write.mode('overwrite').parquet(cfg.intervals.output + f'/interval_{version}')
+    df.write.mode('overwrite').parquet(cfg.intervals.output + f'/interval_{version}')
 
 
 if __name__ == '__main__':

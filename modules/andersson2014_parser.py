@@ -40,6 +40,8 @@ class parse_anderson:
 
     def __init__(self, anderson_data_file: str, gene_index: dataframe, lift: LiftOverSpark) -> None:
 
+        logging.info('Parsing Andersson 2014 data...')
+
         # Read the anderson file:
         parserd_anderson_df = (
             SparkSession.getActiveSession().createDataFrame(pd.read_csv(anderson_data_file, sep='\t', header=0, low_memory=False, skiprows=1))
@@ -99,10 +101,11 @@ class parse_anderson:
             .withColumn('experiment_type', F.lit(self.EXPERIMENT_TYPE))
             .withColumn('pmid', F.lit(self.PMID))
             .withColumn('bio_feature', F.lit(self.BIO_FEATURE))
+            .withColumn('cell_type', F.lit(None).cast(T.StringType()))
 
             # Select relevant columns:
             .select(
-                'chrom', 'start', 'end', 'gene_id', 'score', 'dataset_name', 'data_type', 'experiment_type', 'pmid', 'bio_feature'
+                'chrom', 'start', 'end', 'gene_id', 'score', 'dataset_name', 'data_type', 'experiment_type', 'pmid', 'bio_feature', 'cell_type'
             )
             .persist()
         )

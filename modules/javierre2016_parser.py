@@ -1,6 +1,7 @@
 import argparse
 from functools import reduce
 import logging
+
 from psutil import virtual_memory
 import pyspark
 import pyspark.sql.types as T
@@ -11,7 +12,7 @@ from pyspark.conf import SparkConf
 from modules.Liftover import LiftOverSpark
 
 
-class parser_javierre:
+class parse_javierre:
     """
     Parser Javierre 2016 dataset
 
@@ -40,6 +41,8 @@ class parser_javierre:
                  javierre_parquet: str,
                  gene_index: dataframe,
                  lift: LiftOverSpark) -> None:
+
+        logging.info('Parsing Javierre 2016 data...')
 
         # Read gene index:
         genes = self.prepare_gene_index(gene_index)
@@ -133,10 +136,6 @@ class parser_javierre:
             .persist()
         )
 
-        print('self.javierre_intervals')
-        self.javierre_intervals.show()
-        print(self.javierre_intervals.count())
-
     def get_intervals(self) -> dataframe:
         return self.javierre_intervals
 
@@ -200,7 +199,7 @@ def main(javierre_data_file: str, gene_index_file: str, chain_file: str, output_
 
     # Initialze the parser:
     logging.info('Starting Javierre data processing.')
-    javierre = parser_javierre(javierre_data_file, gene_index, lift)
+    javierre = parse_javierre(javierre_data_file, gene_index, lift)
 
     # run QC:
     logging.info('Running QC on the intervals.')
