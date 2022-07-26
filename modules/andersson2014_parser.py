@@ -105,7 +105,11 @@ class parse_anderson:
 
             # Select relevant columns:
             .select(
-                'chrom', 'start', 'end', 'gene_id', 'score', 'dataset_name', 'data_type', 'experiment_type', 'pmid', 'bio_feature', 'cell_type'
+                'chrom', 'start', 'end', 'gene_id', 'score',
+                'dataset_name', 'data_type',
+                'experiment_type', 'pmid', 'bio_feature', 'cell_type',
+                F.lit(None).alias('tissue').cast(T.StringType()),
+
             )
             .persist()
         )

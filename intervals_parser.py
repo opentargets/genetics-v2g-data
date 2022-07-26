@@ -12,6 +12,7 @@ from pyspark.sql import dataframe, SparkSession
 
 from modules.andersson2014_parser import parse_anderson
 from modules.javierre2016_parser import parse_javierre
+from modules.jung2019_parser import parse_jung
 from modules.Liftover import LiftOverSpark
 
 # Get real path for the file:
@@ -43,7 +44,10 @@ def main(cfg):
         parse_anderson(cfg.intervals.anderson_file, gene_index, lift).get_intervals(),
 
         # Parsing Javierre data:
-        parse_javierre(cfg.intervals.javierre_dataset, gene_index, lift).get_intervals()
+        parse_javierre(cfg.intervals.javierre_dataset, gene_index, lift).get_intervals(),
+
+        # Parsing jung data:
+        parse_jung(cfg.intervals.jung_dataset, gene_index, lift).get_intervals(),
     ]
 
     # Further parsers will come here...

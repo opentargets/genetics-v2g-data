@@ -128,6 +128,7 @@ class parse_javierre:
                 F.col('gene_id').alias('gene_id'),
                 F.col('bio_feature').alias('cell_type'),
                 F.lit(None).alias('bio_feature').cast(T.StringType()),
+                F.lit(None).alias('tissue').cast(T.StringType()),
                 F.lit(self.DATASET_NAME).alias('dataset'),
                 F.lit(self.DATA_TYPE).alias('data_type'),
                 F.lit(self.EXPERIMENT_TYPE).alias('experiment_type'),
