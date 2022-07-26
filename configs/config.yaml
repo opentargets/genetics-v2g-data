@@ -25,6 +25,9 @@ intervals:
   # Lineage-Specific Genome Architecture Links Enhancers and Non-coding Disease Variants to Target Gene Promoters
   javierre_dataset: gs://genetics-portal-input/v2g_input/javierre_2016_preprocessed.parquet
 
+  # A compendium of promoter-centered long-range chromatin interactions in the human genome
+  jung_file: gs://genetics-portal-raw/pchic_jung2019/jung2019_pchic_tableS3.csv
+   
   #
   # The config for the other datasets will be cleaned as I progress.
   #

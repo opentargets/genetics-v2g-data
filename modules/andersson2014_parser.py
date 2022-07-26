@@ -127,12 +127,12 @@ class parse_anderson:
         self.anderson_intervals.write.mode('overwrite').parquet(output_file)
 
 
-def main(anderson_data_file: str, gene_index_file: str, chain_file: str, proximity_limit: int, output_file: str) -> None:
+def main(anderson_data_file: str, gene_index_file: str, chain_file: str, output_file: str) -> None:
 
     spark = (
         pyspark.sql.SparkSession
         .builder
-        .master("local[*]")
+        # .master("local[*]")
         .getOrCreate()
     )
 
@@ -144,7 +144,7 @@ def main(anderson_data_file: str, gene_index_file: str, chain_file: str, proximi
 
     # Initialze the parser:
     logging.info('Starting Andersson data processing.')
-    anderson = parse_anderson(anderson_data_file, gene_index, lift, proximity_limit)
+    anderson = parse_anderson(anderson_data_file, gene_index, lift, output_file)
 
     # run QC:
     logging.info('Running QC on the anderson intervals.')
