@@ -54,10 +54,10 @@ def main(cfg):
         parse_javierre(cfg.intervals.javierre_dataset, gene_index, lift).get_intervals(),
 
         # Parsing jung data:
-        parse_jung(cfg.intervals.jung_dataset, gene_index, lift).get_intervals(),
+        parse_jung(cfg.intervals.jung_file, gene_index, lift).get_intervals(),
 
         # Parsing Thurman data:
-        parse_thurman(cfg.intervals.thurman_dataset, gene_index, lift).get_intervals(),
+        parse_thurman(cfg.intervals.thurman_file, gene_index, lift).get_intervals(),
     ]
 
     # Combining all datasets into a single dataframe, where missing columns are filled with nulls:
