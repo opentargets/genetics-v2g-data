@@ -15,9 +15,9 @@ max_len_dff: 100 # Max difference in length between old and new interval (in bas
 
 intervals:
   liftover_chain_file: gs://genetics-portal-input/v2g_input/grch37_to_grch38.over.chain
+  gene_index: gs://genetics-portal-input/v2g_input/geneset.protein_coding.parquet
   max_length_difference: 100
   output: gs://genetics-portal-dev-data/dev_intervals
-  gene_index: gs://genetics-portal-input/v2g_input/geneset.protein_coding.parquet
 
   # An atlas of active enhancers across human cell types and tissues
   anderson_file: gs://genetics-portal-input/v2g_input/andersson2014/enhancer_tss_associations.bed
@@ -27,23 +27,8 @@ intervals:
 
   # A compendium of promoter-centered long-range chromatin interactions in the human genome
   jung_file: gs://genetics-portal-raw/pchic_jung2019/jung2019_pchic_tableS3.csv
-   
-  #
-  # The config for the other datasets will be cleaned as I progress.
-  #
-  # A compendium of promoter-centered long-range chromatin interactions in the human genome
-  jung:
-    data_folder: gs://genetics-portal-raw/pchic_jung2019/jung2019_pchic_tableS3.csv
-    dataset_name: jung2019
-    pubmed_id: '31501517'
-    data_type: interval
-    experiment_type: pchic
+
   # The accessible chromatin landscape of the human genome
-  thurman:
-    data_file: gs://genetics-portal-input/v2g_input/thurman2012/genomewideCorrs_above0.7_promoterPlusMinus500kb_withGeneNames_32celltypeCategories.bed8.gz
-    dataset_name: thurman2012
-    pubmed_id: '22955617'
-    data_type: interval
-    experiment_type: dhscor
-    bio_feature: aggregate
+  thurman_file: gs://genetics-portal-input/v2g_input/thurman2012/genomewideCorrs_above0.7_promoterPlusMinus500kb_withGeneNames_32celltypeCategories.bed8.gz
+
 
