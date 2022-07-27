@@ -63,11 +63,11 @@ class LiftOverSpark:
 
         # Lift over start coordinates:
         start_df = df.select(chrom_col, start_col).distinct()
-        start_df = self.convert_coordinates(start_df, chrom_col, start_col).withColumnRenamed('mapped_pos', 'mapped_' + start_col)
+        start_df = self.convert_coordinates(start_df, chrom_col, start_col).withColumnRenamed('mapped_pos', f'mapped_{start_col}')
 
         # Lift over end coordinates:
         end_df = df.select(chrom_col, end_col).distinct()
-        end_df = self.convert_coordinates(end_df, chrom_col, end_col).withColumnRenamed('mapped_pos', 'mapped_' + end_col)
+        end_df = self.convert_coordinates(end_df, chrom_col, end_col).withColumnRenamed('mapped_pos', f'mapped_{end_col}')
 
         # Join dataframe with mappings:
         mapped_df = (
@@ -83,16 +83,16 @@ class LiftOverSpark:
                 # Select only rows where the start is smaller than the end:
                 .filter(
                     # Drop rows with no mappings:
-                    F.col('mapped_start').isNotNull() & F.col('mapped_end').isNotNull()
+                    F.col(f'mapped_{start_col}').isNotNull() & F.col(f'mapped_{end}').isNotNull()
 
                     # Drop rows where the start is larger than the end:
-                    & (F.col('mapped_' + end_col) >= F.col('mapped_' + start_col))
+                    & (F.col(f'mapped_{end}') >= F.col(f'mapped_{start_col}'))
 
                     # Drop rows where the difference of the length of the regions are larger than the threshold:
                     & (
                         F.abs(
-                            (F.col('mapped_' + end_col) - F.col('mapped_' + start_col)) -
-                            (F.col('mapped_' + end_col) - F.col('mapped_' + start_col))
+                            (F.col(f'mapped_{end}') - F.col(f'mapped_{start_col}')) -
+                            (F.col(f'mapped_{end}') - F.col(f'mapped_{start_col}'))
                         ) <= self.max_difference
                     )
                 )
