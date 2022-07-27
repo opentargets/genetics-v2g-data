@@ -95,21 +95,18 @@ class parse_anderson:
                 )
             )
 
-            # Adding constant values:
-            .withColumn('dataset_name', F.lit(self.DATASET_NAME))
-            .withColumn('data_type', F.lit(self.DATA_TYPE))
-            .withColumn('experiment_type', F.lit(self.EXPERIMENT_TYPE))
-            .withColumn('pmid', F.lit(self.PMID))
-            .withColumn('bio_feature', F.lit(self.BIO_FEATURE))
-            .withColumn('cell_type', F.lit(None).cast(T.StringType()))
-
             # Select relevant columns:
             .select(
-                'chrom', 'start', 'end', 'gene_id', 'score',
-                'dataset_name', 'data_type',
-                'experiment_type', 'pmid', 'bio_feature', 'cell_type',
-                F.lit(None).alias('tissue').cast(T.StringType()),
-
+                'chrom',
+                'start',
+                'end',
+                'gene_id',
+                'score',
+                F.lit(self.DATASET_NAME).alias('dataset_name'),
+                F.lit(self.DATA_TYPE).alias('data_type'),
+                F.lit(self.EXPERIMENT_TYPE).alias('experiment_type'),
+                F.lit(self.PMID).alias('pmid'),
+                F.lit(self.BIO_FEATURE).alias('bio_feature')
             )
             .persist()
         )

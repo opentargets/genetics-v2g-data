@@ -77,9 +77,7 @@ class parse_thurman:
                 F.lit(self.DATA_TYPE).alias('data_type'),
                 F.lit(self.EXPERIMENT_TYPE).alias('experiment_type'),
                 F.lit(self.PMID).alias('pmid'),
-                F.lit(self.BIO_FEATURE).alias('bio_feature'),
-                F.lit(None).cast(T.StringType()).alias('cell_type'),
-                F.lit(None).cast(T.StringType()).alias('tissue'),
+                F.lit(self.BIO_FEATURE).alias('bio_feature')
             )
             .distinct()
             .persist()

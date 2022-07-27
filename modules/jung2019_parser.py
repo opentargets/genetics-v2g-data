@@ -80,8 +80,6 @@ class parse_jung:
             # Finalize dataset:
             .select(
                 'chrom', 'start', 'end', 'gene_id', 'tissue',
-                F.lit(None).alias('cell_type').cast(T.StringType()),
-                F.lit(None).alias('bio_feature').cast(T.StringType()),
                 F.lit(self.DATASET_NAME).alias('dataset'),
                 F.lit(self.DATA_TYPE).alias('data_type'),
                 F.lit(self.EXPERIMENT_TYPE).alias('experiment_type'),

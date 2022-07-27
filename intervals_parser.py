@@ -1,18 +1,17 @@
 from datetime import date
 from functools import reduce
 import os
-import pandas as pd
 
 import hydra
 
 import pyspark
-import pyspark.sql.types as T
-import pyspark.sql.functions as F
-from pyspark.sql import dataframe, SparkSession
+from pyspark.conf import SparkConf
 
 from modules.andersson2014_parser import parse_anderson
 from modules.javierre2016_parser import parse_javierre
 from modules.jung2019_parser import parse_jung
+from modules.thurman2012_parser import parse_thurman
+
 from modules.Liftover import LiftOverSpark
 
 # Get real path for the file:
@@ -21,10 +20,18 @@ script_folder = os.path.dirname(os.path.realpath(__file__))
 @hydra.main(config_path=f'{script_folder}/configs', config_name='config')
 def main(cfg):
 
+    spark_conf = (
+        SparkConf()
+        .set('spark.driver.memory', '20g')
+        .set('spark.executor.memory', '20g')
+        .set('spark.driver.maxResultSize', '0')
+        .set('spark.debug.maxToStringFields', '2000')
+        .set('spark.sql.execution.arrow.maxRecordsPerBatch', '500000')
+    )
     spark = (
-        pyspark.sql.SparkSession
-        .builder
-        .master("local[*]")
+        pyspark.sql.SparkSession.builder.config(conf=spark_conf)
+        .master('local[*]')
+        .config("spark.driver.bindAddress", "127.0.0.1")
         .getOrCreate()
     )
 
@@ -48,10 +55,13 @@ def main(cfg):
 
         # Parsing jung data:
         parse_jung(cfg.intervals.jung_dataset, gene_index, lift).get_intervals(),
+
+        # Parsing Thurman data:
+        parse_thurman(cfg.intervals.thurman_dataset, gene_index, lift).get_intervals(),
     ]
 
-    # Further parsers will come here...
-    df = reduce(lambda x, y: x.union(y), datasets)
+    # Combining all datasets into a single dataframe, where missing columns are filled with nulls:
+    df = reduce(lambda x, y: x.unionByName(y, allowMissingColumns=True), datasets)
 
     # Saving data:
     version = date.today().strftime("%y%m%d")
