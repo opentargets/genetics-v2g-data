@@ -46,14 +46,13 @@ def main(cfg):
 
     # Parsing datasets:
     datasets = [
-
         # Parsing Andersson data:
         parse_anderson(cfg.intervals.anderson_file, gene_index, lift).get_intervals(),
 
         # Parsing Javierre data:
         parse_javierre(cfg.intervals.javierre_dataset, gene_index, lift).get_intervals(),
 
-        # Parsing jung data:
+        # Parsing Jung data:
         parse_jung(cfg.intervals.jung_file, gene_index, lift).get_intervals(),
 
         # Parsing Thurman data:
@@ -64,8 +63,12 @@ def main(cfg):
     df = reduce(lambda x, y: x.unionByName(y, allowMissingColumns=True), datasets)
 
     # Saving data:
-    version = date.today().strftime("%y%m%d")
-    df.write.mode('overwrite').parquet(cfg.intervals.output + f'/interval_{version}')
+    version = date.today().strftime('%y%m%d')
+    (
+        df
+        # . The dataset needs to be repartitioned
+        .write.mode('overwrite').parquet(cfg.intervals.output + f'/interval_{version}')
+    )
 
 
 if __name__ == '__main__':

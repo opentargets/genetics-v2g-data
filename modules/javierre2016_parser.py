@@ -121,7 +121,7 @@ class parse_javierre:
 
             # Create the output:
             .select(
-                F.col('name_chr').alias('chr'),
+                F.col('name_chr').alias('chrom'),
                 F.col('name_start').alias('start'),
                 F.col('name_end').alias('end'),
                 F.col('score'),
