@@ -65,7 +65,7 @@ class parse_jung:
             jung_raw
 
             # Lifting over to GRCh39 interval 1:
-            .transform(lambda df: lift.convert_intervals(df, 'chrom', 'start', 'end', filter=False))
+            .transform(lambda df: lift.convert_intervals(df, 'chrom', 'start', 'end'))
             .select(
                 'chrom',
                 F.col('mapped_start').alias('start'),
@@ -80,7 +80,7 @@ class parse_jung:
             # Finalize dataset:
             .select(
                 'chrom', 'start', 'end', 'gene_id', 'tissue',
-                F.lit(self.DATASET_NAME).alias('dataset'),
+                F.lit(self.DATASET_NAME).alias('dataset_name'),
                 F.lit(self.DATA_TYPE).alias('data_type'),
                 F.lit(self.EXPERIMENT_TYPE).alias('experiment_type'),
                 F.lit(self.PMID).alias('pmid')

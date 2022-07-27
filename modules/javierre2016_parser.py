@@ -74,14 +74,14 @@ class parse_javierre:
         javierre_remapped = (
             javierre_raw
             # Lifting over to GRCh39 interval 1:
-            .transform(lambda df: lift.convert_intervals(df, 'chrom', 'start', 'end', filter=False))
+            .transform(lambda df: lift.convert_intervals(df, 'chrom', 'start', 'end'))
             .drop('start', 'end')
             .withColumnRenamed('mapped_chrom', 'chrom')
             .withColumnRenamed('mapped_start', 'start')
             .withColumnRenamed('mapped_end', 'end')
 
             # Lifting over interval 2 to GRCh39:
-            .transform(lambda df: lift.convert_intervals(df, 'name_chr', 'name_start', 'name_end', filter=False))
+            .transform(lambda df: lift.convert_intervals(df, 'name_chr', 'name_start', 'name_end'))
             .drop('name_start', 'name_end')
             .withColumnRenamed('mapped_name_chr', 'name_chr')
             .withColumnRenamed('mapped_name_start', 'name_start')
@@ -127,7 +127,7 @@ class parse_javierre:
                 F.col('score'),
                 F.col('gene_id').alias('gene_id'),
                 F.col('bio_feature').alias('cell_type'),
-                F.lit(self.DATASET_NAME).alias('dataset'),
+                F.lit(self.DATASET_NAME).alias('dataset_name'),
                 F.lit(self.DATA_TYPE).alias('data_type'),
                 F.lit(self.EXPERIMENT_TYPE).alias('experiment_type'),
                 F.lit(self.PMID).alias('pmid')
