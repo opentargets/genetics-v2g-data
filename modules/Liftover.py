@@ -45,7 +45,10 @@ class LiftOverSpark:
         self.max_difference = 100 if max_difference is None else max_difference
 
         # UDF to do map genomic coordinates to liftover coordinates:
-        self.liftover_udf = F.udf(lambda chrom, pos: self.lo.convert_coordinate(chrom, pos), T.ArrayType(T.ArrayType(T.StringType())))
+        self.liftover_udf = F.udf(
+            lambda chrom, pos: self.lo.convert_coordinate(chrom, pos),
+            T.ArrayType(T.ArrayType(T.StringType()))
+        )
 
     def convert_intervals(self, df: dataframe, chrom_col: str, start_col: str, end_col: str, filter: bool = True) -> dataframe:
         """
@@ -63,7 +66,7 @@ class LiftOverSpark:
         # Lift over start coordinates:
         start_df = (
             df
-            .withColumn(start_col, F.col(start_col) + F.lit(1)) # Changing to 1-based coordinates
+            .withColumn(start_col, F.col(start_col) + F.lit(1))  # Changing to 1-based coordinates
             .select(chrom_col, start_col)
             .distinct()
             .persist()
@@ -96,8 +99,8 @@ class LiftOverSpark:
                     # Drop rows where the difference of the length of the regions are larger than the threshold:
                     & (
                         F.abs(
-                            (F.col(end_col) - F.col(start_col)) -
-                            (F.col(f'mapped_{end_col}') - F.col(f'mapped_{start_col}'))
+                            (F.col(end_col) - F.col(start_col))
+                            - (F.col(f'mapped_{end_col}') - F.col(f'mapped_{start_col}'))
                         ) <= self.max_difference
                     )
                 )

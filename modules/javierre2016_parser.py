@@ -62,11 +62,11 @@ class parse_javierre:
             .withColumn('chrom', F.regexp_replace(F.col('chrom'), 'chr', '').cast(T.StringType()))
             .drop('name_split', 'name', 'annotation')
 
-            # Keep canonical chromosomes and consistent chromosomes:
+            # Keep canonical chromosomes and consistent chromosomes with scores:
             .filter(
-                (F.col('name_score').isNotNull()) &  # Dropping rows without score
-                (F.col('chrom') == F.col('name_chr')) &  # 6_473_184 -> 6_428_824
-                F.col('name_chr').isin([f'{x}' for x in range(1, 23)] + ['X', 'Y', 'MT'])  # Keep only canonical chromosomes
+                (F.col('name_score').isNotNull())
+                & (F.col('chrom') == F.col('name_chr'))
+                & F.col('name_chr').isin([f'{x}' for x in range(1, 23)] + ['X', 'Y', 'MT'])
             )
         )
 
@@ -100,8 +100,8 @@ class parse_javierre:
             .distinct()
             .join(genes, on=['chrom'], how='left')
             .filter(
-                ((F.col('start') >= F.col('gene_start')) & (F.col('start') <= F.col('gene_end'))) |
-                ((F.col('end') >= F.col('gene_start')) & (F.col('end') <= F.col('gene_end')))
+                ((F.col('start') >= F.col('gene_start')) & (F.col('start') <= F.col('gene_end')))
+                | ((F.col('end') >= F.col('gene_start')) & (F.col('end') <= F.col('gene_end')))
             )
             .select('chrom', 'start', 'end', 'gene_id', 'TSS')
         )

@@ -66,7 +66,8 @@ def main(cfg):
     version = date.today().strftime('%y%m%d')
     (
         df
-        # . The dataset needs to be repartitioned
+        .orderBy('chrom', 'start')
+        .repartition(200)
         .write.mode('overwrite').parquet(cfg.intervals.output + f'/interval_{version}')
     )
 
