@@ -16,7 +16,7 @@ class parse_thurman:
     """
     Parser Thurman 2012 dataset
 
-    :param Thurman_parquet: path to the parquet file containing the Thurman 2016 data
+    :param Thurman_parquet: path to the parquet file containing the Thurman 2012 data
     :param gene_index: Pyspark dataframe containing the gene index
     :param lift: LiftOverSpark object
 
@@ -37,7 +37,7 @@ class parse_thurman:
                  gene_index: dataframe,
                  lift: LiftOverSpark) -> None:
 
-        logging.info('Parsing Thurman 2016 data...')
+        logging.info('Parsing Thurman 2012 data...')
 
         thurman_schema = T.StructType([
             T.StructField('gene_chr', T.StringType(), False),
@@ -117,7 +117,7 @@ def main(thurman_data_file: str, gene_index_file: str, chain_file: str, output_f
         .getOrCreate()
     )
 
-    logging.info('Reading genes and initializeing liftover.')
+    logging.info('Reading genes and initializing liftover.')
 
     # Initialize LiftOver and gene objects:
     gene_index = spark.read.parquet(gene_index_file)
@@ -138,7 +138,7 @@ def main(thurman_data_file: str, gene_index_file: str, chain_file: str, output_f
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser('Wrapper for the the Thurman interval data parser.')
-    parser.add_argument('--thurman_file', type=str, help='Path to the tsv dataset.')
+    parser.add_argument('--thurman_file', type=str, help='Path to the tsv dataset (.tsv).')
     parser.add_argument('--gene_index', type=str, help='Path to the gene index file (.parquet)')
     parser.add_argument('--chain_file', type=str, help='Path to the chain file (.chain)')
     parser.add_argument('--output_file', type=str, help='Path to the output file (.parquet)')

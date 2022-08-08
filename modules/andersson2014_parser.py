@@ -172,7 +172,7 @@ if __name__ == '__main__':
     )
 
     # Just print out some of the arguments:
-    logging.info(f'Adnerson file: {args.anderson_file}')
+    logging.info(f'Anderson file: {args.anderson_file}')
     logging.info(f'Gene index file: {args.gene_index}')
     logging.info(f'Chain file: {args.chain_file}')
     logging.info(f'Output file: {args.output_file}')

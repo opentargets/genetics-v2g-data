@@ -16,7 +16,7 @@ class parse_javierre:
     """
     Parser Javierre 2016 dataset
 
-    :param javierre_parquet: path to the parquet file containing the Javierre 2016 data
+    :param javierre_parquet: path to the parquet file containing the Javierre 2016 data after processing it (see notebooks/Javierre_data_pre-process.ipynb)
     :param gene_index: Pyspark dataframe containing the gene index
     :param lift: LiftOverSpark object
 
@@ -51,7 +51,7 @@ class parse_javierre:
         javierre_raw = (
             SparkSession.getActiveSession().read.parquet(javierre_parquet)
 
-            # SPlitting name column into chromosome, start, end, and score:
+            # Splitting name column into chromosome, start, end, and score:
             .withColumn('name_split', F.split(F.col('name'), r':|-|,'))
             .withColumn('name_chr', F.regexp_replace(F.col('name_split')[0], 'chr', '').cast(T.StringType()))
             .withColumn('name_start', F.col('name_split')[1].cast(T.IntegerType()))
@@ -73,14 +73,14 @@ class parse_javierre:
         # Lifting over intervals:
         javierre_remapped = (
             javierre_raw
-            # Lifting over to GRCh39 interval 1:
+            # Lifting over to GRCh38 interval 1:
             .transform(lambda df: lift.convert_intervals(df, 'chrom', 'start', 'end'))
             .drop('start', 'end')
             .withColumnRenamed('mapped_chrom', 'chrom')
             .withColumnRenamed('mapped_start', 'start')
             .withColumnRenamed('mapped_end', 'end')
 
-            # Lifting over interval 2 to GRCh39:
+            # Lifting over interval 2 to GRCh38:
             .transform(lambda df: lift.convert_intervals(df, 'name_chr', 'name_start', 'name_end'))
             .drop('name_start', 'name_end')
             .withColumnRenamed('mapped_name_chr', 'name_chr')
@@ -153,7 +153,7 @@ class parse_javierre:
 
     @staticmethod
     def prepare_gene_index(gene_index: dataframe) -> dataframe:
-        '''Pre-processind the gene dataset
+        '''Pre-processing the gene dataset
         - selecting and renaming relevant columns
         - remove 'chr' from chromosome column
 
@@ -211,7 +211,7 @@ def main(javierre_data_file: str, gene_index_file: str, chain_file: str, output_
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser('Wrapper for the the Javierre interval data parser.')
-    parser.add_argument('--javierre_file', type=str, help='Path to the pre-processed parquet dataset.')
+    parser.add_argument('--javierre_file', type=str, help='Path to the pre-processed parquet dataset (.parquet).')
     parser.add_argument('--gene_index', type=str, help='Path to the gene index file (.parquet)')
     parser.add_argument('--chain_file', type=str, help='Path to the chain file (.chain)')
     parser.add_argument('--output_file', type=str, help='Path to the output file (.parquet)')

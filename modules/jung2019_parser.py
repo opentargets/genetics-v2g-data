@@ -42,7 +42,7 @@ class parse_jung:
 
         logging.info('Parsing Jung 2019 data...')
 
-        # Read Javierre data:
+        # Read Jung data:
         jung_raw = (
             SparkSession.getActiveSession().read.csv(jung_data, sep=',', header=True)
 
@@ -64,7 +64,7 @@ class parse_jung:
         self.jung_intervals = (
             jung_raw
 
-            # Lifting over to GRCh39 interval 1:
+            # Lifting over to GRCh38 interval 1:
             .transform(lambda df: lift.convert_intervals(df, 'chrom', 'start', 'end'))
             .select(
                 'chrom',
@@ -94,7 +94,7 @@ class parse_jung:
 
     def qc_intervals(self) -> None:
         """
-        Perform QC on the anderson intervals.
+        Perform QC on the Jung intervals.
         """
 
         # Get numbers:
@@ -131,20 +131,20 @@ def main(jung_data_file: str, gene_index_file: str, chain_file: str, output_file
 
     # Initialze the parser:
     logging.info('Starting Jung 2019 data processing.')
-    javierre = parse_jung(jung_data_file, gene_index, lift)
+    jung = parse_jung(jung_data_file, gene_index, lift)
 
     # run QC:
     logging.info('Running QC on the intervals.')
-    javierre.qc_intervals()
+    jung.qc_intervals()
 
     # Save data:
     logging.info(f'Saving data to {output_file}.')
-    javierre.save_parquet(output_file)
+    jung.save_parquet(output_file)
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser('Wrapper for the the Jung interval data parser.')
-    parser.add_argument('--jung_file', type=str, help='Path to the raw csv dataset.')
+    parser.add_argument('--jung_file', type=str, help='Path to the raw csv dataset (.csv).')
     parser.add_argument('--gene_index', type=str, help='Path to the gene index file (.parquet)')
     parser.add_argument('--chain_file', type=str, help='Path to the chain file (.chain)')
     parser.add_argument('--output_file', type=str, help='Path to the output file (.parquet)')
