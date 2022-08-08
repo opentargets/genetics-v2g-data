@@ -1,5 +1,6 @@
 from datetime import date
 from functools import reduce
+import logging
 import os
 
 import hydra
@@ -61,6 +62,9 @@ def main(cfg):
 
     # Combining all datasets into a single dataframe, where missing columns are filled with nulls:
     df = reduce(lambda x, y: x.unionByName(y, allowMissingColumns=True), datasets)
+
+    logging.info(f'Number of interval data: {df.count()}')
+    logging.info(f'Writing data to: {cfg.intervals.output_file}')
 
     # Saving data:
     version = date.today().strftime('%y%m%d')

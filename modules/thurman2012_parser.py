@@ -83,6 +83,7 @@ class parse_thurman:
             .distinct()
             .persist()
         )
+        logging.info(f'Number of rows: {self.Thurman_intervals.count()}')
 
     def get_intervals(self) -> dataframe:
         return self.Thurman_intervals

@@ -43,6 +43,7 @@ class parse_anderson:
     def __init__(self, anderson_data_file: str, gene_index: dataframe, lift: LiftOverSpark) -> None:
 
         logging.info('Parsing Andersson 2014 data...')
+        logging.info(f'Reading data from {anderson_data_file}')
 
         # Read the anderson file:
         parserd_anderson_df = (
@@ -113,6 +114,8 @@ class parse_anderson:
             )
             .persist()
         )
+
+        logging.info(f'Number of rows: {self.anderson_intervals.count()}')
 
     def get_intervals(self) -> dataframe:
         return self.anderson_intervals

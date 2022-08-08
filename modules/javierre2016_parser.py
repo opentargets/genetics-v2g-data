@@ -134,6 +134,7 @@ class parse_javierre:
             )
             .persist()
         )
+        logging.info(f'Number of rows: {self.javierre_intervals.count()}')
 
     def get_intervals(self) -> dataframe:
         return self.javierre_intervals

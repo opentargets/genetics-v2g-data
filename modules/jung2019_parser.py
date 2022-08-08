@@ -89,6 +89,8 @@ class parse_jung:
             .persist()
         )
 
+        logging.info(f'Number of rows: {self.jung_intervals.count()}')
+
     def get_intervals(self) -> dataframe:
         return self.jung_intervals
 
