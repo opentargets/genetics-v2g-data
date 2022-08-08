@@ -159,7 +159,7 @@ def main(anderson_data_file: str, gene_index_file: str, chain_file: str, output_
 
     # Initialze the parser:
     logging.info('Starting Andersson data processing.')
-    anderson = parse_anderson(anderson_data_file, gene_index, lift, output_file)
+    anderson = parse_anderson(anderson_data_file, gene_index, lift)
 
     # run QC:
     logging.info('Running QC on the anderson intervals.')
