@@ -182,11 +182,11 @@ def main(javierre_data_file: str, gene_index_file: str, chain_file: str, output_
         .set('spark.driver.maxResultSize', '0')
         .set('spark.debug.maxToStringFields', '2000')
         .set('spark.sql.execution.arrow.maxRecordsPerBatch', '500000')
+        .set('spark.driver.bindAddress', '127.0.0.1')
     )
     spark = (
         pyspark.sql.SparkSession.builder.config(conf=spark_conf)
         .master('local[*]')
-        .config("spark.driver.bindAddress", "127.0.0.1")
         .getOrCreate()
     )
 

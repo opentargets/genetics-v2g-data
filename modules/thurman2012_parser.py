@@ -22,7 +22,8 @@ class parse_thurman:
 
     **Summary of the logic:**
 
-    -
+    - Lifting over coordinates to GRCh38
+    - Mapping genes names to gene IDs -> we might need to measure the loss of genes if there are obsoleted names.
     """
 
     # Constants:
@@ -109,11 +110,11 @@ def main(thurman_data_file: str, gene_index_file: str, chain_file: str, output_f
         .set('spark.driver.maxResultSize', '0')
         .set('spark.debug.maxToStringFields', '2000')
         .set('spark.sql.execution.arrow.maxRecordsPerBatch', '500000')
+        .set('spark.driver.bindAddress', '127.0.0.1')
     )
     spark = (
         pyspark.sql.SparkSession.builder.config(conf=spark_conf)
         .master('local[*]')
-        .config("spark.driver.bindAddress", "127.0.0.1")
         .getOrCreate()
     )
 

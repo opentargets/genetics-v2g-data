@@ -28,7 +28,6 @@ class LiftOverSpark:
     """
     def __init__(self, chain_file: str, max_difference: int = None) -> None:
         """
-
         :param chain_file: Path to the chain file. Local or google bucket. Chainfile is not gzipped!
         :param max_difference: Maximum difference between the length of the mapped region and the original region.
         """
@@ -62,7 +61,13 @@ class LiftOverSpark:
         """
 
         # Lift over start coordinates:
-        start_df = df.select(chrom_col, start_col).distinct()
+        start_df = (
+            df
+            .withColumn(start_col, F.col(start_col) + F.lit(1)) # Changing to 1-based coordinates
+            .select(chrom_col, start_col)
+            .distinct()
+            .persist()
+        )
         start_df = self.convert_coordinates(start_df, chrom_col, start_col).withColumnRenamed('mapped_pos', 'mapped_' + start_col)
 
         # Lift over end coordinates:
@@ -111,7 +116,7 @@ class LiftOverSpark:
 
         :return: Spark Dataframe with the mapped position column.
         """
-        mapped =  (
+        mapped = (
             df
             .withColumn('mapped', self.liftover_udf(F.col(chrom_name), F.col(pos_name)))
             .filter((F.col('mapped').isNotNull()) & (F.size(F.col('mapped')) == 1))

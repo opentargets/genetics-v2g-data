@@ -7,6 +7,8 @@ import pyspark
 import pyspark.sql.types as T
 import pyspark.sql.functions as F
 from pyspark.sql import dataframe, SparkSession
+from pyspark.conf import SparkConf
+
 
 from modules.Liftover import LiftOverSpark
 
@@ -44,7 +46,8 @@ class parse_anderson:
 
         # Read the anderson file:
         parserd_anderson_df = (
-            SparkSession.getActiveSession().createDataFrame(pd.read_csv(anderson_data_file, sep='\t', header=0, low_memory=False, skiprows=1))
+            SparkSession.getActiveSession()
+            .createDataFrame(pd.read_csv(anderson_data_file, sep='\t', header=0, low_memory=False, skiprows=1))
 
             # Parsing score column and casting as float:
             .withColumn('score', F.col('score').cast('float') / F.lit(1000))
@@ -130,10 +133,18 @@ class parse_anderson:
 
 def main(anderson_data_file: str, gene_index_file: str, chain_file: str, output_file: str) -> None:
 
+    spark_conf = (
+        SparkConf()
+        .set('spark.driver.memory', '10g')
+        .set('spark.executor.memory', '10g')
+        .set('spark.driver.maxResultSize', '0')
+        .set('spark.debug.maxToStringFields', '2000')
+        .set('spark.sql.execution.arrow.maxRecordsPerBatch', '500000')
+        .set('spark.driver.bindAddress', '127.0.0.1')
+    )
     spark = (
-        pyspark.sql.SparkSession
-        .builder
-        # .master("local[*]")
+        pyspark.sql.SparkSession.builder.config(conf=spark_conf)
+        .master('local[*]')
         .getOrCreate()
     )
 

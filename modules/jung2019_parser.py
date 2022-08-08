@@ -46,7 +46,7 @@ class parse_jung:
         jung_raw = (
             SparkSession.getActiveSession().read.csv(jung_data, sep=',', header=True)
 
-            .withColumn('interval', F.split(F.col('Interacting_fragment'), '\.'))
+            .withColumn('interval', F.split(F.col('Interacting_fragment'), r'\.'))
             .select(
                 # Parsing intervals:
                 F.regexp_replace(F.col('interval')[0], 'chr', '').alias('chrom'),
@@ -115,11 +115,11 @@ def main(jung_data_file: str, gene_index_file: str, chain_file: str, output_file
         .set('spark.driver.maxResultSize', '0')
         .set('spark.debug.maxToStringFields', '2000')
         .set('spark.sql.execution.arrow.maxRecordsPerBatch', '500000')
+        .set('spark.driver.bindAddress', '127.0.0.1')
     )
     spark = (
         pyspark.sql.SparkSession.builder.config(conf=spark_conf)
         .master('local[*]')
-        .config("spark.driver.bindAddress", "127.0.0.1")
         .getOrCreate()
     )
 
