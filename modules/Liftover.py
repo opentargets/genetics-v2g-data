@@ -63,24 +63,18 @@ class LiftOverSpark:
         :return: filtered Spark Dataframe with the mapped start and end coordinates.
         """
 
-        # Lift over start coordinates:
-        start_df = (
-            df
-            .withColumn(start_col, F.col(start_col) + F.lit(1))  # Changing to 1-based coordinates
-            .select(chrom_col, start_col)
-            .distinct()
-            .persist()
-        )
+        # Lift over start coordinates, changing to 1-based coordinates:
+        start_df = df.withColumn(start_col, F.col(start_col) + 1).select(chrom_col, start_col).distinct()
         start_df = self.convert_coordinates(start_df, chrom_col, start_col).withColumnRenamed('mapped_pos', 'mapped_' + start_col)
 
         # Lift over end coordinates:
         end_df = df.select(chrom_col, end_col).distinct()
         end_df = self.convert_coordinates(end_df, chrom_col, end_col).withColumnRenamed('mapped_pos', 'mapped_' + end_col)
 
-        # Join dataframe with mappings:
+        # Join dataframe with mappings (we have to account for the +1 position shift of the start coordinates):
         mapped_df = (
             df
-            .join(start_df, on=[chrom_col, start_col], how='left')
+            .join(start_df.withColumn(start_col, F.col(start_col) - 1), on=[chrom_col, start_col], how='left')
             .join(end_df, on=[chrom_col, end_col], how='left')
         )
 
@@ -119,6 +113,7 @@ class LiftOverSpark:
 
         :return: Spark Dataframe with the mapped position column.
         """
+
         mapped = (
             df
             .withColumn('mapped', self.liftover_udf(F.col(chrom_name), F.col(pos_name)))
@@ -212,5 +207,9 @@ if __name__ == '__main__':
 
     # Lift over the data:
     new_data = lift.convert_intervals(data, chrom, start, end, filter=False)
-    logging.info(f'Saving data: {args.output_file}')
-    new_data.write.mode('overwrite').parquet(args.output_file)
+
+    if args.output_file is not None:
+        logging.info(f'Saving data: {args.output_file}')
+        new_data.write.mode('overwrite').parquet(args.output_file)
+
+    logging.info(f'New data: \n{new_data.show(2, truncate=False, vertical=True)}')

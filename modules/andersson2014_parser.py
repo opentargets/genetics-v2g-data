@@ -163,7 +163,7 @@ def main(anderson_data_file: str, gene_index_file: str, chain_file: str, output_
 
     # run QC:
     logging.info('Running QC on the anderson intervals.')
-    anderson.qc_anderson_intervals()
+    anderson.qc_intervals()
 
     # Save data:
     logging.info(f'Saving data to {output_file}.')
