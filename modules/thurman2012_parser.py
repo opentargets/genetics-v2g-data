@@ -39,6 +39,7 @@ class parse_thurman:
                  lift: LiftOverSpark) -> None:
 
         logging.info('Parsing Thurman 2012 data...')
+        logging.info(f'Reading data from {thurman_datafile}')
 
         thurman_schema = T.StructType([
             T.StructField('gene_chr', T.StringType(), False),

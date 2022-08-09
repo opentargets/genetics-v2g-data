@@ -41,6 +41,8 @@ class parse_jung:
                  lift: LiftOverSpark) -> None:
 
         logging.info('Parsing Jung 2019 data...')
+        logging.info(f'Reading data from {jung_data}')
+
 
         # Read Jung data:
         jung_raw = (

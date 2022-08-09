@@ -43,6 +43,7 @@ class parse_javierre:
                  lift: LiftOverSpark) -> None:
 
         logging.info('Parsing Javierre 2016 data...')
+        logging.info(f'Reading data from {javierre_parquet}')
 
         # Read gene index:
         genes = self.prepare_gene_index(gene_index)

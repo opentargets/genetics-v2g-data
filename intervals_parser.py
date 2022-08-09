@@ -64,7 +64,7 @@ def main(cfg):
     df = reduce(lambda x, y: x.unionByName(y, allowMissingColumns=True), datasets)
 
     logging.info(f'Number of interval data: {df.count()}')
-    logging.info(f'Writing data to: {cfg.intervals.output_file}')
+    logging.info(f'Writing data to: {cfg.intervals.output}')
 
     # Saving data:
     version = date.today().strftime('%y%m%d')
